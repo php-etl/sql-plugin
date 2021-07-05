@@ -1,0 +1,47 @@
+{
+    "name": "php-etl/sql-plugin",
+    "description": "This plugin allows you to perform SQL queries",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Grégory Planchat",
+            "email": "gregory@kiboko.fr"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.0",
+        "nikic/php-parser": "^4.10",
+        "symfony/config": "^5.2",
+        "symfony/expression-language": "^5.2",
+        "php-etl/configurator-contracts": "^0.3.0",
+        "php-etl/satellite-toolbox": "^0.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kiboko\\Plugin\\SQL\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "functional\\Kiboko\\Plugin\\SQL\\": "tests/functional/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        },
+        "satellite": {
+            "class": "Kiboko\\Plugin\\SQL\\Service"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "require-dev": {
+        "symfony/console": "^5.2",
+        "symfony/yaml": "^5.2"
+    }
+}
