@@ -10,6 +10,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Loader implements FactoryInterface
 {
@@ -49,6 +50,25 @@ final class Loader implements FactoryInterface
 
     public function compile(array $config): RepositoryInterface
     {
-        // TODO: Implement compile() method.
+        $extractor = new SQL\Builder\Loader(
+            compileValueWhenExpression($this->interpreter, $config["query"]),
+            compileValueWhenExpression($this->interpreter, $config["connection"]["dsn"])
+        );
+
+        if (array_key_exists('username', $config["connection"])) {
+            $extractor->withUsername(compileValueWhenExpression($this->interpreter, $config["connection"]["username"]));
+        }
+
+        if (array_key_exists('password', $config["connection"])) {
+            $extractor->withPassword(compileValueWhenExpression($this->interpreter, $config["connection"]["password"]));
+        }
+
+        if (array_key_exists('params', $config)) {
+            foreach ($config["params"] as $key => $param) {
+                $extractor->addParam($key, compileValueWhenExpression($this->interpreter, $param));
+            }
+        }
+
+        return new Repository\Loader($extractor);
     }
 }

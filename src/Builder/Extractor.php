@@ -77,14 +77,14 @@ final class Extractor implements StepBuilderInterface
                             ],
                         ),
                          new Node\Stmt\ClassMethod(
-                            name: new Node\Identifier(name: 'extract'),
-                            subNodes: [
+                             name: new Node\Identifier(name: 'extract'),
+                             subNodes: [
                                  'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
                                  'params' => [],
                                  'returnType' => new Node\Name(name: 'iterable'),
                                  'stmts' => [
-                                    new Node\Stmt\TryCatch(
-                                        stmts: [
+                                     new Node\Stmt\TryCatch(
+                                         stmts: [
                                             new Node\Stmt\Expression(
                                                 expr: new Node\Expr\Assign(
                                                     var: new Node\Expr\Variable('dbh'),
@@ -104,17 +104,23 @@ final class Extractor implements StepBuilderInterface
                                                     expr: new Node\Expr\Array_(
                                                         attributes: [
                                                             'kind' => Node\Expr\Array_::KIND_SHORT
-                                                        ]
-                                                    )
-                                                )
+                                                        ],
+                                                    ),
+                                                ),
                                             ),
                                             new Node\Stmt\Foreach_(
                                                 expr: new Node\Expr\MethodCall(
                                                     var: new Node\Expr\Variable('dbh'),
                                                     name: new Node\Name('query'),
                                                     args: [
-                                                        new Node\Arg($this->query)
-                                                    ]
+                                                        new Node\Arg($this->query),
+                                                        new Node\Arg(
+                                                            new Node\Expr\ClassConstFetch(
+                                                                class: new Node\Name\FullyQualified('PDO'),
+                                                                name: new Node\Name('FETCH_NAMED')
+                                                            ),
+                                                        ),
+                                                    ],
                                                 ),
                                                 valueVar: new Node\Expr\Variable('row'),
                                                 subNodes: [
@@ -129,17 +135,35 @@ final class Extractor implements StepBuilderInterface
                                                                     new Node\Arg(
                                                                         new Node\Expr\Variable('row')
                                                                     ),
-                                                                ]
-                                                            )
-                                                        )
-                                                    ]
-                                                ]
+                                                                ],
+                                                            ),
+                                                        ),
+                                                    ],
+                                                ],
                                             ),
-                                            new Node\Stmt\Return_(
-                                                expr: new Node\Expr\Variable('output')
-                                            )
+                                             new Node\Stmt\Expression(
+                                                 expr: new Node\Expr\Assign(
+                                                    var: new Node\Expr\Variable('dbh'),
+                                                    expr: new Node\Expr\ConstFetch(
+                                                        name: new Node\Name('null')
+                                                    )
+                                                )
+                                             ),
+                                            new Node\Stmt\Expression(
+                                                new Node\Expr\Yield_(
+                                                    value: new Node\Expr\New_(
+                                                        class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
+                                                        args: [
+                                                            new Node\Arg(
+                                                                value: new Node\Expr\Variable('output'),
+                                                                unpack: true
+                                                            ),
+                                                        ],
+                                                    )
+                                                ),
+                                            ),
                                         ],
-                                        catches: [
+                                         catches: [
                                             new Node\Stmt\Catch_(
                                                 types: [
                                                     new Node\Name('PDOException')
@@ -179,7 +203,7 @@ final class Extractor implements StepBuilderInterface
                                                 ],
                                             ),
                                         ],
-                                    )
+                                     )
                                  ]
                              ]
                          ),
