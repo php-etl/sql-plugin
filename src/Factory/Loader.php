@@ -50,25 +50,25 @@ final class Loader implements FactoryInterface
 
     public function compile(array $config): RepositoryInterface
     {
-        $extractor = new SQL\Builder\Loader(
+        $loader = new SQL\Builder\Loader(
             compileValueWhenExpression($this->interpreter, $config["query"]),
             compileValueWhenExpression($this->interpreter, $config["connection"]["dsn"])
         );
 
         if (array_key_exists('username', $config["connection"])) {
-            $extractor->withUsername(compileValueWhenExpression($this->interpreter, $config["connection"]["username"]));
+            $loader->withUsername(compileValueWhenExpression($this->interpreter, $config["connection"]["username"]));
         }
 
         if (array_key_exists('password', $config["connection"])) {
-            $extractor->withPassword(compileValueWhenExpression($this->interpreter, $config["connection"]["password"]));
+            $loader->withPassword(compileValueWhenExpression($this->interpreter, $config["connection"]["password"]));
         }
 
         if (array_key_exists('params', $config)) {
             foreach ($config["params"] as $key => $param) {
-                $extractor->addParam($key, compileValueWhenExpression($this->interpreter, $param));
+                $loader->addParam($key, compileValueWhenExpression($this->interpreter, $param));
             }
         }
 
-        return new Repository\Loader($extractor);
+        return new Repository\Loader($loader);
     }
 }

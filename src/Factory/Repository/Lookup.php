@@ -6,17 +6,17 @@ use Kiboko\Plugin\SQL;
 use Kiboko\Contract\Configurator\StepRepositoryInterface;
 use Kiboko\Contract\Configurator;
 
-class Loader implements StepRepositoryInterface
+class Lookup implements StepRepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\Loader $builder)
+    public function __construct(private SQL\Builder\Lookup|SQL\Builder\ConditionalLookup $builder)
     {
         $this->files = [];
         $this->packages = [];
     }
 
-    public function getBuilder(): SQL\Builder\Loader
+    public function getBuilder(): SQL\Builder\Lookup|SQL\Builder\ConditionalLookup
     {
         return $this->builder;
     }
