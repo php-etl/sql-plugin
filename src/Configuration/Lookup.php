@@ -25,16 +25,32 @@ final class Lookup implements ConfigurationInterface
             ->children()
                 ->scalarNode('query')
                     ->validate()
-                        ->ifTrue(fn ($data) => is_string($data) && $data !== '' && (!str_starts_with($data, 'SELECT') && !str_starts_with($data, 'select')))
+                        ->ifTrue(fn ($data) => is_string($data) && $data !== '' && (!str_starts_with(strtoupper($data), 'SELECT') && !str_starts_with(strtoupper($data), 'select')))
                         ->thenInvalid('Your query should be start with "SELECT".')
                     ->end()
                 ->end()
                 ->arrayNode('params')
-                    ->variablePrototype()
-                        ->validate()
-                            ->ifArray()
-                            ->thenInvalid('A parameter cann\'t be an array.')
-                        ->end()
+                    ->beforeNormalization()
+                        ->ifTrue(function ($data) {
+                            foreach ($data as $key => $value) {
+                                return !is_string($key) && !is_int($key);
+                            }
+
+                            return false;
+                        })
+                        ->thenInvalid('Your parameter key can only be a string or an integer.')
+                    ->end()
+                    ->beforeNormalization()
+                        ->ifTrue(function ($data) {
+                            foreach ($data as $key => $value) {
+                                return is_string($key) && str_starts_with($key, ':');
+                            }
+
+                            return false;
+                        })
+                        ->thenInvalid('Your parameter can\'t start with ":".')
+                    ->end()
+                    ->scalarPrototype()
                         ->validate()
                             ->ifTrue(isExpression())
                             ->then(asExpression())
@@ -91,6 +107,7 @@ final class Lookup implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->scalarNode('query')
+                        ->isRequired()
                         ->validate()
                             ->ifTrue(fn ($data) => is_string($data) && $data !== '' && (!str_starts_with($data, 'SELECT') && !str_starts_with($data, 'select')))
                             ->thenInvalid('Your query should be start with "SELECT".')

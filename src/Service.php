@@ -71,7 +71,7 @@ final class Service implements FactoryInterface
             } elseif (array_key_exists('loader', $config)) {
                 $loaderFactory = new Factory\Loader($this->interpreter);
 
-                return $loaderFactory->compile($config['lookup']);
+                return $loaderFactory->compile($config['loader']);
             } else {
                 throw new InvalidConfigurationException(
                     'Could not determine if the factory should build an extractor or a loader.'

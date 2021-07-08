@@ -68,7 +68,7 @@ final class ConditionalLookup implements StepBuilderInterface
                         class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
                         args: [
                            new Node\Arg(
-                               value: new Node\Expr\Variable('input')
+                               value: new Node\Expr\Variable('output')
                            )
                         ],
                     ),
@@ -91,7 +91,7 @@ final class ConditionalLookup implements StepBuilderInterface
                             fn (Node\Expr $condition, AlternativeLookup $lookup)
                                 => new Node\Stmt\ElseIf_(
                                     cond: $condition,
-                                    stmts: $this->compileAlternative($lookup)
+                                    stmts: $this->compileAlternative($lookup),
                                 ),
                             array_column($alternatives, 0),
                             array_column($alternatives, 1)
@@ -100,7 +100,14 @@ final class ConditionalLookup implements StepBuilderInterface
                             stmts: [
                                 new Node\Stmt\Expression(
                                     new Node\Expr\Yield_(
-                                        new Node\Expr\Variable('input')
+                                        value: new Node\Expr\New_(
+                                            class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
+                                            args: [
+                                               new Node\Arg(
+                                                   value: new Node\Expr\Variable('output')
+                                               ),
+                                            ],
+                                        ),
                                     ),
                                 ),
                             ],

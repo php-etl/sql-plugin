@@ -221,7 +221,7 @@ final class Loader implements StepBuilderInterface
                     name: new Node\Name('bindParam'),
                     args: [
                         new Node\Arg(
-                            is_string($key) ? new Node\Scalar\String_($key) : new Node\Scalar\LNumber($key)
+                            is_string($key) ? new Node\Scalar\Encapsed([new Node\Scalar\EncapsedStringPart(':'), new Node\Scalar\EncapsedStringPart($key)]) : new Node\Scalar\LNumber($key)
                         ),
                         new Node\Arg(
                             $param

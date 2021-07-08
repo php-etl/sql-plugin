@@ -87,9 +87,21 @@ final class Lookup implements StepBuilderInterface
                                             expr: new Node\Expr\Yield_()
                                         )
                                     ),
-                                    ...$this->compileAlternative($this->alternative),
-                                    new Node\Stmt\Return_(
-                                        expr: new Node\Expr\Variable('output')
+                                    new Node\Stmt\Do_(
+                                        cond: new Node\Expr\Assign(
+                                            var: new Node\Expr\Variable('input'),
+                                            expr: new Node\Expr\Yield_(
+                                                value: new Node\Expr\New_(
+                                                    class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
+                                                    args: [
+                                                       new Node\Arg(
+                                                           value: new Node\Expr\Variable('output')
+                                                       ),
+                                                    ],
+                                                ),
+                                            ),
+                                        ),
+                                        stmts: $this->compileAlternative($this->alternative),
                                     ),
                                 ],
                             ],

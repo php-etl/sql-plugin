@@ -78,7 +78,22 @@ final class AlternativeLookup implements StepBuilderInterface
         return (new IsolatedValueAppendingBuilder(
             new Node\Expr\Variable('input'),
             new Node\Expr\Variable('output'),
-            array_filter([
+            [
+                $this->getLookupNode(),
+                $this->merge?->getNode(),
+                new Node\Stmt\Return_(
+                    new Node\Expr\Variable('output')
+                ),
+            ]
+        ))->getNode();
+    }
+
+    public function getLookupNode() : Node
+    {
+        return (new IsolatedValueAppendingBuilder(
+            new Node\Expr\Variable('input'),
+            new Node\Expr\Variable('lookup'),
+            [
                 new Node\Stmt\TryCatch(
                     stmts: [
                         new Node\Stmt\Expression(
@@ -115,10 +130,10 @@ final class AlternativeLookup implements StepBuilderInterface
                         ),
                         new Node\Stmt\Expression(
                             expr: new Node\Expr\Assign(
-                                var: new Node\Expr\Variable('lookup'),
+                                var: new Node\Expr\Variable('data'),
                                 expr: new Node\Expr\MethodCall(
                                     var: new Node\Expr\Variable('stmt'),
-                                    name: new Node\Name('fetchAll'),
+                                    name: new Node\Name('fetch'),
                                     args: [
                                         new Node\Arg(
                                             new Node\Expr\ClassConstFetch(
@@ -180,11 +195,10 @@ final class AlternativeLookup implements StepBuilderInterface
                         ),
                     ],
                 ),
-                $this->merge?->getNode(),
                 new Node\Stmt\Return_(
-                    new Node\Expr\Variable('output')
-                ),
-            ])
+                    expr: new Node\Expr\Variable('data')
+                )
+            ]
         ))->getNode();
     }
 
@@ -199,7 +213,7 @@ final class AlternativeLookup implements StepBuilderInterface
                     name: new Node\Name('bindParam'),
                     args: [
                         new Node\Arg(
-                            is_string($key) ? new Node\Scalar\String_($key) : new Node\Scalar\LNumber($key)
+                            is_string($key) ? new Node\Scalar\Encapsed([new Node\Scalar\EncapsedStringPart(':'), new Node\Scalar\EncapsedStringPart($key)]) : new Node\Scalar\LNumber($key)
                         ),
                         new Node\Arg(
                             $param

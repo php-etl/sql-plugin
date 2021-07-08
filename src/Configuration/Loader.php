@@ -15,13 +15,35 @@ final class Loader implements ConfigurationInterface
 
         $builder->getRootNode()
             ->children()
-                ->scalarNode('query')->end()
+                ->scalarNode('query')
+                    ->isRequired()
+                    ->validate()
+                        ->ifTrue(fn ($data) => is_string($data) && $data !== '' && (!str_starts_with(strtoupper($data), 'INSERT') && !str_starts_with(strtoupper($data), 'UPDATE')))
+                        ->thenInvalid('Your query must start with the keyword "INSERT" ou "UPDATE".')
+                    ->end()
+                ->end()
                 ->arrayNode('params')
-                    ->variablePrototype()
-                        ->validate()
-                            ->ifArray()
-                            ->thenInvalid('A parameter cann\'t be an array.')
-                        ->end()
+                    ->beforeNormalization()
+                        ->ifTrue(function ($data) {
+                            foreach ($data as $key => $value) {
+                                return !is_string($key) && !is_int($key);
+                            }
+
+                            return false;
+                        })
+                        ->thenInvalid('Your parameter key can only be a string or an integer.')
+                    ->end()
+                    ->beforeNormalization()
+                        ->ifTrue(function ($data) {
+                            foreach ($data as $key => $value) {
+                                return is_string($key) && str_starts_with($key, ':');
+                            }
+
+                            return false;
+                        })
+                        ->thenInvalid('Your parameter can\'t start with ":".')
+                    ->end()
+                    ->scalarPrototype()
                         ->validate()
                             ->ifTrue(isExpression())
                             ->then(asExpression())
