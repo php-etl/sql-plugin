@@ -1,0 +1,17 @@
+sql:
+#  expression_language:
+#    - 'Kiboko\Component\ArrayExpressionLanguage\ArrayExpressionLanguageProvider'
+  lookup:
+    query: 'SELECT * FROM table2 WHERE bar = ?'
+    params:
+      - key: 1
+        value: 'foo'
+    connection:
+      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+      username: username
+      password: password
+    merge:
+      map:
+        - field: '[options]'
+          expression: 'lookup["name"]'
+

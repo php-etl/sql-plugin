@@ -64,8 +64,8 @@ final class Loader implements FactoryInterface
         }
 
         if (array_key_exists('params', $config)) {
-            foreach ($config["params"] as $key => $param) {
-                $loader->addParam($key, compileValueWhenExpression($this->interpreter, $param));
+            foreach ($config["params"] as $param) {
+                $loader->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
             }
         }
 

@@ -93,7 +93,7 @@ final class Extractor implements StepBuilderInterface
                                                         args: [
                                                             new Node\Arg($this->dsn),
                                                             $this->username ? new Node\Arg($this->username) : new Node\Expr\ConstFetch(new Node\Name('null')),
-                                                            $this->password ? new Node\Arg($this->password) : new Node\Expr\ConstFetch(new Node\Name('null'))
+                                                            $this->password ? new Node\Arg($this->password) : new Node\Expr\ConstFetch(new Node\Name('null')),
                                                         ],
                                                     ),
                                                 ),
@@ -143,11 +143,11 @@ final class Extractor implements StepBuilderInterface
                                             ),
                                              new Node\Stmt\Expression(
                                                  expr: new Node\Expr\Assign(
-                                                    var: new Node\Expr\Variable('dbh'),
-                                                    expr: new Node\Expr\ConstFetch(
+                                                     var: new Node\Expr\Variable('dbh'),
+                                                     expr: new Node\Expr\ConstFetch(
                                                         name: new Node\Name('null')
                                                     )
-                                                )
+                                                 )
                                              ),
                                             new Node\Stmt\Expression(
                                                 new Node\Expr\Yield_(
@@ -166,7 +166,7 @@ final class Extractor implements StepBuilderInterface
                                          catches: [
                                             new Node\Stmt\Catch_(
                                                 types: [
-                                                    new Node\Name('PDOException')
+                                                    new Node\Name\FullyQualified('PDOException')
                                                 ],
                                                 var: new Node\Expr\Variable('exception'),
                                                 stmts: [

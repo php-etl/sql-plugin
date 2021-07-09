@@ -160,7 +160,7 @@ final class Loader implements StepBuilderInterface
                                         catches: [
                                             new Node\Stmt\Catch_(
                                                 types: [
-                                                    new Node\Name('PDOException')
+                                                    new Node\Name\FullyQualified('PDOException')
                                                 ],
                                                 var: new Node\Expr\Variable('exception'),
                                                 stmts: [

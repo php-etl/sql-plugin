@@ -86,8 +86,8 @@ final class Lookup implements FactoryInterface
             }
 
             if (array_key_exists('params', $config)) {
-                foreach ($config["params"] as $key => $param) {
-                    $alternativeBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $param));
+                foreach ($config["params"] as $param) {
+                    $alternativeBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
                 }
             }
 
@@ -110,8 +110,8 @@ final class Lookup implements FactoryInterface
                 }
 
                 if (array_key_exists('params', $alternative)) {
-                    foreach ($alternative["params"] as $key => $param) {
-                        $alternativeBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $param));
+                    foreach ($alternative["params"] as $param) {
+                        $alternativeBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
                     }
                 }
 

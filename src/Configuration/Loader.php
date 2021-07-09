@@ -23,30 +23,32 @@ final class Loader implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('params')
-                    ->beforeNormalization()
-                        ->ifTrue(function ($data) {
-                            foreach ($data as $key => $value) {
-                                return !is_string($key) && !is_int($key);
-                            }
-
-                            return false;
-                        })
-                        ->thenInvalid('Your parameter key can only be a string or an integer.')
-                    ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(function ($data) {
-                            foreach ($data as $key => $value) {
-                                return is_string($key) && str_starts_with($key, ':');
-                            }
-
-                            return false;
-                        })
-                        ->thenInvalid('Your parameter can\'t start with ":".')
-                    ->end()
-                    ->scalarPrototype()
-                        ->validate()
-                            ->ifTrue(isExpression())
-                            ->then(asExpression())
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('key')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                                ->validate()
+                                    ->ifTrue(fn ($data) => !is_string($data) && !is_int($data))
+                                    ->thenInvalid('The key of your parameter must be of type string or int.')
+                                ->end()
+                                 ->validate()
+                                    ->ifTrue(fn ($data) => is_int($data) && $data < 1)
+                                    ->thenInvalid('The key of your parameter cannot be lower than 1.')
+                                ->end()
+                                ->validate()
+                                    ->ifTrue(isExpression())
+                                    ->then(asExpression())
+                                ->end()
+                            ->end()
+                            ->scalarNode('value')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                                ->validate()
+                                    ->ifTrue(isExpression())
+                                    ->then(asExpression())
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()

@@ -1,0 +1,9 @@
+sql:
+#  expression_language:
+#    - 'Kiboko\Component\ArrayExpressionLanguage\ArrayExpressionLanguageProvider'
+  extractor:
+    query: 'SELECT * FROM table1'
+    connection:
+      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+      username: username
+      password: password

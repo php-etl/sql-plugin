@@ -1,0 +1,16 @@
+sql:
+#  expression_language:
+#    - 'Kiboko\Component\ArrayExpressionLanguage\ArrayExpressionLanguageProvider'
+  loader:
+    query: 'INSERT INTO table1 VALUES (:value1, :value2, :value3)'
+    params:
+      - key: value1
+        value: '@=input["value1"]'
+      - key: value2
+        value: '@=input["value3"]'
+      - key: value3
+        value: '@=input["value3"]'
+    connection:
+      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+      username: username
+      password: password

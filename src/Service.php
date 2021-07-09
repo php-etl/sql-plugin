@@ -74,7 +74,7 @@ final class Service implements FactoryInterface
                 return $loaderFactory->compile($config['loader']);
             } else {
                 throw new InvalidConfigurationException(
-                    'Could not determine if the factory should build an extractor or a loader.'
+                    'Could not determine if the factory shoul d build an extractor or a loader.'
                 );
             }
         } catch (InvalidConfigurationException $exception) {
