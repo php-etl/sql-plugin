@@ -2,6 +2,7 @@
 
 namespace Kiboko\Plugin\SQL\Configuration;
 
+use Kiboko\Plugin\FastMap;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
@@ -14,68 +15,56 @@ final class Loader implements ConfigurationInterface
         $builder = new TreeBuilder('loader');
 
         $builder->getRootNode()
+             ->validate()
+                ->ifTrue(fn ($data) => array_key_exists('conditional', $data) && is_array($data['conditional']) && count($data['conditional']) <= 0)
+                ->then(function ($data) {
+                    unset($data['conditional']);
+                    return $data;
+                })
+            ->end()
+             ->validate()
+                ->ifTrue(fn ($data) => array_key_exists('parameters', $data) && is_array($data['parameters']) && count($data['parameters']) <= 0)
+                ->then(function ($data) {
+                    unset($data['parameters']);
+                    return $data;
+                })
+            ->end()
+            ->append((new Query())->getConfigTreeBuilder()->getRootNode())
+            ->append((new Parameters())->getConfigTreeBuilder()->getRootNode())
             ->children()
-                ->scalarNode('query')
-                    ->isRequired()
-                    ->validate()
-                        ->ifTrue(fn ($data) => is_string($data) && $data !== '' && (!str_starts_with(strtoupper($data), 'INSERT') && !str_starts_with(strtoupper($data), 'UPDATE')))
-                        ->thenInvalid('Your query must start with the keyword "INSERT" ou "UPDATE".')
-                    ->end()
-                ->end()
-                ->arrayNode('params')
-                    ->arrayPrototype()
-                        ->children()
-                            ->scalarNode('key')
-                                ->isRequired()
-                                ->cannotBeEmpty()
-                                ->validate()
-                                    ->ifTrue(fn ($data) => !is_string($data) && !is_int($data))
-                                    ->thenInvalid('The key of your parameter must be of type string or int.')
-                                ->end()
-                                 ->validate()
-                                    ->ifTrue(fn ($data) => is_int($data) && $data < 1)
-                                    ->thenInvalid('The key of your parameter cannot be lower than 1.')
-                                ->end()
-                                ->validate()
-                                    ->ifTrue(isExpression())
-                                    ->then(asExpression())
-                                ->end()
-                            ->end()
-                            ->scalarNode('value')
-                                ->isRequired()
-                                ->cannotBeEmpty()
-                                ->validate()
-                                    ->ifTrue(isExpression())
-                                    ->then(asExpression())
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-                ->arrayNode('connection')
-                    ->children()
-                        ->scalarNode('dsn')
-                            ->validate()
-                                ->ifTrue(isExpression())
-                                ->then(asExpression())
-                            ->end()
-                        ->end()
-                        ->scalarNode('username')
-                            ->validate()
-                                ->ifTrue(isExpression())
-                                ->then(asExpression())
-                            ->end()
-                        ->end()
-                        ->scalarNode('password')
-                            ->validate()
-                                ->ifTrue(isExpression())
-                                ->then(asExpression())
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
+                ->append((new FastMap\Configuration('merge'))->getConfigTreeBuilder()->getRootNode())
+                ->append($this->getConditionalTreeBuilder()->getRootNode())
             ->end()
         ;
+
+        return $builder;
+    }
+
+    private function getConditionalTreeBuilder(): TreeBuilder
+    {
+        $builder = new TreeBuilder('conditional');
+
+        $builder->getRootNode()
+            ->cannotBeEmpty()
+            ->requiresAtLeastOneElement()
+            ->validate()
+                ->ifTrue(fn ($data) => count($data) <= 0)
+                ->thenUnset()
+            ->end()
+            ->arrayPrototype()
+                ->children()
+                    ->variableNode('condition')
+                        ->validate()
+                            ->ifTrue(isExpression())
+                            ->then(asExpression())
+                        ->end()
+                    ->end()
+                    ->append((new Query())->getConfigTreeBuilder()->getRootNode())
+                    ->append((new Parameters())->getConfigTreeBuilder()->getRootNode())
+                    ->append((new FastMap\Configuration('merge'))->getConfigTreeBuilder()->getRootNode())
+                ->end()
+            ->end()
+        ->end();
 
         return $builder;
     }

@@ -67,7 +67,7 @@ final class Lookup implements FactoryInterface
         }
     }
 
-    public function compile(array $config): RepositoryInterface
+    public function compile(array $config): SQL\Factory\Repository\Lookup
     {
         if (!array_key_exists('conditional', $config)) {
             $alternativeBuilder = new SQL\Builder\AlternativeLookup(

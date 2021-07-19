@@ -5,14 +5,13 @@ namespace Kiboko\Plugin\SQL\Factory;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Plugin\SQL;
 use Kiboko\Contract\Configurator\FactoryInterface;
-use Kiboko\Contract\Configurator\RepositoryInterface;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
-final class Loader implements FactoryInterface
+final class Connection implements FactoryInterface
 {
     private Processor $processor;
     private ConfigurationInterface $configuration;
@@ -48,27 +47,20 @@ final class Loader implements FactoryInterface
         }
     }
 
-    public function compile(array $config): SQL\Factory\Repository\Loader
+    public function compile(array $config): SQL\Factory\Repository\Connection
     {
-        $loader = new SQL\Builder\Loader(
-            compileValueWhenExpression($this->interpreter, $config["query"]),
-            compileValueWhenExpression($this->interpreter, $config["connection"]["dsn"])
+        $extractor = new SQL\Builder\Connection(
+            compileValueWhenExpression($this->interpreter, $config['dsn'])
         );
 
-        if (array_key_exists('username', $config["connection"])) {
-            $loader->withUsername(compileValueWhenExpression($this->interpreter, $config["connection"]["username"]));
+        if (array_key_exists('username', $config)) {
+            $extractor->withUsername(compileValueWhenExpression($this->interpreter, $config['username']));
         }
 
-        if (array_key_exists('password', $config["connection"])) {
-            $loader->withPassword(compileValueWhenExpression($this->interpreter, $config["connection"]["password"]));
+        if (array_key_exists('password', $config)) {
+            $extractor->withPassword(compileValueWhenExpression($this->interpreter, $config['password']));
         }
 
-        if (array_key_exists('params', $config)) {
-            foreach ($config["params"] as $param) {
-                $loader->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
-            }
-        }
-
-        return new Repository\Loader($loader);
+        return new SQL\Factory\Repository\Connection($extractor);
     }
 }

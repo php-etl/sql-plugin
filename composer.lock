@@ -628,12 +628,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/satellite-toolbox.git",
-                "reference": "ce201ce4c8dc12b8bc80220bafc5222c0c93c9ee"
+                "reference": "504847218d94ef10b65b35e75f2ed9611f50f0d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/satellite-toolbox/zipball/ce201ce4c8dc12b8bc80220bafc5222c0c93c9ee",
-                "reference": "ce201ce4c8dc12b8bc80220bafc5222c0c93c9ee",
+                "url": "https://api.github.com/repos/php-etl/satellite-toolbox/zipball/504847218d94ef10b65b35e75f2ed9611f50f0d1",
+                "reference": "504847218d94ef10b65b35e75f2ed9611f50f0d1",
                 "shasum": ""
             },
             "require": {
@@ -662,6 +662,7 @@
                     "Kiboko\\Component\\SatelliteToolbox\\": "src/"
                 },
                 "files": [
+                    "src/ast.php",
                     "src/configuration.php"
                 ]
             },
@@ -684,7 +685,7 @@
                 "issues": "https://github.com/php-etl/satellite-toolbox/issues",
                 "source": "https://github.com/php-etl/satellite-toolbox/tree/master"
             },
-            "time": "2021-06-24T09:55:37+00:00"
+            "time": "2021-07-19T07:14:17+00:00"
         },
         {
             "name": "phpactor/docblock",
@@ -2638,12 +2639,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/phpunit-extension.git",
-                "reference": "ee940f2a3fcd52eccec50cd007ba7716fab4eb72"
+                "reference": "f4cbff28636c4e5d24360aa94a9aab4ca06860a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/phpunit-extension/zipball/ee940f2a3fcd52eccec50cd007ba7716fab4eb72",
-                "reference": "ee940f2a3fcd52eccec50cd007ba7716fab4eb72",
+                "url": "https://api.github.com/repos/php-etl/phpunit-extension/zipball/f4cbff28636c4e5d24360aa94a9aab4ca06860a2",
+                "reference": "f4cbff28636c4e5d24360aa94a9aab4ca06860a2",
                 "shasum": ""
             },
             "require": {
@@ -2682,7 +2683,7 @@
                 "issues": "https://github.com/php-etl/phpunit-extension/issues",
                 "source": "https://github.com/php-etl/phpunit-extension/tree/master"
             },
-            "time": "2021-06-17T10:05:31+00:00"
+            "time": "2021-07-16T22:09:02+00:00"
         },
         {
             "name": "php-etl/pipeline",
@@ -3343,16 +3344,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.6",
+            "version": "9.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "fb9b8333f14e3dce976a60ef6a7e05c7c7ed8bfb"
+                "reference": "d0dc8b6999c937616df4fb046792004b33fd31c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fb9b8333f14e3dce976a60ef6a7e05c7c7ed8bfb",
-                "reference": "fb9b8333f14e3dce976a60ef6a7e05c7c7ed8bfb",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d0dc8b6999c937616df4fb046792004b33fd31c5",
+                "reference": "d0dc8b6999c937616df4fb046792004b33fd31c5",
                 "shasum": ""
             },
             "require": {
@@ -3430,7 +3431,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.6"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.7"
             },
             "funding": [
                 {
@@ -3442,7 +3443,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-23T05:14:38+00:00"
+            "time": "2021-07-19T06:14:47+00:00"
         },
         {
             "name": "sebastian/cli-parser",

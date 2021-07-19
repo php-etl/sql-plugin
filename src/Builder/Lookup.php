@@ -10,12 +10,20 @@ final class Lookup implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
+    /** @var array<int, Node\Expr> */
+    private array $beforeQueries;
+    /** @var array<int, Node\Expr> */
+    private array $afterQueries;
 
-    public function __construct(private AlternativeLookup $alternative)
-    {
+    public function __construct(
+        private AlternativeLookup $alternative,
+        private null|Node\Expr|Connection $connection = null,
+    ) {
         $this->logger = null;
         $this->rejection = null;
         $this->state = null;
+        $this->beforeQueries = [];
+        $this->afterQueries = [];
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -39,6 +47,13 @@ final class Lookup implements StepBuilderInterface
         return $this;
     }
 
+    public function withConnection(Node\Expr|Connection $connection): StepBuilderInterface
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
     private function compileAlternative(AlternativeLookup $lookup): array
     {
         return [
@@ -50,6 +65,34 @@ final class Lookup implements StepBuilderInterface
             ),
             $lookup->getNode()
         ];
+    }
+
+    public function withBeforeQuery(?InitializerQueries $query): self
+    {
+        array_push($this->beforeQueries, $query);
+
+        return $this;
+    }
+
+    public function withBeforeQueries(?InitializerQueries ...$queries): self
+    {
+        array_push($this->beforeQueries, ...$queries);
+
+        return $this;
+    }
+
+    public function withAfterQuery(?InitializerQueries $query): self
+    {
+        array_push($this->afterQueries, $query);
+
+        return $this;
+    }
+
+    public function withAfterQueries(?InitializerQueries ...$queries): self
+    {
+        array_push($this->afterQueries, ...$queries);
+
+        return $this;
     }
 
     public function getNode(): Node

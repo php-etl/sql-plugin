@@ -10,12 +10,20 @@ final class Extractor implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
+    /** @var array<int, Node\Expr> */
+    private array $beforeQueries;
+    /** @var array<int, Node\Expr> */
+    private array $afterQueries;
 
-    public function __construct(private Node\Expr $query, private Node\Expr $dsn, private ?Node\Expr $username = null, private ?Node\Expr $password = null)
-    {
+    public function __construct(
+        private Node\Expr $query,
+        private null|Node\Expr|Connection $connection = null,
+    ) {
         $this->logger = null;
         $this->rejection = null;
         $this->state = null;
+        $this->beforeQueries = [];
+        $this->afterQueries = [];
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -39,16 +47,37 @@ final class Extractor implements StepBuilderInterface
         return $this;
     }
 
-    public function withUsername(Node\Expr $username): StepBuilderInterface
+    public function withConnection(Node\Expr|Connection $connection): StepBuilderInterface
     {
-        $this->username = $username;
+        $this->connection = $connection;
 
         return $this;
     }
 
-    public function withPassword(Node\Expr $password): StepBuilderInterface
+    public function withBeforeQuery(InitializerQueries $query): self
     {
-        $this->password = $password;
+        array_push($this->beforeQueries, $query);
+
+        return $this;
+    }
+
+    public function withBeforeQueries(InitializerQueries ...$queries): self
+    {
+        array_push($this->beforeQueries, ...$queries);
+
+        return $this;
+    }
+
+    public function withAfterQuery(InitializerQueries $query): self
+    {
+        array_push($this->afterQueries, $query);
+
+        return $this;
+    }
+
+    public function withAfterQueries(InitializerQueries ...$queries): self
+    {
+        array_push($this->afterQueries, ...$queries);
 
         return $this;
     }
@@ -88,14 +117,7 @@ final class Extractor implements StepBuilderInterface
                                             new Node\Stmt\Expression(
                                                 expr: new Node\Expr\Assign(
                                                     var: new Node\Expr\Variable('dbh'),
-                                                    expr: new Node\Expr\New_(
-                                                        class: new Node\Name\FullyQualified('PDO'),
-                                                        args: [
-                                                            new Node\Arg($this->dsn),
-                                                            $this->username ? new Node\Arg($this->username) : new Node\Expr\ConstFetch(new Node\Name('null')),
-                                                            $this->password ? new Node\Arg($this->password) : new Node\Expr\ConstFetch(new Node\Name('null')),
-                                                        ],
-                                                    ),
+                                                    expr: $this->connection->getNode(),
                                                 ),
                                             ),
                                             new Node\Stmt\Expression(
