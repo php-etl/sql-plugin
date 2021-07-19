@@ -72,8 +72,8 @@ final class Service implements FactoryInterface
                 return $extractorFactory
                     ->compile($config['extractor'])
                     ->withConnection($connection)
-                    ->withBeforeQueries(...($config['before']['queries'] || []))
-                    ->withAfterQueries(...($config['after']['queries'] || []));
+                    ->withBeforeQueries(...$config['before']['queries'] ?? [])
+                    ->withAfterQueries(...$config['after']['queries'] ?? []);
             } elseif (array_key_exists('lookup', $config)) {
                 $lookupFactory = new Factory\Lookup($this->interpreter);
 

@@ -14,6 +14,7 @@ final class Extractor implements StepBuilderInterface
     private array $beforeQueries;
     /** @var array<int, Node\Expr> */
     private array $afterQueries;
+    private array $parameters;
 
     public function __construct(
         private Node\Expr $query,
@@ -24,6 +25,7 @@ final class Extractor implements StepBuilderInterface
         $this->state = null;
         $this->beforeQueries = [];
         $this->afterQueries = [];
+        $this->parameters = [];
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -82,6 +84,37 @@ final class Extractor implements StepBuilderInterface
         return $this;
     }
 
+    public function addParam(int|string $key, Node\Expr $param): StepBuilderInterface
+    {
+        $this->parameters[$key] = $param;
+
+        return $this;
+    }
+
+    public function compileParams(): array
+    {
+        $output = [];
+
+        foreach ($this->parameters as $key => $parameter) {
+            $output[] = new Node\Stmt\Expression(
+                expr: new Node\Expr\MethodCall(
+                    var: new Node\Expr\Variable('stmt'),
+                    name: new Node\Name('bindParam'),
+                    args: [
+                        new Node\Arg(
+                            is_string($key) ? new Node\Scalar\Encapsed([new Node\Scalar\EncapsedStringPart(':'), new Node\Scalar\EncapsedStringPart($key)]) : new Node\Scalar\LNumber($key)
+                        ),
+                        new Node\Arg(
+                            $parameter
+                        )
+                    ],
+                ),
+            );
+        }
+
+        return $output;
+    }
+
     public function getNode(): Node
     {
         return new Node\Expr\New_(
@@ -114,14 +147,14 @@ final class Extractor implements StepBuilderInterface
                                  'stmts' => [
                                      new Node\Stmt\TryCatch(
                                          stmts: [
-                                            new Node\Stmt\Expression(
-                                                expr: new Node\Expr\Assign(
-                                                    var: new Node\Expr\Variable('dbh'),
-                                                    expr: $this->connection->getNode(),
-                                                ),
-                                            ),
-                                            new Node\Stmt\Expression(
-                                                expr: new Node\Expr\Assign(
+                                             new Node\Stmt\Expression(
+                                                 expr: new Node\Expr\Assign(
+                                                     var: new Node\Expr\Variable('dbh'),
+                                                     expr: $this->connection->getNode(),
+                                                 ),
+                                             ),
+                                             new Node\Stmt\Expression(
+                                                 expr: new Node\Expr\Assign(
                                                     var: new Node\Expr\Variable('output'),
                                                     expr: new Node\Expr\Array_(
                                                         attributes: [
@@ -129,61 +162,66 @@ final class Extractor implements StepBuilderInterface
                                                         ],
                                                     ),
                                                 ),
-                                            ),
-                                            new Node\Stmt\Foreach_(
-                                                expr: new Node\Expr\MethodCall(
-                                                    var: new Node\Expr\Variable('dbh'),
-                                                    name: new Node\Name('query'),
-                                                    args: [
-                                                        new Node\Arg($this->query),
-                                                        new Node\Arg(
-                                                            new Node\Expr\ClassConstFetch(
-                                                                class: new Node\Name\FullyQualified('PDO'),
-                                                                name: new Node\Name('FETCH_NAMED')
-                                                            ),
-                                                        ),
-                                                    ],
-                                                ),
-                                                valueVar: new Node\Expr\Variable('row'),
-                                                subNodes: [
-                                                    'stmts' => [
-                                                        new Node\Stmt\Expression(
-                                                            new Node\Expr\FuncCall(
-                                                                name: new Node\Name('array_push'),
-                                                                args: [
-                                                                    new Node\Arg(
-                                                                        new Node\Expr\Variable('output')
-                                                                    ),
-                                                                    new Node\Arg(
-                                                                        new Node\Expr\Variable('row')
-                                                                    ),
-                                                                ],
-                                                            ),
-                                                        ),
-                                                    ],
-                                                ],
-                                            ),
+                                             ),
                                              new Node\Stmt\Expression(
                                                  expr: new Node\Expr\Assign(
-                                                     var: new Node\Expr\Variable('dbh'),
-                                                     expr: new Node\Expr\ConstFetch(
-                                                        name: new Node\Name('null')
-                                                    )
+                                                     var: new Node\Expr\Variable('stmt'),
+                                                     expr: new Node\Expr\MethodCall(
+                                                         var: new Node\Expr\Variable('dbh'),
+                                                         name: new Node\Name('prepare'),
+                                                         args: [
+                                                             new Node\Arg(
+                                                                 value: $this->query
+                                                             )
+                                                        ]
+                                                     ),
                                                  )
                                              ),
+                                             ...$this->compileParams(),
+                                             new Node\Stmt\Expression(
+                                                 expr: new Node\Expr\MethodCall(
+                                                     var: new Node\Expr\Variable('dbh'),
+                                                     name: new Node\Name('execute'),
+                                                 ),
+                                             ),
+                                             new Node\Stmt\Expression(
+                                                 expr: new Node\Expr\Assign(
+                                                     var: new Node\Expr\Variable('output'),
+                                                     expr: new Node\Expr\MethodCall(
+                                                         var: new Node\Expr\Variable('stmt'),
+                                                         name: new Node\Name('fetchAll'),
+                                                         args: [
+                                                             new Node\Arg(
+                                                                 new Node\Expr\ClassConstFetch(
+                                                                     class: new Node\Name\FullyQualified('PDO'),
+                                                                     name: new Node\Name('FETCH_NAMED')
+                                                                 ),
+                                                             ),
+                                                         ],
+                                                     ),
+                                                 ),
+                                             ),
                                             new Node\Stmt\Expression(
-                                                new Node\Expr\Yield_(
-                                                    value: new Node\Expr\New_(
-                                                        class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
-                                                        args: [
-                                                            new Node\Arg(
-                                                                value: new Node\Expr\Variable('output'),
-                                                                unpack: true
-                                                            ),
-                                                        ],
-                                                    )
+                                                expr: new Node\Expr\Assign(
+                                                    var: new Node\Expr\Variable('dbh'),
+                                                    expr: new Node\Expr\ConstFetch(
+                                                        name: new Node\Name('null')
+                                                    ),
                                                 ),
                                             ),
+                                             new Node\Stmt\Expression(
+                                                 new Node\Expr\Yield_(
+                                                     value: new Node\Expr\New_(
+                                                         class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
+                                                         args: [
+                                                             new Node\Arg(
+                                                                 value: new Node\Expr\Variable('output'),
+                                                                 unpack: true
+                                                             ),
+                                                         ],
+                                                     )
+                                                 ),
+                                             ),
                                         ],
                                          catches: [
                                             new Node\Stmt\Catch_(
