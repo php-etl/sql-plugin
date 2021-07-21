@@ -1,17 +1,27 @@
 sql:
 #  expression_language:
 #    - 'Kiboko\Component\ArrayExpressionLanguage\ArrayExpressionLanguageProvider'
+  before:
+    queries:
+      - 'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)'
+      - 'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")'
+      - 'INSERT INTO foo (id, value) VALUES (2, "Sit amet consecutir")'
+  after:
+    queries:
+      - 'DROP TABLE foo'
   lookup:
-    query: 'SELECT * FROM table2 WHERE bar = ?'
-    params:
-      - key: 1
-        value: 'foo'
-    connection:
-      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
-      username: username
-      password: password
-    merge:
-      map:
-        - field: '[options]'
-          expression: 'lookup["name"]'
+    conditional:
+      - condition: 'true'
+        query: 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= ?'
+        parameters:
+          - key: 'identifier'
+            value: '@=3'
+        merge:
+          map:
+            - field: '[options]'
+              expression: 'lookup["name"]'
+  connection:
+    dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+    username: username
+    password: password
 

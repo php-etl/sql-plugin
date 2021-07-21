@@ -32,7 +32,7 @@ class Extractor implements StepRepositoryInterface
     public function withBeforeQuery(string $query): self
     {
         $this->builder->withBeforeQuery(
-            new SQL\Builder\InitializerQueries($this->connectionVariable, $query)
+            new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
         );
 
         return $this;
@@ -42,7 +42,7 @@ class Extractor implements StepRepositoryInterface
     {
         foreach ($queries as $query) {
             $this->builder->withBeforeQuery(
-                new SQL\Builder\InitializerQueries($this->connectionVariable, $query)
+                new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
             );
         }
 
@@ -52,7 +52,7 @@ class Extractor implements StepRepositoryInterface
     public function withAfterQuery(string $query): self
     {
         $this->builder->withAfterQuery(
-            new SQL\Builder\InitializerQueries($this->connectionVariable, $query)
+            new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
         );
 
         return $this;
@@ -62,7 +62,7 @@ class Extractor implements StepRepositoryInterface
     {
         foreach ($queries as $query) {
             $this->builder->withAfterQuery(
-                new SQL\Builder\InitializerQueries($this->connectionVariable, $query)
+                new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
             );
         }
 

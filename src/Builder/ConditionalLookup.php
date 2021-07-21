@@ -10,14 +10,22 @@ final class ConditionalLookup implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
+    /** @var array<Node\Expr> */
     private iterable $alternatives;
+    /** @var array<int, Node\Expr> */
+    private array $beforeQueries;
+    /** @var array<int, Node\Expr> */
+    private array $afterQueries;
 
-    public function __construct()
-    {
+    public function __construct(
+        private null|Node\Expr|Connection $connection = null
+    ) {
         $this->logger = null;
         $this->rejection = null;
         $this->state = null;
         $this->alternatives = [];
+        $this->beforeQueries = [];
+        $this->afterQueries = [];
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -41,6 +49,13 @@ final class ConditionalLookup implements StepBuilderInterface
         return $this;
     }
 
+    public function withConnection(Node\Expr|Connection $connection): StepBuilderInterface
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
     public function addAlternative(Node\Expr $condition, AlternativeLookup $lookup): self
     {
         $this->alternatives[] = [$condition, $lookup];
@@ -48,11 +63,42 @@ final class ConditionalLookup implements StepBuilderInterface
         return $this;
     }
 
+    /**
+     * @return array<int, Node>
+     */
     private function compileAlternative(AlternativeLookup $lookup): array
     {
         return [
             $lookup->getNode(),
         ];
+    }
+
+    public function withBeforeQuery(?InitializerQueries $query): self
+    {
+        array_push($this->beforeQueries, $query);
+
+        return $this;
+    }
+
+    public function withBeforeQueries(?InitializerQueries ...$queries): self
+    {
+        array_push($this->beforeQueries, ...$queries);
+
+        return $this;
+    }
+
+    public function withAfterQuery(?InitializerQueries $query): self
+    {
+        array_push($this->afterQueries, $query);
+
+        return $this;
+    }
+
+    public function withAfterQueries(?InitializerQueries ...$queries): self
+    {
+        array_push($this->afterQueries, ...$queries);
+
+        return $this;
     }
 
     private function getNodeAlternatives(): Node
@@ -69,7 +115,7 @@ final class ConditionalLookup implements StepBuilderInterface
                         args: [
                            new Node\Arg(
                                value: new Node\Expr\Variable('output')
-                           )
+                           ),
                         ],
                     ),
                 ),
@@ -121,48 +167,103 @@ final class ConditionalLookup implements StepBuilderInterface
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Stmt\Class_(
-                name: null,
-                subNodes: [
-                    'implements' => [
-                        new Node\Name\FullyQualified(name: 'Kiboko\\Contract\\Pipeline\\TransformerInterface'),
-                    ],
-                    'stmts' => [
-                        new Node\Stmt\ClassMethod(
-                            name: new Node\Identifier(name: '__construct'),
-                            subNodes: [
-                                'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
-                                'params' => [
-                                    new Node\Param(
-                                        var: new Node\Expr\Variable('logger'),
-                                        type: new Node\Name\FullyQualified(name: 'Psr\\Log\\LoggerInterface'),
-                                        flags: Node\Stmt\Class_::MODIFIER_PUBLIC,
-                                    ),
-                                ],
-                            ],
-                        ),
-                        new Node\Stmt\ClassMethod(
-                            name: new Node\Identifier('transform'),
-                            subNodes: [
-                                'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
-                                'returnType' => new Node\Name\FullyQualified(name: 'Generator'),
-                                'stmts' => [
-                                    new Node\Stmt\Expression(
-                                        expr: new Node\Expr\Assign(
-                                            var: new Node\Expr\Variable('input'),
-                                            expr: new Node\Expr\Yield_()
-                                        )
-                                    ),
-                                    $this->getNodeAlternatives(),
-                                ],
-                            ],
-                        ),
-                    ],
-                ],
-            ),
+            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\Lookup'),
             args: [
-                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
+                new Node\Arg(
+                    $this->connection->getNode()
+                ),
+                new Node\Arg(
+                    new Node\Expr\New_(
+                        class: new Node\Stmt\Class_(
+                            name: null,
+                            subNodes: [
+                                'implements' => [
+                                    new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface')
+                                ],
+                                'stmts' => [
+                                    new Node\Stmt\ClassMethod(
+                                        name: new Node\Identifier('__invoke'),
+                                        subNodes: [
+                                            'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
+                                            'stmts' => [
+                                                $this->getNodeAlternatives(),
+                                                new Node\Stmt\Return_(new Node\Expr\Variable('output')),
+                                            ],
+                                            'params' => [
+                                                new Node\Param(
+                                                    new Node\Expr\Variable(
+                                                        name: 'input'
+                                                    ),
+                                                ),
+                                                new Node\Param(
+                                                    var: new Node\Expr\Variable(
+                                                        name: 'output',
+                                                    ),
+                                                    default: new Node\Expr\ConstFetch(
+                                                        name: new Node\Name(name: 'null'),
+                                                    ),
+                                                ),
+                                            ],
+                                        ],
+                                    ),
+                                ],
+                            ],
+                        ),
+                    ),
+                ),
+                new Node\Arg(
+                    value: $this->compileBeforeQueries()
+                ),
+                new Node\Arg(
+                    value: $this->compileAfterQueries()
+                ),
             ],
+        );
+    }
+
+    public function compileBeforeQueries(): Node\Expr
+    {
+        $output = [];
+
+        /**
+         * @var InitializerQueries $beforeQuery
+         */
+        foreach ($this->beforeQueries as $beforeQuery) {
+            $output[] = new Node\Expr\ArrayItem(
+                $beforeQuery->getNode()
+            );
+        }
+
+        return new Node\Expr\Array_(
+            items: [
+                ...$output
+            ],
+            attributes: [
+                'kind' => Node\Expr\Array_::KIND_SHORT
+            ]
+        );
+    }
+
+    public function compileAfterQueries(): Node\Expr
+    {
+        $output = [];
+
+        /**
+         * @var InitializerQueries $afterQuery
+         */
+        foreach ($this->afterQueries as $afterQuery) {
+            $output[] = new Node\Expr\ArrayItem(
+                $afterQuery->getNode()
+            );
+        }
+
+        return new Node\Expr\Array_(
+            items: [
+                ...$output
+            ],
+            attributes: [
+                'kind' => Node\Expr\Array_::KIND_SHORT
+            ]
         );
     }
 }

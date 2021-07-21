@@ -14,7 +14,7 @@ final class Extractor implements StepBuilderInterface
     private array $beforeQueries;
     /** @var array<int, Node\Expr> */
     private array $afterQueries;
-    private array $parameters;
+    private ?Node\Expr $parameters;
 
     public function __construct(
         private Node\Expr $query,
@@ -25,7 +25,7 @@ final class Extractor implements StepBuilderInterface
         $this->state = null;
         $this->beforeQueries = [];
         $this->afterQueries = [];
-        $this->parameters = [];
+        $this->parameters = null;
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -56,222 +56,108 @@ final class Extractor implements StepBuilderInterface
         return $this;
     }
 
-    public function withBeforeQuery(InitializerQueries $query): self
+    public function withBeforeQuery(?InitializerQueries $query): self
     {
         array_push($this->beforeQueries, $query);
 
         return $this;
     }
 
-    public function withBeforeQueries(InitializerQueries ...$queries): self
+    public function withBeforeQueries(?InitializerQueries ...$queries): self
     {
         array_push($this->beforeQueries, ...$queries);
 
         return $this;
     }
 
-    public function withAfterQuery(InitializerQueries $query): self
+    public function withAfterQuery(?InitializerQueries $query): self
     {
         array_push($this->afterQueries, $query);
 
         return $this;
     }
 
-    public function withAfterQueries(InitializerQueries ...$queries): self
+    public function withAfterQueries(?InitializerQueries ...$queries): self
     {
         array_push($this->afterQueries, ...$queries);
 
         return $this;
     }
 
-    public function addParam(int|string $key, Node\Expr $param): StepBuilderInterface
+    public function withParameters(?Node\Expr $parameters): StepBuilderInterface
     {
-        $this->parameters[$key] = $param;
+        $this->parameters = $parameters;
 
         return $this;
-    }
-
-    public function compileParams(): array
-    {
-        $output = [];
-
-        foreach ($this->parameters as $key => $parameter) {
-            $output[] = new Node\Stmt\Expression(
-                expr: new Node\Expr\MethodCall(
-                    var: new Node\Expr\Variable('stmt'),
-                    name: new Node\Name('bindParam'),
-                    args: [
-                        new Node\Arg(
-                            is_string($key) ? new Node\Scalar\Encapsed([new Node\Scalar\EncapsedStringPart(':'), new Node\Scalar\EncapsedStringPart($key)]) : new Node\Scalar\LNumber($key)
-                        ),
-                        new Node\Arg(
-                            $parameter
-                        )
-                    ],
-                ),
-            );
-        }
-
-        return $output;
     }
 
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Stmt\Class_(
-                name: null,
-                subNodes: [
-                    'implements' => [
-                        new Node\Name\FullyQualified(name: 'Kiboko\\Contract\\Pipeline\\ExtractorInterface'),
-                    ],
-                    'stmts' => [
-                        new Node\Stmt\ClassMethod(
-                            name: new Node\Identifier(name: '__construct'),
-                            subNodes: [
-                                'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
-                                'params' => [
-                                    new Node\Param(
-                                        var: new Node\Expr\Variable('logger'),
-                                        type: new Node\Name\FullyQualified(name: 'Psr\\Log\\LoggerInterface'),
-                                        flags: Node\Stmt\Class_::MODIFIER_PUBLIC,
-                                    ),
-                                ],
-                            ],
-                        ),
-                         new Node\Stmt\ClassMethod(
-                             name: new Node\Identifier(name: 'extract'),
-                             subNodes: [
-                                 'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
-                                 'params' => [],
-                                 'returnType' => new Node\Name(name: 'iterable'),
-                                 'stmts' => [
-                                     new Node\Stmt\TryCatch(
-                                         stmts: [
-                                             new Node\Stmt\Expression(
-                                                 expr: new Node\Expr\Assign(
-                                                     var: new Node\Expr\Variable('dbh'),
-                                                     expr: $this->connection->getNode(),
-                                                 ),
-                                             ),
-                                             new Node\Stmt\Expression(
-                                                 expr: new Node\Expr\Assign(
-                                                    var: new Node\Expr\Variable('output'),
-                                                    expr: new Node\Expr\Array_(
-                                                        attributes: [
-                                                            'kind' => Node\Expr\Array_::KIND_SHORT
-                                                        ],
-                                                    ),
-                                                ),
-                                             ),
-                                             new Node\Stmt\Expression(
-                                                 expr: new Node\Expr\Assign(
-                                                     var: new Node\Expr\Variable('stmt'),
-                                                     expr: new Node\Expr\MethodCall(
-                                                         var: new Node\Expr\Variable('dbh'),
-                                                         name: new Node\Name('prepare'),
-                                                         args: [
-                                                             new Node\Arg(
-                                                                 value: $this->query
-                                                             )
-                                                        ]
-                                                     ),
-                                                 )
-                                             ),
-                                             ...$this->compileParams(),
-                                             new Node\Stmt\Expression(
-                                                 expr: new Node\Expr\MethodCall(
-                                                     var: new Node\Expr\Variable('dbh'),
-                                                     name: new Node\Name('execute'),
-                                                 ),
-                                             ),
-                                             new Node\Stmt\Expression(
-                                                 expr: new Node\Expr\Assign(
-                                                     var: new Node\Expr\Variable('output'),
-                                                     expr: new Node\Expr\MethodCall(
-                                                         var: new Node\Expr\Variable('stmt'),
-                                                         name: new Node\Name('fetchAll'),
-                                                         args: [
-                                                             new Node\Arg(
-                                                                 new Node\Expr\ClassConstFetch(
-                                                                     class: new Node\Name\FullyQualified('PDO'),
-                                                                     name: new Node\Name('FETCH_NAMED')
-                                                                 ),
-                                                             ),
-                                                         ],
-                                                     ),
-                                                 ),
-                                             ),
-                                            new Node\Stmt\Expression(
-                                                expr: new Node\Expr\Assign(
-                                                    var: new Node\Expr\Variable('dbh'),
-                                                    expr: new Node\Expr\ConstFetch(
-                                                        name: new Node\Name('null')
-                                                    ),
-                                                ),
-                                            ),
-                                             new Node\Stmt\Expression(
-                                                 new Node\Expr\Yield_(
-                                                     value: new Node\Expr\New_(
-                                                         class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
-                                                         args: [
-                                                             new Node\Arg(
-                                                                 value: new Node\Expr\Variable('output'),
-                                                                 unpack: true
-                                                             ),
-                                                         ],
-                                                     )
-                                                 ),
-                                             ),
-                                        ],
-                                         catches: [
-                                            new Node\Stmt\Catch_(
-                                                types: [
-                                                    new Node\Name\FullyQualified('PDOException')
-                                                ],
-                                                var: new Node\Expr\Variable('exception'),
-                                                stmts: [
-                                                    new Node\Stmt\Expression(
-                                                        expr: new Node\Expr\MethodCall(
-                                                            var: new Node\Expr\PropertyFetch(
-                                                                var: new Node\Expr\Variable('this'),
-                                                                name: 'logger',
-                                                            ),
-                                                            name: new Node\Identifier('critical'),
-                                                            args: [
-                                                                new Node\Arg(
-                                                                    value: new Node\Expr\MethodCall(
-                                                                        var: new Node\Expr\Variable('exception'),
-                                                                        name: new Node\Identifier('getMessage'),
-                                                                    ),
-                                                                ),
-                                                                new Node\Arg(
-                                                                    value: new Node\Expr\Array_(
-                                                                        items: [
-                                                                            new Node\Expr\ArrayItem(
-                                                                                value: new Node\Expr\Variable('exception'),
-                                                                                key: new Node\Scalar\String_('exception'),
-                                                                            ),
-                                                                        ],
-                                                                        attributes: [
-                                                                            'kind' => Node\Expr\Array_::KIND_SHORT,
-                                                                        ],
-                                                                    ),
-                                                                ),
-                                                            ]
-                                                        ),
-                                                    ),
-                                                ],
-                                            ),
-                                        ],
-                                     )
-                                 ]
-                             ]
-                         ),
-                    ],
-                ],
-            ),
+            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\Extractor'),
             args: [
-                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
+                new Node\Arg(
+                    value: $this->connection->getNode()
+                ),
+                new Node\Arg(
+                    value: $this->query
+                ),
+                $this->parameters ? new Node\Arg(
+                    value: $this->parameters
+                ) : new Node\Expr\ConstFetch(new Node\Name('null')),
+                $this->beforeQueries ? new Node\Arg(
+                    value: $this->compileBeforeQueries()
+                ) : new Node\Expr\ConstFetch(new Node\Name('null')),
+                $this->afterQueries ? new Node\Arg(
+                    value: $this->compileAfterQueries()
+                ): new Node\Expr\ConstFetch(new Node\Name('null'))
+            ],
+        );
+    }
+
+    public function compileBeforeQueries(): Node\Expr
+    {
+        $output = [];
+
+        /**
+         * @var InitializerQueries $beforeQuery
+         */
+        foreach ($this->beforeQueries as $beforeQuery) {
+            $output[] = new Node\Expr\ArrayItem(
+                $beforeQuery->getNode()
+            );
+        }
+
+        return new Node\Expr\Array_(
+            items: [
+                ...$output
+            ],
+            attributes: [
+                'kind' => Node\Expr\Array_::KIND_SHORT
+            ]
+        );
+    }
+
+
+    public function compileAfterQueries(): Node\Expr
+    {
+        $output = [];
+
+        /**
+         * @var InitializerQueries $afterQuery
+         */
+        foreach ($this->afterQueries as $afterQuery) {
+            $output[] = new Node\Expr\ArrayItem(
+                $afterQuery->getNode()
+            );
+        }
+
+        return new Node\Expr\Array_(
+            items: [
+                ...$output
+            ],
+            attributes: [
+                'kind' => Node\Expr\Array_::KIND_SHORT
             ]
         );
     }

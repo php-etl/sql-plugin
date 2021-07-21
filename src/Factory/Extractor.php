@@ -9,6 +9,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Extractor implements FactoryInterface
@@ -54,9 +55,7 @@ final class Extractor implements FactoryInterface
         );
 
         if ($config['parameters']) {
-            foreach ($config['parameters'] as $parameter) {
-                $extractor->addParam($parameter['key'], compileValueWhenExpression($this->interpreter, $parameter['value']));
-            }
+            $extractor->withParameters(compileValue($this->interpreter, $config['parameters']));
         }
 
         return new Repository\Extractor($extractor);

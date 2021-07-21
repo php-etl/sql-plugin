@@ -5,11 +5,11 @@ namespace Kiboko\Plugin\SQL\Factory;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Plugin\SQL;
 use Kiboko\Contract\Configurator\FactoryInterface;
-use Kiboko\Contract\Configurator\RepositoryInterface;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Loader implements FactoryInterface
@@ -52,21 +52,10 @@ final class Loader implements FactoryInterface
     {
         $loader = new SQL\Builder\Loader(
             compileValueWhenExpression($this->interpreter, $config["query"]),
-            compileValueWhenExpression($this->interpreter, $config["connection"]["dsn"])
         );
 
-        if (array_key_exists('username', $config["connection"])) {
-            $loader->withUsername(compileValueWhenExpression($this->interpreter, $config["connection"]["username"]));
-        }
-
-        if (array_key_exists('password', $config["connection"])) {
-            $loader->withPassword(compileValueWhenExpression($this->interpreter, $config["connection"]["password"]));
-        }
-
-        if (array_key_exists('params', $config)) {
-            foreach ($config["params"] as $param) {
-                $loader->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
-            }
+        if (array_key_exists('parameters', $config)) {
+            $loader->withParameters(compileValue($this->interpreter, $config["parameters"]));
         }
 
         return new Repository\Loader($loader);

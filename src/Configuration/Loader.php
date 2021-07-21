@@ -14,6 +14,7 @@ final class Loader implements ConfigurationInterface
     {
         $builder = new TreeBuilder('loader');
 
+        /** @phpstan-ignore-next-line */
         $builder->getRootNode()
              ->validate()
                 ->ifTrue(fn ($data) => array_key_exists('conditional', $data) && is_array($data['conditional']) && count($data['conditional']) <= 0)
@@ -44,6 +45,7 @@ final class Loader implements ConfigurationInterface
     {
         $builder = new TreeBuilder('conditional');
 
+        /** @phpstan-ignore-next-line */
         $builder->getRootNode()
             ->cannotBeEmpty()
             ->requiresAtLeastOneElement()

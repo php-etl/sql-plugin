@@ -72,24 +72,24 @@ final class Service implements FactoryInterface
                 return $extractorFactory
                     ->compile($config['extractor'])
                     ->withConnection($connection)
-                    ->withBeforeQueries(...$config['before']['queries'] ?? [])
-                    ->withAfterQueries(...$config['after']['queries'] ?? []);
+                    ->withBeforeQueries(...($config['before']['queries'] ?? []))
+                    ->withAfterQueries(...($config['after']['queries'] ?? []));
             } elseif (array_key_exists('lookup', $config)) {
                 $lookupFactory = new Factory\Lookup($this->interpreter);
 
                 return $lookupFactory
                     ->compile($config['lookup'])
                     ->withConnection($connection)
-                    ->withBeforeQueries(...($config['before']['queries'] || []))
-                    ->withAfterQueries(...($config['after']['queries'] || []));
+                    ->withBeforeQueries(...($config['before']['queries'] ?? []))
+                    ->withAfterQueries(...($config['after']['queries'] ?? []));
             } elseif (array_key_exists('loader', $config)) {
                 $loaderFactory = new Factory\Loader($this->interpreter);
 
                 return $loaderFactory
                     ->compile($config['loader'])
                     ->withConnection($connection)
-                    ->withBeforeQueries(...($config['before']['queries'] || []))
-                    ->withAfterQueries(...($config['after']['queries'] || []));
+                    ->withBeforeQueries(...($config['before']['queries'] ?? []))
+                    ->withAfterQueries(...($config['after']['queries'] ?? []));
             } else {
                 throw new InvalidConfigurationException(
                     'Could not determine if the factory should build an extractor, a lookup or a loader.'

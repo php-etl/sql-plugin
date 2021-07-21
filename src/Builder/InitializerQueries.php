@@ -8,18 +8,12 @@ use PhpParser\Node;
 final class InitializerQueries implements Builder
 {
     public function __construct(
-        private Node\Expr $connection,
-        private string $query,
-    ) {}
+        private Node\Expr $query,
+    ) {
+    }
 
-    public function getNode(): Node
+    public function getNode(): Node\Expr
     {
-        return new Node\Expr\MethodCall(
-            var: $this->connection,
-            name: 'exec',
-            args: [
-                new Node\Arg(new Node\Scalar\String_($this->query))
-            ]
-        );
+        return $this->query;
     }
 }

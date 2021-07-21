@@ -11,6 +11,7 @@ final class Extractor implements ConfigurationInterface
     {
         $builder = new TreeBuilder('extractor');
 
+        /** @phpstan-ignore-next-line */
         $builder->getRootNode()
             ->append((new Query())->getConfigTreeBuilder()->getRootNode())
             ->append((new Parameters())->getConfigTreeBuilder()->getRootNode());

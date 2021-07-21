@@ -1,16 +1,24 @@
 sql:
 #  expression_language:
 #    - 'Kiboko\Component\ArrayExpressionLanguage\ArrayExpressionLanguageProvider'
+  before:
+    queries:
+      - 'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)'
+      - 'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")'
+      - 'INSERT INTO foo (id, value) VALUES (2, "Sit amet consecutir")'
+  after:
+    queries:
+      - 'DROP TABLE foo'
   loader:
-    query: 'INSERT INTO table1 VALUES (:value1, :value2, :value3)'
-    params:
+    query: 'INSERT INTO foo VALUES (:value1, :value2, :value3)'
+    parameters:
       - key: value1
         value: '@=input["value1"]'
       - key: value2
         value: '@=input["value3"]'
       - key: value3
         value: '@=input["value3"]'
-    connection:
-      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
-      username: username
-      password: password
+  connection:
+    dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+    username: username
+    password: password

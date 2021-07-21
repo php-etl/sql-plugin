@@ -13,6 +13,7 @@ class Parameters implements ConfigurationInterface
     {
         $builder = new TreeBuilder('parameters');
 
+        /** @phpstan-ignore-next-line */
         $builder->getRootNode()
             ->cannotBeEmpty()
             ->requiresAtLeastOneElement()

@@ -5,15 +5,20 @@ namespace Kiboko\Plugin\SQL\Factory\Repository;
 use Kiboko\Plugin\SQL;
 use Kiboko\Contract\Configurator\StepRepositoryInterface;
 use Kiboko\Contract\Configurator;
+use PhpParser\Node;
+use function Kiboko\Component\SatelliteToolbox\AST\variable;
 
 class Lookup implements StepRepositoryInterface
 {
     use RepositoryTrait;
 
+    private Node\Expr\Variable $connectionVariable;
+
     public function __construct(private SQL\Builder\Lookup|SQL\Builder\ConditionalLookup $builder)
     {
         $this->files = [];
         $this->packages = [];
+        $this->connectionVariable = variable('connection');
     }
 
     public function withConnection(Connection $connection): self
@@ -24,43 +29,41 @@ class Lookup implements StepRepositoryInterface
         return $this;
     }
 
-    public function withBeforeQuery(?InitializerQuery $query): self
+    public function withBeforeQuery(string $query): self
     {
-        if ($query === null) {
-            return $this;
-        }
-
-        $this->merge($query);
-        $this->builder->withBeforeQuery($query->getBuilder());
+        $this->builder->withBeforeQuery(
+            new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
+        );
 
         return $this;
     }
 
-    public function withBeforeQueries(InitializerQuery ...$queries): self
+    public function withBeforeQueries(string ...$queries): self
     {
         foreach ($queries as $query) {
-            $this->withBeforeQuery($query);
+            $this->builder->withBeforeQuery(
+                new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
+            );
         }
 
         return $this;
     }
 
-    public function withAfterQuery(?InitializerQuery $query): self
+    public function withAfterQuery(string $query): self
     {
-        if ($query === null) {
-            return $this;
-        }
-
-        $this->merge($query);
-        $this->builder->withAfterQuery($query->getBuilder());
+        $this->builder->withAfterQuery(
+            new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
+        );
 
         return $this;
     }
 
-    public function withAfterQueries(InitializerQuery ...$queries): self
+    public function withAfterQueries(string ...$queries): self
     {
         foreach ($queries as $query) {
-            $this->withAfterQuery($query);
+            $this->builder->withAfterQuery(
+                new SQL\Builder\InitializerQueries(new Node\Scalar\String_($query))
+            );
         }
 
         return $this;

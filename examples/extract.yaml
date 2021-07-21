@@ -1,9 +1,20 @@
 sql:
 #  expression_language:
 #    - 'Kiboko\Component\ArrayExpressionLanguage\ArrayExpressionLanguageProvider'
+  before:
+    queries:
+      - 'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)'
+      - 'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")'
+      - 'INSERT INTO foo (id, value) VALUES (2, "Sit amet consecutir")'
+  after:
+    queries:
+      - 'DROP TABLE foo'
   extractor:
-    query: 'SELECT * FROM table1'
-    connection:
-      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
-      username: username
-      password: password
+    query: 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier'
+    parameters:
+      - key: 'identifier'
+        value: '@=3'
+  connection:
+    dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+    username: username
+    password: password

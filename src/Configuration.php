@@ -13,6 +13,7 @@ final class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder('sql');
 
+        /** @phpstan-ignore-next-line */
         $builder->getRootNode()
             ->validate()
                 ->ifTrue(function (array $value) {

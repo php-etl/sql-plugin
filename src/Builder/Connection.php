@@ -35,7 +35,7 @@ final class Connection implements Builder
         return $this;
     }
 
-    public function getNode(): Node
+    public function getNode(): Node\Expr
     {
         return new Node\Expr\New_(
             class: new Node\Name\FullyQualified('PDO'),
