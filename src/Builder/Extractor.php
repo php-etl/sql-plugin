@@ -4,6 +4,7 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Contract\Configurator\StepBuilderInterface;
 use PhpParser\Node;
+use function Kiboko\Component\SatelliteToolbox\AST\variable;
 
 final class Extractor implements StepBuilderInterface
 {
@@ -14,7 +15,7 @@ final class Extractor implements StepBuilderInterface
     private array $beforeQueries;
     /** @var array<int, Node\Expr> */
     private array $afterQueries;
-    private ?Node\Expr $parameters;
+    private array $parameters;
 
     public function __construct(
         private Node\Expr $query,
@@ -25,7 +26,7 @@ final class Extractor implements StepBuilderInterface
         $this->state = null;
         $this->beforeQueries = [];
         $this->afterQueries = [];
-        $this->parameters = null;
+        $this->parameters = [];
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -84,9 +85,9 @@ final class Extractor implements StepBuilderInterface
         return $this;
     }
 
-    public function withParameters(?Node\Expr $parameters): StepBuilderInterface
+    public function addParameter(string|int $key, Node\Expr $parameter): StepBuilderInterface
     {
-        $this->parameters = $parameters;
+        $this->parameters[$key] = $parameter;
 
         return $this;
     }
@@ -103,7 +104,19 @@ final class Extractor implements StepBuilderInterface
                     value: $this->query
                 ),
                 $this->parameters ? new Node\Arg(
-                    value: $this->parameters
+                    value: new Node\Expr\Closure(
+                        subNodes: [
+                            'params' => [
+                                new Node\Param(
+                                    var: new Node\Expr\Variable('statement'),
+                                    type: new Node\Name\FullyQualified('PDOStatement')
+                                ),
+                            ],
+                            'stmts' => [
+                                ...$this->compileParameters()
+                            ]
+                        ],
+                    ),
                 ) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 $this->beforeQueries ? new Node\Arg(
                     value: $this->compileBeforeQueries()
@@ -113,6 +126,31 @@ final class Extractor implements StepBuilderInterface
                 ): new Node\Expr\ConstFetch(new Node\Name('null'))
             ],
         );
+    }
+
+    public function compileParameters(): iterable
+    {
+        foreach ($this->parameters as $key => $parameter) {
+            yield new Node\Stmt\Expression(
+                new Node\Expr\MethodCall(
+                    var: new Node\Expr\Variable('statement'),
+                    name: new Node\Name('bindParam'),
+                    args: [
+                        new Node\Arg(
+                            is_string($key) ? new Node\Scalar\Encapsed(
+                                [
+                                    new Node\Scalar\EncapsedStringPart(':'),
+                                    new Node\Scalar\EncapsedStringPart($key)
+                                ]
+                            ) : new Node\Scalar\LNumber($key)
+                        ),
+                        new Node\Arg(
+                            $parameter
+                        ),
+                    ],
+                )
+            );
+        }
     }
 
     public function compileBeforeQueries(): Node\Expr

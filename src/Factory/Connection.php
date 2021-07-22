@@ -9,6 +9,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Connection implements FactoryInterface
@@ -59,6 +60,12 @@ final class Connection implements FactoryInterface
 
         if (array_key_exists('password', $config)) {
             $extractor->withPassword(compileValueWhenExpression($this->interpreter, $config['password']));
+        }
+
+        if (array_key_exists('options', $config)) {
+            if (array_key_exists('persistent', $config["options"])) {
+                $extractor->withPersistentConnection($config['options']['persistent']);
+            }
         }
 
         return new SQL\Factory\Repository\Connection($extractor);

@@ -54,8 +54,10 @@ final class Loader implements FactoryInterface
             compileValueWhenExpression($this->interpreter, $config["query"]),
         );
 
-        if (array_key_exists('parameters', $config)) {
-            $loader->withParameters(compileValue($this->interpreter, $config["parameters"]));
+        if ($config['parameters'] != null) {
+            foreach ($config["parameters"] as $parameter) {
+                $loader->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+            }
         }
 
         return new Repository\Loader($loader);

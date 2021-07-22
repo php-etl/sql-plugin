@@ -66,6 +66,12 @@ final class Lookup implements StepBuilderInterface
                     expr: new Node\Expr\Variable('input'),
                 ),
             ),
+            new Node\Stmt\Expression(
+                new Node\Expr\Assign(
+                    var: new Node\Expr\Variable('dbh'),
+                    expr: $this->connection->getNode(),
+                ),
+            ),
             $lookup->getNode()
         ];
     }
@@ -115,6 +121,39 @@ final class Lookup implements StepBuilderInterface
                                     new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface')
                                 ],
                                 'stmts' => [
+                                    new Node\Stmt\ClassMethod(
+                                        name: new Node\Identifier('__construct'),
+                                        subNodes: [
+                                            'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
+                                            'stmts' => [
+                                                new Node\Stmt\Expression(
+                                                    expr: new Node\Expr\Assign(
+                                                        var: new Node\Expr\PropertyFetch(
+                                                            var: new Node\Expr\Variable('this'),
+                                                            name: new Node\Name('logger')
+                                                        ),
+                                                        expr: new Node\Expr\BinaryOp\Coalesce(
+                                                            left: new Node\Expr\Variable('logger'),
+                                                            right: new Node\Expr\New_(
+                                                                class: new Node\Name\FullyQualified('Psr\Log\NullLogger')
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            ],
+                                            'params' => [
+                                                new Node\Param(
+                                                    var: new Node\Expr\Variable(
+                                                        name: 'logger',
+                                                    ),
+                                                    default: new Node\Expr\ConstFetch(
+                                                        name: new Node\Name(name: 'null'),
+                                                    ),
+                                                    type: new Node\Name\FullyQualified('Psr\Log\LoggerInterface')
+                                                ),
+                                            ],
+                                        ],
+                                    ),
                                     new Node\Stmt\ClassMethod(
                                         name: new Node\Identifier('__invoke'),
                                         subNodes: [

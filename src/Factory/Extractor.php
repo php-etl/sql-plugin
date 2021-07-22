@@ -54,8 +54,10 @@ final class Extractor implements FactoryInterface
             compileValueWhenExpression($this->interpreter, $config['query']),
         );
 
-        if ($config['parameters']) {
-            $extractor->withParameters(compileValue($this->interpreter, $config['parameters']));
+        if ($config['parameters'] != null) {
+            foreach ($config["parameters"] as $parameter) {
+                $extractor->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+            }
         }
 
         return new Repository\Extractor($extractor);

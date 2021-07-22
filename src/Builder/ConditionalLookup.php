@@ -106,61 +106,49 @@ final class ConditionalLookup implements StepBuilderInterface
         $alternatives = $this->alternatives;
         [$condition, $alternative] = array_shift($alternatives);
 
-        return new Node\Stmt\Do_(
-            cond: new Node\Expr\Assign(
-                var: new Node\Expr\Variable('input'),
-                expr: new Node\Expr\Yield_(
-                    value: new Node\Expr\New_(
-                        class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
-                        args: [
-                           new Node\Arg(
-                               value: new Node\Expr\Variable('output')
-                           ),
-                        ],
-                    ),
-                ),
-            ),
-            stmts: array_filter([
-                new Node\Stmt\Expression(
-                    new Node\Expr\Assign(
-                        var: new Node\Expr\Variable('output'),
-                        expr:new Node\Expr\Variable('input'),
-                    ),
-                ),
-                new Node\Stmt\If_(
-                    cond: $condition,
-                    subNodes: [
-                        'stmts' => [
-                            ...$this->compileAlternative($alternative),
-                        ],
-                        'elseifs' => array_map(
-                            fn (Node\Expr $condition, AlternativeLookup $lookup)
-                                => new Node\Stmt\ElseIf_(
-                                    cond: $condition,
-                                    stmts: $this->compileAlternative($lookup),
-                                ),
-                            array_column($alternatives, 0),
-                            array_column($alternatives, 1)
+        return new Node\Stmt\If_(
+            cond: $condition,
+            subNodes: [
+                'stmts' => [
+                    new Node\Stmt\Expression(
+                        new Node\Expr\Assign(
+                            var: new Node\Expr\Variable('dbh'),
+                            expr: $this->connection->getNode(),
                         ),
-                        'else' => new Node\Stmt\Else_(
+                    ),
+                    ...$this->compileAlternative($alternative),
+                    new Node\Stmt\Return_(
+                        new Node\Expr\Variable('output')
+                    ),
+                ],
+                'elseifs' => array_map(
+                    fn (Node\Expr $condition, AlternativeLookup $lookup)
+                        => new Node\Stmt\ElseIf_(
+                            cond: $condition,
                             stmts: [
                                 new Node\Stmt\Expression(
-                                    new Node\Expr\Yield_(
-                                        value: new Node\Expr\New_(
-                                            class: new Node\Name\FullyQualified('Kiboko\Component\Bucket\AcceptanceResultBucket'),
-                                            args: [
-                                               new Node\Arg(
-                                                   value: new Node\Expr\Variable('output')
-                                               ),
-                                            ],
-                                        ),
+                                    new Node\Expr\Assign(
+                                        var: new Node\Expr\Variable('dbh'),
+                                        expr: $this->connection->getNode(),
                                     ),
+                                ),
+                                ...$this->compileAlternative($lookup),
+                                new Node\Stmt\Return_(
+                                    new Node\Expr\Variable('output')
                                 ),
                             ],
                         ),
+                    array_column($alternatives, 0),
+                    array_column($alternatives, 1)
+                ),
+                'else' => new Node\Stmt\Else_(
+                    stmts: [
+                        new Node\Stmt\Return_(
+                            expr: new Node\Expr\Variable('output')
+                        ),
                     ],
                 ),
-            ]),
+            ],
         );
     }
 
@@ -182,12 +170,50 @@ final class ConditionalLookup implements StepBuilderInterface
                                 ],
                                 'stmts' => [
                                     new Node\Stmt\ClassMethod(
+                                        name: new Node\Identifier('__construct'),
+                                        subNodes: [
+                                            'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
+                                            'stmts' => [
+                                                new Node\Stmt\Expression(
+                                                    expr: new Node\Expr\Assign(
+                                                        var: new Node\Expr\PropertyFetch(
+                                                            var: new Node\Expr\Variable('this'),
+                                                            name: new Node\Name('logger')
+                                                        ),
+                                                        expr: new Node\Expr\BinaryOp\Coalesce(
+                                                            left: new Node\Expr\Variable('logger'),
+                                                            right: new Node\Expr\New_(
+                                                                class: new Node\Name\FullyQualified('Psr\Log\NullLogger')
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            ],
+                                            'params' => [
+                                                new Node\Param(
+                                                    var: new Node\Expr\Variable(
+                                                        name: 'logger',
+                                                    ),
+                                                    default: new Node\Expr\ConstFetch(
+                                                        name: new Node\Name(name: 'null'),
+                                                    ),
+                                                    type: new Node\Name\FullyQualified('Psr\Log\LoggerInterface')
+                                                ),
+                                            ],
+                                        ],
+                                    ),
+                                    new Node\Stmt\ClassMethod(
                                         name: new Node\Identifier('__invoke'),
                                         subNodes: [
                                             'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
                                             'stmts' => [
+                                                new Node\Stmt\Expression(
+                                                    new Node\Expr\Assign(
+                                                        var: new Node\Expr\Variable('output'),
+                                                        expr: new Node\Expr\Variable('input'),
+                                                    ),
+                                                ),
                                                 $this->getNodeAlternatives(),
-                                                new Node\Stmt\Return_(new Node\Expr\Variable('output')),
                                             ],
                                             'params' => [
                                                 new Node\Param(

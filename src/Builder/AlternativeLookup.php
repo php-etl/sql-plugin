@@ -75,8 +75,8 @@ final class AlternativeLookup implements StepBuilderInterface
                         ),
                     ]
                 )
-
-            ]
+            ],
+            new Node\Expr\Variable('dbh'),
         ))->getNode();
     }
 
@@ -132,6 +132,9 @@ final class AlternativeLookup implements StepBuilderInterface
                                 ),
                             ),
                         ),
+                        new Node\Stmt\Return_(
+                            expr: new Node\Expr\Variable('data')
+                        )
                     ],
                     catches: [
                         new Node\Stmt\Catch_(
@@ -174,10 +177,8 @@ final class AlternativeLookup implements StepBuilderInterface
                         ),
                     ],
                 ),
-                new Node\Stmt\Return_(
-                    expr: new Node\Expr\Variable('data')
-                )
-            ]
+            ],
+            new Node\Expr\Variable('dbh'),
         ))->getNode();
     }
 
