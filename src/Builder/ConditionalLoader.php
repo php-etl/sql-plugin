@@ -56,9 +56,9 @@ final class ConditionalLoader implements StepBuilderInterface
         return $this;
     }
 
-    public function addAlternative(Node\Expr $condition, AlternativeLoader $loader): self
+    public function addAlternative(Node\Expr $condition, AlternativeLoader $lookup): self
     {
-        $this->alternatives[] = [$condition, $loader];
+        $this->alternatives[] = [$condition, $lookup];
 
         return $this;
     }
@@ -101,24 +101,11 @@ final class ConditionalLoader implements StepBuilderInterface
         return $this;
     }
 
-    private function getNodeAlternatives(): Node\Expr
-    {
-        $output = [];
-        foreach ($this->alternatives as $alternative) {
-            $output[] = new Node\Expr\ArrayItem(
-
-            );
-        }
-
-        return new Node\Expr\Array_(
-            items: [
-
-            ]
-        );
-    }
-
     public function getNode(): Node
     {
+        $alternatives = $this->alternatives;
+        [$condition, $alternative] = array_shift($alternatives);
+
         return new Node\Expr\New_(
             class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\ConditionalLoader'),
             args: [
@@ -126,7 +113,37 @@ final class ConditionalLoader implements StepBuilderInterface
                     value: $this->connection->getNode()
                 ),
                 new Node\Arg(
-                    $this->getNodeAlternatives()
+                    value: new Node\Expr\Closure(
+                        subNodes: [
+                            'params' => [
+                                new Node\Param(
+                                    var: new Node\Expr\Variable('input')
+                                ),
+                                new Node\Param(
+                                    var: new Node\Expr\Variable('connection')
+                                ),
+                            ],
+                            'stmts' => [
+                                new Node\Stmt\If_(
+                                    cond: $condition,
+                                    subNodes: [
+                                        'stmts' => [
+                                            ...$this->compileAlternative($alternative)
+                                        ],
+                                        'elseifs' => array_map(
+                                            fn (Node\Expr $condition, AlternativeLoader $lookup)
+                                                => new Node\Stmt\ElseIf_(
+                                                    cond: $condition,
+                                                    stmts: $this->compileAlternative($lookup),
+                                                ),
+                                            array_column($alternatives, 0),
+                                            array_column($alternatives, 1)
+                                        )
+                                    ],
+                                )
+                            ]
+                        ]
+                    )
                 ),
                 $this->beforeQueries ? new Node\Arg(
                     value: $this->compileBeforeQueries()
