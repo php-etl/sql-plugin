@@ -131,19 +131,24 @@ final class ConditionalLoader implements StepBuilderInterface
                                             ...$this->compileAlternative($alternative)
                                         ],
                                         'elseifs' => array_map(
-                                            fn (Node\Expr $condition, AlternativeLoader $lookup)
+                                            fn (Node\Expr $condition, AlternativeLoader $loader)
                                                 => new Node\Stmt\ElseIf_(
                                                     cond: $condition,
-                                                    stmts: $this->compileAlternative($lookup),
+                                                    stmts: [
+                                                        ...$this->compileAlternative($loader)
+                                                    ],
                                                 ),
                                             array_column($alternatives, 0),
                                             array_column($alternatives, 1)
-                                        )
+                                        ),
                                     ],
-                                )
-                            ]
-                        ]
-                    )
+                                ),
+                                new Node\Stmt\Return_(
+                                    expr: new Node\Expr\Variable('input')
+                                ),
+                            ],
+                        ],
+                    ),
                 ),
                 $this->beforeQueries ? new Node\Arg(
                     value: $this->compileBeforeQueries()
@@ -157,8 +162,8 @@ final class ConditionalLoader implements StepBuilderInterface
                 ): new Node\Expr\Array_(
                     attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
-                    ]
-                )
+                    ],
+                ),
             ],
         );
     }

@@ -4,7 +4,6 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Contract\Configurator\StepBuilderInterface;
 use PhpParser\Node;
-use function Kiboko\Component\SatelliteToolbox\AST\variable;
 
 final class Extractor implements StepBuilderInterface
 {
@@ -142,7 +141,7 @@ final class Extractor implements StepBuilderInterface
             yield new Node\Stmt\Expression(
                 new Node\Expr\MethodCall(
                     var: new Node\Expr\Variable('statement'),
-                    name: new Node\Name('bindParam'),
+                    name: new Node\Identifier('bindParam'),
                     args: [
                         new Node\Arg(
                             is_string($key) ? new Node\Scalar\Encapsed(

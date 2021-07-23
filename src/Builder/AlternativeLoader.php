@@ -2,11 +2,7 @@
 
 namespace Kiboko\Plugin\SQL\Builder;
 
-use Kiboko\Component\SatelliteToolbox\Builder\IsolatedCodeBuilder;
-use Kiboko\Component\SatelliteToolbox\Builder\IsolatedValueAppendingBuilder;
-use Kiboko\Component\SatelliteToolbox\Builder\IsolatedValueTransformationBuilder;
 use Kiboko\Contract\Configurator\StepBuilderInterface;
-use PhpParser\Builder;
 use PhpParser\Node;
 
 final class AlternativeLoader implements StepBuilderInterface
@@ -19,8 +15,7 @@ final class AlternativeLoader implements StepBuilderInterface
 
     public function __construct(
         private Node\Expr $query
-    )
-    {
+    ) {
         $this->logger = null;
         $this->rejection = null;
         $this->state = null;
@@ -55,13 +50,6 @@ final class AlternativeLoader implements StepBuilderInterface
         return $this;
     }
 
-    public function withMerge(Builder $merge): self
-    {
-        $this->merge = $merge;
-
-        return $this;
-    }
-
     public function getNode(): Node
     {
         return new Node\Stmt\Expression(
@@ -78,7 +66,7 @@ final class AlternativeLoader implements StepBuilderInterface
                                 var: new Node\Expr\Variable('statement'),
                                 expr: new Node\Expr\MethodCall(
                                     var: new Node\Expr\Variable('connection'),
-                                    name: new Node\Name('prepare'),
+                                    name: new Node\Identifier('prepare'),
                                     args: [
                                         new Node\Arg(
                                             value: $this->query
@@ -91,7 +79,7 @@ final class AlternativeLoader implements StepBuilderInterface
                         new Node\Stmt\Expression(
                             expr: new Node\Expr\MethodCall(
                                 var: new Node\Expr\Variable('statement'),
-                                name: new Node\Name('execute'),
+                                name: new Node\Identifier('execute'),
                             )
                         )
                     ],
@@ -114,20 +102,20 @@ final class AlternativeLoader implements StepBuilderInterface
             yield new Node\Stmt\Expression(
                 new Node\Expr\MethodCall(
                     var: new Node\Expr\Variable('statement'),
-                    name: new Node\Name('bindParam'),
+                    name: new Node\Identifier('bindParam'),
                     args: [
-                    new Node\Arg(
-                        is_string($key) ? new Node\Scalar\Encapsed(
-                            [
-                                new Node\Scalar\EncapsedStringPart(':'),
-                                new Node\Scalar\EncapsedStringPart($key)
-                            ]
-                        ) : new Node\Scalar\LNumber($key)
-                    ),
-                    new Node\Arg(
-                        $parameter
-                    ),
-                ],
+                        new Node\Arg(
+                            is_string($key) ? new Node\Scalar\Encapsed(
+                                [
+                                    new Node\Scalar\EncapsedStringPart(':'),
+                                    new Node\Scalar\EncapsedStringPart($key)
+                                ]
+                            ) : new Node\Scalar\LNumber($key)
+                        ),
+                        new Node\Arg(
+                            $parameter
+                        ),
+                    ],
                 )
             );
         }

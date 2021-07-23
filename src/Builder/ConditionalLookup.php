@@ -178,7 +178,7 @@ final class ConditionalLookup implements StepBuilderInterface
                                                     expr: new Node\Expr\Assign(
                                                         var: new Node\Expr\PropertyFetch(
                                                             var: new Node\Expr\Variable('this'),
-                                                            name: new Node\Name('logger')
+                                                            name: new Node\Identifier('logger')
                                                         ),
                                                         expr: new Node\Expr\BinaryOp\Coalesce(
                                                             left: new Node\Expr\Variable('logger'),

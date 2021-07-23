@@ -675,12 +675,20 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '3',
+                    'value' => 'Sit',
                 ]
             ],
             [
                 [
                     'id' => '2',
                     'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '3',
+                    'value' => 'Sit',
                 ]
             ],
             $service->compile([
@@ -711,6 +719,7 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
+//                    'dsn' => 'sqlite:'.__DIR__.'/db.sqlite',
                 ],
             ])->getBuilder(),
         );
@@ -725,12 +734,20 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '3',
+                    'value' => 'Ut sed',
                 ]
             ],
             [
                 [
                     'id' => '2',
                     'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '3',
+                    'value' => 'Ut sed',
                 ]
             ],
             $service->compile([
@@ -749,7 +766,7 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'conditional' => [
                         [
-                            'condition' => 'cond',
+                            'condition' =>  new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
                                 [
@@ -761,11 +778,22 @@ final class ServiceTest extends TestCase
                                     'value' => new Expression('input["value"]'),
                                 ]
                             ]
+                        ],
+                        [
+                            'condition' => new Expression('input["id"] == 3'),
+                            'query' => 'UPDATE foo SET value = :value WHERE id = 1',
+                            'parameters' => [
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ]
+                            ]
                         ]
                     ]
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
+//                    'dsn' => 'sqlite:'.__DIR__.'/db.sqlite'
                 ],
             ])->getBuilder(),
         );
