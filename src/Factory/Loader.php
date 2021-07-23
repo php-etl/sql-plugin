@@ -50,13 +50,34 @@ final class Loader implements FactoryInterface
 
     public function compile(array $config): SQL\Factory\Repository\Loader
     {
-        $loader = new SQL\Builder\Loader(
-            compileValueWhenExpression($this->interpreter, $config["query"]),
-        );
+        if (!array_key_exists('conditional', $config)) {
+            $loader = new SQL\Builder\Loader(
+                compileValueWhenExpression($this->interpreter, $config["query"]),
+            );
 
-        if ($config['parameters'] != null) {
-            foreach ($config["parameters"] as $parameter) {
-                $loader->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+            if ($config['parameters'] != null) {
+                foreach ($config["parameters"] as $parameter) {
+                    $loader->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+                }
+            }
+        } else {
+            $loader = new SQL\Builder\ConditionalLoader();
+
+            foreach ($config['conditional'] as $alternative) {
+                $alternativeLoaderBuilder = new SQL\Builder\AlternativeLoader(
+                    compileValueWhenExpression($this->interpreter, $alternative["query"])
+                );
+
+                if (array_key_exists('parameters', $alternative)) {
+                    foreach ($alternative["parameters"] as $param) {
+                        $alternativeLoaderBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
+                    }
+                }
+
+                $loader->addAlternative(
+                    compileValueWhenExpression($this->interpreter, $alternative['condition']),
+                    $alternativeLoaderBuilder
+                );
             }
         }
 

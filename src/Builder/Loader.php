@@ -122,10 +122,18 @@ final class Loader implements StepBuilderInterface
                 ) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 $this->beforeQueries ? new Node\Arg(
                     value: $this->compileBeforeQueries()
-                ) : new Node\Expr\ConstFetch(new Node\Name('null')),
+                ) : new Node\Expr\Array_(
+                    attributes: [
+                        'kind' => Node\Expr\Array_::KIND_SHORT
+                    ]
+                ),
                 $this->afterQueries ? new Node\Arg(
                     value: $this->compileAfterQueries()
-                ): new Node\Expr\ConstFetch(new Node\Name('null'))
+                ): new Node\Expr\Array_(
+                    attributes: [
+                        'kind' => Node\Expr\Array_::KIND_SHORT
+                    ]
+                )
             ],
         );
     }

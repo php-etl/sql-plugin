@@ -14,7 +14,7 @@ class Loader implements StepRepositoryInterface
 
     private Node\Expr\Variable $connectionVariable;
 
-    public function __construct(private SQL\Builder\Loader $builder)
+    public function __construct(private SQL\Builder\Loader|SQL\Builder\ConditionalLoader $builder)
     {
         $this->files = [];
         $this->packages = [];
@@ -69,7 +69,7 @@ class Loader implements StepRepositoryInterface
         return $this;
     }
 
-    public function getBuilder(): SQL\Builder\Loader
+    public function getBuilder(): SQL\Builder\Loader|SQL\Builder\ConditionalLoader
     {
         return $this->builder;
     }

@@ -4,29 +4,28 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Contract\Configurator\StepBuilderInterface;
 use PhpParser\Node;
-use function Kiboko\Component\SatelliteToolbox\AST\variable;
 
-final class Extractor implements StepBuilderInterface
+final class ConditionalLoader implements StepBuilderInterface
 {
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
+    /** @var array<Node\Expr> */
+    private iterable $alternatives;
     /** @var array<int, Node\Expr> */
     private array $beforeQueries;
     /** @var array<int, Node\Expr> */
     private array $afterQueries;
-    private array $parameters;
 
     public function __construct(
-        private Node\Expr $query,
         private null|Node\Expr|Connection $connection = null,
     ) {
         $this->logger = null;
         $this->rejection = null;
         $this->state = null;
+        $this->alternatives = [];
         $this->beforeQueries = [];
         $this->afterQueries = [];
-        $this->parameters = [];
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -57,6 +56,23 @@ final class Extractor implements StepBuilderInterface
         return $this;
     }
 
+    public function addAlternative(Node\Expr $condition, AlternativeLoader $loader): self
+    {
+        $this->alternatives[] = [$condition, $loader];
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, Node>
+     */
+    private function compileAlternative(AlternativeLoader $loader): array
+    {
+        return [
+            $loader->getNode(),
+        ];
+    }
+
     public function withBeforeQuery(?InitializerQueries $query): self
     {
         array_push($this->beforeQueries, $query);
@@ -85,80 +101,49 @@ final class Extractor implements StepBuilderInterface
         return $this;
     }
 
-    public function addParameter(string|int $key, Node\Expr $parameter): StepBuilderInterface
+    private function getNodeAlternatives(): Node\Expr
     {
-        $this->parameters[$key] = $parameter;
+        $output = [];
+        foreach ($this->alternatives as $alternative) {
+            $output[] = new Node\Expr\ArrayItem(
 
-        return $this;
+            );
+        }
+
+        return new Node\Expr\Array_(
+            items: [
+
+            ]
+        );
     }
 
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\Extractor'),
+            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\ConditionalLoader'),
             args: [
                 new Node\Arg(
                     value: $this->connection->getNode()
                 ),
                 new Node\Arg(
-                    value: $this->query
+                    $this->getNodeAlternatives()
                 ),
-                $this->parameters ? new Node\Arg(
-                    value: new Node\Expr\Closure(
-                        subNodes: [
-                            'params' => [
-                                new Node\Param(
-                                    var: new Node\Expr\Variable('statement'),
-                                    type: new Node\Name\FullyQualified('PDOStatement')
-                                ),
-                            ],
-                            'stmts' => [
-                                ...$this->compileParameters()
-                            ],
-                        ],
-                    ),
-                ) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 $this->beforeQueries ? new Node\Arg(
                     value: $this->compileBeforeQueries()
                 ) : new Node\Expr\Array_(
                     attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
-                    ],
+                    ]
                 ),
                 $this->afterQueries ? new Node\Arg(
                     value: $this->compileAfterQueries()
                 ): new Node\Expr\Array_(
                     attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
-                    ],
-                ),
+                    ]
+                )
             ],
         );
-    }
-
-    public function compileParameters(): iterable
-    {
-        foreach ($this->parameters as $key => $parameter) {
-            yield new Node\Stmt\Expression(
-                new Node\Expr\MethodCall(
-                    var: new Node\Expr\Variable('statement'),
-                    name: new Node\Name('bindParam'),
-                    args: [
-                        new Node\Arg(
-                            is_string($key) ? new Node\Scalar\Encapsed(
-                                [
-                                    new Node\Scalar\EncapsedStringPart(':'),
-                                    new Node\Scalar\EncapsedStringPart($key)
-                                ]
-                            ) : new Node\Scalar\LNumber($key)
-                        ),
-                        new Node\Arg(
-                            $parameter
-                        ),
-                    ],
-                )
-            );
-        }
     }
 
     public function compileBeforeQueries(): Node\Expr
@@ -183,7 +168,6 @@ final class Extractor implements StepBuilderInterface
             ]
         );
     }
-
 
     public function compileAfterQueries(): Node\Expr
     {

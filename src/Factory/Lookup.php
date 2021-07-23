@@ -96,8 +96,8 @@ final class Lookup implements FactoryInterface
                     compileValueWhenExpression($this->interpreter, $alternative["query"])
                 );
 
-                if (array_key_exists('params', $alternative)) {
-                    foreach ($alternative["params"] as $param) {
+                if (array_key_exists('parameters', $alternative)) {
+                    foreach ($alternative["parameters"] as $param) {
                         $alternativeBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
                     }
                 }
