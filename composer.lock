@@ -852,12 +852,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/sql-flow.git",
-                "reference": "2eeab6ad0c8964a40828edc071c29de788798d39"
+                "reference": "5ab7a6b5c5eaba336517766cc5e2b53772fa83dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/sql-flow/zipball/2eeab6ad0c8964a40828edc071c29de788798d39",
-                "reference": "2eeab6ad0c8964a40828edc071c29de788798d39",
+                "url": "https://api.github.com/repos/php-etl/sql-flow/zipball/5ab7a6b5c5eaba336517766cc5e2b53772fa83dd",
+                "reference": "5ab7a6b5c5eaba336517766cc5e2b53772fa83dd",
                 "shasum": ""
             },
             "require": {
@@ -901,7 +901,7 @@
                 "issues": "https://github.com/php-etl/sql-flow/issues",
                 "source": "https://github.com/php-etl/sql-flow/tree/master"
             },
-            "time": "2021-07-23T12:50:44+00:00"
+            "time": "2021-07-23T14:53:59+00:00"
         },
         {
             "name": "phpactor/docblock",
@@ -4901,5 +4901,5 @@
         "php": "^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }
