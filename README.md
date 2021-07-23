@@ -15,10 +15,10 @@ composer require php-etl/sql-plugin
 sql:
   extractor:
     query: 'SELECT * FROM table1'
-    connection:
-      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
-      username: username
-      password: password
+  connection:
+    dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+    username: username
+    password: password
 ```
 ### Building a lookup
 
@@ -26,14 +26,14 @@ sql:
 sql:
   lookup:
     query: 'SELECT * FROM table2 WHERE bar = foo'
-    connection:
-      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
-      username: username
-      password: password
     merge:
       map:
         - field: '[options]'
           expression: 'lookup["name"]'
+  connection:
+    dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+    username: username
+    password: password
 
 ```
 
@@ -42,10 +42,10 @@ sql:
 sql:
   loader:
     query: 'INSERT INTO table1 VALUES (bar, foo, barfoo)'
-    connection:
-      dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
-      username: username
-      password: password
+  connection:
+    dsn: 'mysql:host=127.0.0.1;port=3306;dbname=kiboko'
+    username: username
+    password: password
 
 ```
 
@@ -62,7 +62,7 @@ the name of your parameter without the `:` :
 sql:
   # ... 
   query: 'INSERT INTO table1 VALUES (:value1, :value2, :value3)'
-  params:
+  parameters:
     - key: value1
       value: '@=input["value1"]'
     - key: value2
@@ -79,7 +79,7 @@ configuration will be its position (starting from 1) :
 sql:
   # ... 
   query: 'INSERT INTO table1 VALUES (?, ?, ?)'
-  params:
+  parameters:
     - key: 1
       value: '@=input["value1"]'
     - key: 2
