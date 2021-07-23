@@ -24,9 +24,7 @@ final class ServiceTest extends TestCase
 
     protected function tearDown(): void
     {
-        if ($this->vfs !== null) {
-            $this->vfs->unmount();
-        }
+        $this->vfs?->unmount();
     }
 
     public function testValidatingExtractorConfiguration(): void
@@ -719,5 +717,57 @@ final class ServiceTest extends TestCase
     }
 
     public function testConditionalLoader(): void
-    {}
+    {
+        $service = new Service();
+
+        $this->assertBuildsLoaderLoadsExactly(
+            [
+                [
+                    'id' => '2',
+                    'value' => 'Sit amet consecutir',
+                ]
+            ],
+            [
+                [
+                    'id' => '2',
+                    'value' => 'Sit amet consecutir',
+                ]
+            ],
+            $service->compile([
+                'expression_language' => [],
+                'before' => [
+                    'queries' => [
+                        'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)',
+                        'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")',
+                    ],
+                ],
+                'after' => [
+                    'queries' => [
+                        'DROP TABLE foo',
+                    ],
+                ],
+                'loader' => [
+                    'conditional' => [
+                        [
+                            'condition' => 'cond',
+                            'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
+                            'parameters' => [
+                                [
+                                    'key' => 'id',
+                                    'value' => new Expression('input["id"]')
+                                ],
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'connection' => [
+                    'dsn' => 'sqlite::memory:',
+                ],
+            ])->getBuilder(),
+        );
+    }
 }
