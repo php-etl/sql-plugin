@@ -18,8 +18,7 @@
         "symfony/expression-language": "^5.2",
         "php-etl/configurator-contracts": "^0.3.0",
         "php-etl/satellite-toolbox": "^0.1.0",
-        "php-etl/fast-map-plugin": "^0.4.0",
-        "php-etl/sql-flow": "^0.1.0"
+        "php-etl/fast-map-plugin": "^0.4.0"
     },
     "require-dev": {
         "symfony/console": "^5.2",
@@ -27,7 +26,8 @@
         "phpunit/phpunit": "^9.0",
         "php-etl/phpunit-extension": "^0.2.0",
         "adlawson/vfs": "^0.12.1",
-        "phpstan/phpstan": "^0.12.93"
+        "phpstan/phpstan": "^0.12.93",
+        "php-etl/sql-flow": "^0.1.0"
     },
     "autoload": {
         "psr-4": {

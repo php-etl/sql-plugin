@@ -673,21 +673,21 @@ final class ServiceTest extends TestCase
         $this->assertBuildsLoaderLoadsExactly(
             [
                 [
-                    'id' => '2',
+                    'id' => '1',
                     'value' => 'Sit amet consecutir',
                 ],
                 [
-                    'id' => '3',
+                    'id' => '2',
                     'value' => 'Sit',
                 ]
             ],
             [
                 [
-                    'id' => '2',
+                    'id' => '1',
                     'value' => 'Sit amet consecutir',
                 ],
                 [
-                    'id' => '3',
+                    'id' => '2',
                     'value' => 'Sit',
                 ]
             ],
@@ -696,7 +696,79 @@ final class ServiceTest extends TestCase
                 'before' => [
                     'queries' => [
                         'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)',
-                        'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")',
+                    ],
+                ],
+                'loader' => [
+                    'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
+                    'parameters' => [
+                        [
+                            'key' => 'id',
+                            'value' => new Expression('input["id"]')
+                        ],
+                        [
+                            'key' => 'value',
+                            'value' => new Expression('input["value"]'),
+                        ]
+                    ]
+                ],
+                'connection' => [
+                    'dsn' => 'sqlite::memory:',
+                    'options' => [
+                        'persistent' => true
+                    ]
+                ],
+            ])->getBuilder(),
+        );
+
+        /**
+         * Check if rows are inserted
+         */
+        $results = $this->checkData('SELECT * FROM foo');
+        $this->assertEquals(
+            [
+                [
+                    'id' => '1',
+                    'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '2',
+                    'value' => 'Sit',
+                ]
+            ],
+            $results
+        );
+    }
+
+    public function testLoaderWithAfterQueries(): void
+    {
+        $service = new Service();
+
+        $this->assertBuildsLoaderLoadsExactly(
+            [
+                [
+                    'id' => '1',
+                    'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '2',
+                    'value' => 'Sit',
+                ]
+            ],
+            [
+                [
+                    'id' => '1',
+                    'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '2',
+                    'value' => 'Sit',
+                ]
+            ],
+            $service->compile([
+                'expression_language' => [],
+                'before' => [
+                    'queries' => [
+                        'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)',
                     ],
                 ],
                 'after' => [
@@ -719,13 +791,123 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-//                    'dsn' => 'sqlite:'.__DIR__.'/db.sqlite',
+                    'options' => [
+                        'persistent' => true
+                    ]
                 ],
             ])->getBuilder(),
+        );
+
+        /**
+         * Check if foo table is dropped
+         */
+        $results = $this->checkData("SELECT name FROM sqlite_master WHERE type='table' AND name='foo'");
+        $this->assertEquals(
+            [],
+            $results
         );
     }
 
     public function testConditionalLoader(): void
+    {
+        $service = new Service();
+
+        $this->assertBuildsLoaderLoadsExactly(
+            [
+                [
+                    'id' => '2',
+                    'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '3',
+                    'value' => 'Ut sed',
+                ]
+            ],
+            [
+                [
+                    'id' => '2',
+                    'value' => 'Sit amet consecutir',
+                ],
+                [
+                    'id' => '3',
+                    'value' => 'Ut sed',
+                ]
+            ],
+            $service->compile([
+                'expression_language' => [],
+                'before' => [
+                    'queries' => [
+                        'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)',
+                        'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")',
+                    ],
+                ],
+                'loader' => [
+                    'conditional' => [
+                        [
+                            'condition' =>  new Expression('input["id"] == 2'),
+                            'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
+                            'parameters' => [
+                                [
+                                    'key' => 'id',
+                                    'value' => new Expression('input["id"]')
+                                ],
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ]
+                            ]
+                        ],
+                        [
+                            'condition' => new Expression('input["id"] == 3'),
+                            'query' => 'UPDATE foo SET value = :value WHERE id = 1',
+                            'parameters' => [
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'connection' => [
+                    'dsn' => 'sqlite::memory:',
+                    'options' => [
+                        'persistent' => true
+                    ]
+                ],
+            ])->getBuilder(),
+        );
+
+        /**
+         * Check if row is inserted
+         */
+        $results = $this->checkData('SELECT * FROM foo WHERE id = 2');
+        $this->assertEquals(
+            [
+                [
+                    'id' => '2',
+                    'value' => 'Sit amet consecutir'
+                ]
+            ],
+            $results
+        );
+
+        /**
+         * Check if row is updated
+         */
+        $results = $this->checkData('SELECT * FROM foo WHERE id = 1');
+        $this->assertEquals(
+            [
+                [
+                    'id' => '1',
+                    'value' => 'Ut sed'
+                ]
+            ],
+            $results
+        );
+    }
+
+    public function testConditionalLoaderWithAfterQueries(): void
     {
         $service = new Service();
 
@@ -793,9 +975,32 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-//                    'dsn' => 'sqlite:'.__DIR__.'/db.sqlite'
+                    'options' => [
+                        'persistent' => true
+                    ]
                 ],
             ])->getBuilder(),
         );
+
+        /**
+         * Check if foo table is dropped
+         */
+        $results = $this->checkData("SELECT name FROM sqlite_master WHERE type='table' AND name='foo'");
+        $this->assertEquals(
+            [],
+            $results
+        );
+    }
+
+    public function checkData(string $query): array
+    {
+        $connection = new \PDO('sqlite::memory:', null, null, [
+            \PDO::ATTR_PERSISTENT => true
+        ]);
+
+        $stmt = $connection->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_NAMED);
     }
 }
