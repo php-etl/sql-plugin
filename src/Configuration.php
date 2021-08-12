@@ -2,13 +2,15 @@
 
 namespace Kiboko\Plugin\SQL;
 
+use Kiboko\Component\Satellite\NamedConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-final class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface
+final class Configuration implements ConfigurationInterface, NamedConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder('sql');
+        $builder = new TreeBuilder($this->getName());
 
         $builder->getRootNode()
             ->validate()
@@ -28,5 +30,10 @@ final class Configuration implements \Symfony\Component\Config\Definition\Config
         ;
 
         return $builder;
+    }
+
+    public function getName(): string
+    {
+        return 'sql';
     }
 }
