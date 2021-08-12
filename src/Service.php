@@ -2,6 +2,9 @@
 
 namespace Kiboko\Plugin\SQL;
 
+use Kiboko\Contract\Configurator\ConfiguratorExtractorInterface;
+use Kiboko\Contract\Configurator\ConfiguratorLoaderInterface;
+use Kiboko\Contract\Configurator\ConfiguratorTransformerInterface;
 use Kiboko\Contract\Configurator\FactoryInterface;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Contract\Configurator\RepositoryInterface;
@@ -10,7 +13,7 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
 
-final class Service implements FactoryInterface
+final class Service implements FactoryInterface, ConfiguratorExtractorInterface, ConfiguratorTransformerInterface, ConfiguratorLoaderInterface
 {
     private Processor $processor;
     private ConfigurationInterface $configuration;
@@ -80,5 +83,20 @@ final class Service implements FactoryInterface
         } catch (InvalidConfigurationException $exception) {
             throw new InvalidConfigurationException($exception->getMessage(), 0, $exception);
         }
+    }
+
+    public function getExtractorKey(): string
+    {
+        return 'extractor';
+    }
+
+    public function getLoaderKeys(): array
+    {
+        return ['loader'];
+    }
+
+    public function getTransformerKeys(): ?array
+    {
+        return ['lookup'];
     }
 }
