@@ -12,7 +12,7 @@ use Symfony\Component\Config\Definition\Exception as Symfony;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
-final class Extractor implements FactoryInterface
+final class Connection implements FactoryInterface
 {
     private Processor $processor;
     private ConfigurationInterface $configuration;
@@ -48,18 +48,26 @@ final class Extractor implements FactoryInterface
         }
     }
 
-    public function compile(array $config): SQL\Factory\Repository\Extractor
+    public function compile(array $config): SQL\Factory\Repository\Connection
     {
-        $extractor = new SQL\Builder\Extractor(
-            compileValueWhenExpression($this->interpreter, $config['query']),
+        $extractor = new SQL\Builder\Connection(
+            compileValueWhenExpression($this->interpreter, $config['dsn'])
         );
 
-        if ($config['parameters'] != null) {
-            foreach ($config["parameters"] as $parameter) {
-                $extractor->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+        if (array_key_exists('username', $config)) {
+            $extractor->withUsername(compileValueWhenExpression($this->interpreter, $config['username']));
+        }
+
+        if (array_key_exists('password', $config)) {
+            $extractor->withPassword(compileValueWhenExpression($this->interpreter, $config['password']));
+        }
+
+        if (array_key_exists('options', $config)) {
+            if (array_key_exists('persistent', $config["options"])) {
+                $extractor->withPersistentConnection($config['options']['persistent']);
             }
         }
 
-        return new Repository\Extractor($extractor);
+        return new SQL\Factory\Repository\Connection($extractor);
     }
 }

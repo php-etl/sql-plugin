@@ -2,9 +2,13 @@
 
 namespace Kiboko\Plugin\SQL;
 
+use Kiboko\Component\SatelliteToolbox\Builder\IsolatedCodeBuilder;
 use Kiboko\Contract\Configurator\FactoryInterface;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Contract\Configurator\RepositoryInterface;
+use Kiboko\Plugin\SQL\Factory\Connection;
+use Kiboko\Plugin\SQL\Factory\InitializerQueries;
+use PhpParser\Builder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -59,22 +63,36 @@ final class Service implements FactoryInterface
             }
         }
 
+        $connection = (new Connection($this->interpreter))->compile($config['connection']);
+
         try {
             if (array_key_exists('extractor', $config)) {
                 $extractorFactory = new Factory\Extractor($this->interpreter);
 
-                return $extractorFactory->compile($config['extractor']);
+                return $extractorFactory
+                    ->compile($config['extractor'])
+                    ->withConnection($connection)
+                    ->withBeforeQueries(...($config['before']['queries'] ?? []))
+                    ->withAfterQueries(...($config['after']['queries'] ?? []));
             } elseif (array_key_exists('lookup', $config)) {
                 $lookupFactory = new Factory\Lookup($this->interpreter);
 
-                return $lookupFactory->compile($config['lookup']);
+                return $lookupFactory
+                    ->compile($config['lookup'])
+                    ->withConnection($connection)
+                    ->withBeforeQueries(...($config['before']['queries'] ?? []))
+                    ->withAfterQueries(...($config['after']['queries'] ?? []));
             } elseif (array_key_exists('loader', $config)) {
                 $loaderFactory = new Factory\Loader($this->interpreter);
 
-                return $loaderFactory->compile($config['loader']);
+                return $loaderFactory
+                    ->compile($config['loader'])
+                    ->withConnection($connection)
+                    ->withBeforeQueries(...($config['before']['queries'] ?? []))
+                    ->withAfterQueries(...($config['after']['queries'] ?? []));
             } else {
                 throw new InvalidConfigurationException(
-                    'Could not determine if the factory shoul d build an extractor or a loader.'
+                    'Could not determine if the factory should build an extractor, a lookup or a loader.'
                 );
             }
         } catch (InvalidConfigurationException $exception) {

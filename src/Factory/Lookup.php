@@ -12,6 +12,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Lookup implements FactoryInterface
@@ -50,7 +51,11 @@ final class Lookup implements FactoryInterface
         }
     }
 
-    private function merge(SQL\Builder\AlternativeLookup $alternativeBuilder, array $config)
+    /**
+     * @param SQL\Builder\AlternativeLookup $alternativeBuilder
+     * @param array<array> $config
+     */
+    private function merge(SQL\Builder\AlternativeLookup $alternativeBuilder, array $config): void
     {
         if (array_key_exists('merge', $config)) {
             if (array_key_exists('map', $config['merge'])) {
@@ -67,27 +72,18 @@ final class Lookup implements FactoryInterface
         }
     }
 
-    public function compile(array $config): RepositoryInterface
+    public function compile(array $config): SQL\Factory\Repository\Lookup
     {
         if (!array_key_exists('conditional', $config)) {
             $alternativeBuilder = new SQL\Builder\AlternativeLookup(
-                compileValueWhenExpression($this->interpreter, $config["query"]),
-                compileValueWhenExpression($this->interpreter, $config["connection"]["dsn"])
+                compileValueWhenExpression($this->interpreter, $config["query"])
             );
 
             $lookup = new SQL\Builder\Lookup($alternativeBuilder);
 
-            if (array_key_exists('username', $config["connection"])) {
-                $alternativeBuilder->withUsername(compileValueWhenExpression($this->interpreter, $config["connection"]["username"]));
-            }
-
-            if (array_key_exists('password', $config["connection"])) {
-                $alternativeBuilder->withPassword(compileValueWhenExpression($this->interpreter, $config["connection"]["password"]));
-            }
-
-            if (array_key_exists('params', $config)) {
-                foreach ($config["params"] as $param) {
-                    $alternativeBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
+            if (array_key_exists('parameters', $config)) {
+                foreach ($config["parameters"] as $parameter) {
+                    $alternativeBuilder->addParam($parameter["key"], compileValueWhenExpression($this->interpreter, $parameter["value"]));
                 }
             }
 
@@ -97,20 +93,11 @@ final class Lookup implements FactoryInterface
 
             foreach ($config['conditional'] as $alternative) {
                 $alternativeBuilder = new SQL\Builder\AlternativeLookup(
-                    compileValueWhenExpression($this->interpreter, $alternative["query"]),
-                    compileValueWhenExpression($this->interpreter, $alternative["connection"]["dsn"])
+                    compileValueWhenExpression($this->interpreter, $alternative["query"])
                 );
 
-                if (array_key_exists('username', $alternative["connection"])) {
-                    $alternativeBuilder->withUsername(compileValueWhenExpression($this->interpreter, $alternative["connection"]["username"]));
-                }
-
-                if (array_key_exists('password', $alternative["connection"])) {
-                    $alternativeBuilder->withPassword(compileValueWhenExpression($this->interpreter, $alternative["connection"]["password"]));
-                }
-
-                if (array_key_exists('params', $alternative)) {
-                    foreach ($alternative["params"] as $param) {
+                if (array_key_exists('parameters', $alternative)) {
+                    foreach ($alternative["parameters"] as $param) {
                         $alternativeBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
                     }
                 }

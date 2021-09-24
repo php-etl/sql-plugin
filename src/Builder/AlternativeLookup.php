@@ -12,15 +12,16 @@ final class AlternativeLookup implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    private array $params;
+    /** @var array<Node\Expr> */
+    private array $parameters;
     private ?Builder $merge;
 
-    public function __construct(private Node\Expr $query, private Node\Expr $dsn, private ?Node\Expr $username = null, private ?Node\Expr $password = null)
+    public function __construct(private Node\Expr $query)
     {
         $this->logger = null;
         $this->rejection = null;
         $this->state = null;
-        $this->params = [];
+        $this->parameters = [];
         $this->merge = null;
     }
 
@@ -45,23 +46,9 @@ final class AlternativeLookup implements StepBuilderInterface
         return $this;
     }
 
-    public function withUsername(Node\Expr $username): StepBuilderInterface
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    public function withPassword(Node\Expr $password): StepBuilderInterface
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
     public function addParam(int|string $key, Node\Expr $param): StepBuilderInterface
     {
-        $this->params[$key] = $param;
+        $this->parameters[$key] = $param;
 
         return $this;
     }
@@ -79,16 +66,21 @@ final class AlternativeLookup implements StepBuilderInterface
             new Node\Expr\Variable('input'),
             new Node\Expr\Variable('output'),
             [
-                $this->getLookupNode(),
-                $this->merge?->getNode(),
-                new Node\Stmt\Return_(
-                    new Node\Expr\Variable('output')
-                ),
-            ]
+                ...array_filter(
+                    [
+                        $this->getAlternativeLookupNode(),
+                        $this->merge?->getNode(),
+                        new Node\Stmt\Return_(
+                            new Node\Expr\Variable('output')
+                        ),
+                    ]
+                )
+            ],
+            new Node\Expr\Variable('dbh'),
         ))->getNode();
     }
 
-    public function getLookupNode() : Node
+    public function getAlternativeLookupNode() : Node
     {
         return (new IsolatedValueAppendingBuilder(
             new Node\Expr\Variable('input'),
@@ -98,34 +90,21 @@ final class AlternativeLookup implements StepBuilderInterface
                     stmts: [
                         new Node\Stmt\Expression(
                             expr: new Node\Expr\Assign(
-                                var: new Node\Expr\Variable('dbh'),
-                                expr: new Node\Expr\New_(
-                                    class: new Node\Name\FullyQualified('PDO'),
-                                    args: [
-                                        new Node\Arg($this->dsn),
-                                        $this->username ? new Node\Arg($this->username) : new Node\Expr\ConstFetch(new Node\Name('null')),
-                                        $this->password ? new Node\Arg($this->password) : new Node\Expr\ConstFetch(new Node\Name('null'))
-                                    ],
-                                ),
-                            ),
-                        ),
-                        new Node\Stmt\Expression(
-                            expr: new Node\Expr\Assign(
                                 var: new Node\Expr\Variable('stmt'),
                                 expr: new Node\Expr\MethodCall(
                                     var: new Node\Expr\Variable('dbh'),
-                                    name: new Node\Name('prepare'),
+                                    name: new Node\Identifier('prepare'),
                                     args: [
                                         new Node\Arg($this->query)
                                     ],
                                 ),
                             ),
                         ),
-                        ...$this->compileParams(),
+                        ...$this->compileParameters(),
                         new Node\Stmt\Expression(
                             expr: new Node\Expr\MethodCall(
                                 var: new Node\Expr\Variable('stmt'),
-                                name: new Node\Name('execute')
+                                name: new Node\Identifier('execute')
                             ),
                         ),
                         new Node\Stmt\Expression(
@@ -133,12 +112,12 @@ final class AlternativeLookup implements StepBuilderInterface
                                 var: new Node\Expr\Variable('data'),
                                 expr: new Node\Expr\MethodCall(
                                     var: new Node\Expr\Variable('stmt'),
-                                    name: new Node\Name('fetch'),
+                                    name: new Node\Identifier('fetch'),
                                     args: [
                                         new Node\Arg(
                                             new Node\Expr\ClassConstFetch(
                                                 class: new Node\Name\FullyQualified('PDO'),
-                                                name: new Node\Name('FETCH_NAMED')
+                                                name: new Node\Identifier('FETCH_NAMED')
                                             ),
                                         ),
                                     ],
@@ -153,6 +132,9 @@ final class AlternativeLookup implements StepBuilderInterface
                                 ),
                             ),
                         ),
+                        new Node\Stmt\Return_(
+                            expr: new Node\Expr\Variable('data')
+                        )
                     ],
                     catches: [
                         new Node\Stmt\Catch_(
@@ -195,29 +177,30 @@ final class AlternativeLookup implements StepBuilderInterface
                         ),
                     ],
                 ),
-                new Node\Stmt\Return_(
-                    expr: new Node\Expr\Variable('data')
-                )
-            ]
+            ],
+            new Node\Expr\Variable('dbh'),
         ))->getNode();
     }
 
-    public function compileParams(): array
+    /**
+     * @return array<int, Node\Stmt\Expression>
+     */
+    public function compileParameters(): array
     {
         $output = [];
 
-        foreach ($this->params as $key => $param) {
+        foreach ($this->parameters as $key => $parameter) {
             $output[] = new Node\Stmt\Expression(
                 expr: new Node\Expr\MethodCall(
                     var: new Node\Expr\Variable('stmt'),
-                    name: new Node\Name('bindParam'),
+                    name: new Node\Identifier('bindParam'),
                     args: [
                         new Node\Arg(
                             is_string($key) ? new Node\Scalar\Encapsed([new Node\Scalar\EncapsedStringPart(':'), new Node\Scalar\EncapsedStringPart($key)]) : new Node\Scalar\LNumber($key)
                         ),
                         new Node\Arg(
-                            $param
-                        )
+                            $parameter
+                        ),
                     ],
                 ),
             );

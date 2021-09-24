@@ -9,10 +9,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
-use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
-final class Extractor implements FactoryInterface
+final class InitializerQueries implements FactoryInterface
 {
     private Processor $processor;
     private ConfigurationInterface $configuration;
@@ -48,18 +47,12 @@ final class Extractor implements FactoryInterface
         }
     }
 
-    public function compile(array $config): SQL\Factory\Repository\Extractor
+    public function compile(array $config): SQL\Factory\Repository\InitializerQuery
     {
-        $extractor = new SQL\Builder\Extractor(
-            compileValueWhenExpression($this->interpreter, $config['query']),
+        return new SQL\Factory\Repository\InitializerQuery(
+            new SQL\Builder\InitializerQueries(
+                compileValueWhenExpression($this->interpreter, $config['dsn']),
+            ),
         );
-
-        if ($config['parameters'] != null) {
-            foreach ($config["parameters"] as $parameter) {
-                $extractor->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
-            }
-        }
-
-        return new Repository\Extractor($extractor);
     }
 }
