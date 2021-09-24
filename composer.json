@@ -21,8 +21,6 @@
         "php-etl/fast-map-plugin": "^0.4.0"
     },
     "require-dev": {
-        "symfony/console": "^5.2",
-        "symfony/yaml": "^5.2",
         "phpunit/phpunit": "^9.0",
         "php-etl/phpunit-extension": "^0.2.0",
         "adlawson/vfs": "^0.12.1",
