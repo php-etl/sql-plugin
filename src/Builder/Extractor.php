@@ -94,7 +94,7 @@ final class Extractor implements StepBuilderInterface
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\Extractor'),
+            class: new Node\Name\FullyQualified('Kibok\\Component\\Flow\\SQL\\Extractor'),
             args: [
                 new Node\Arg(
                     value: $this->connection->getNode()
@@ -102,8 +102,8 @@ final class Extractor implements StepBuilderInterface
                 new Node\Arg(
                     value: $this->query
                 ),
-                $this->parameters ? new Node\Arg(
-                    value: new Node\Expr\Closure(
+                count($this->parameters) > 0
+                    ? new Node\Arg(value: new Node\Expr\Closure(
                         subNodes: [
                             'params' => [
                                 new Node\Param(
@@ -115,22 +115,18 @@ final class Extractor implements StepBuilderInterface
                                 ...$this->compileParameters()
                             ],
                         ],
-                    ),
-                ) : new Node\Expr\ConstFetch(new Node\Name('null')),
-                $this->beforeQueries ? new Node\Arg(
-                    value: $this->compileBeforeQueries()
-                ) : new Node\Expr\Array_(
-                    attributes: [
+                    ))
+                    : new Node\Expr\ConstFetch(new Node\Name('null')),
+                count($this->beforeQueries) > 0
+                    ? new Node\Arg(value: $this->compileBeforeQueries())
+                    : new Node\Expr\Array_(attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
-                    ],
-                ),
-                $this->afterQueries ? new Node\Arg(
-                    value: $this->compileAfterQueries()
-                ): new Node\Expr\Array_(
-                    attributes: [
+                    ]),
+                count($this->afterQueries) > 0
+                    ? new Node\Arg(value: $this->compileAfterQueries())
+                    : new Node\Expr\Array_(attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
-                    ],
-                ),
+                    ]),
             ],
         );
     }
@@ -182,7 +178,6 @@ final class Extractor implements StepBuilderInterface
             ]
         );
     }
-
 
     public function compileAfterQueries(): Node\Expr
     {

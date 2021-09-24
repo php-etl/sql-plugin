@@ -49,11 +49,8 @@ final class ServiceTest extends TestCase
                 'extractor' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
-                            'value' => new Expression('3'),
-                        ],
-                    ]
+                        'identifier' => new Expression('3'),
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
@@ -78,10 +75,7 @@ final class ServiceTest extends TestCase
                     'extractor' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
-                                'value' => new Expression('3'),
-                            ]
+                            'identifier' => '@=3',
                         ]
                     ],
                     'connection' => [
@@ -114,10 +108,7 @@ final class ServiceTest extends TestCase
                 'lookup' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
-                            'value' => new Expression('3'),
-                        ],
+                        'identifier' => new Expression('3'),
                     ],
                     'merge' => [
                         'map' => [
@@ -151,10 +142,7 @@ final class ServiceTest extends TestCase
                     'lookup' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
-                                'value' => new Expression('3'),
-                            ],
+                            'identifier' => '@=3',
                         ],
                         'merge' => [
                             'map' => [
@@ -198,10 +186,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 0'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
-                                    'value' => new Expression('3'),
-                                ],
+                                'identifier' => new Expression('3'),
                             ],
                             'merge' => [
                                 'map' => [
@@ -216,10 +201,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 1'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
-                                    'value' => new Expression('3'),
-                                ],
+                                'identifier' => new Expression('3'),
                             ],
                             'merge' => [
                                 'map' => [
@@ -258,10 +240,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 0'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
-                                        'value' => new Expression('3'),
-                                    ],
+                                    'identifier' => '@=3',
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -276,10 +255,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 1'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
-                                        'value' => new Expression('3'),
-                                    ],
+                                    'identifier' => '@=3',
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -322,10 +298,7 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
-                            'value' => new Expression('3'),
-                        ],
+                        'identifier' => new Expression('3'),
                     ]
                 ],
                 'connection' => [
@@ -351,10 +324,7 @@ final class ServiceTest extends TestCase
                     'loader' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
-                                'value' => new Expression('3'),
-                            ]
+                            'identifier' => '@=3',
                         ]
                     ],
                     'connection' => [
@@ -390,10 +360,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 0'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
-                                    'value' => new Expression('3'),
-                                ],
+                                'identifier' => new Expression('3'),
                             ],
                             'merge' => [
                                 'map' => [
@@ -408,10 +375,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 1'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
-                                    'value' => new Expression('3'),
-                                ],
+                                'identifier' => new Expression('3'),
                             ],
                             'merge' => [
                                 'map' => [
@@ -450,10 +414,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 0'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
-                                        'value' => new Expression('3'),
-                                    ],
+                                    'identifier' => '@=3',
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -468,10 +429,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 1'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
-                                        'value' => new Expression('3'),
-                                    ],
+                                    'identifier' => '@=3',
                                 ],
                                 'merge' => [
                                     'map' => [
