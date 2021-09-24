@@ -43,7 +43,7 @@ final class Extractor implements FactoryInterface
             $this->processor->processConfiguration($this->configuration, $config);
 
             return true;
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException) {
+        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
             return false;
         }
     }
@@ -55,8 +55,8 @@ final class Extractor implements FactoryInterface
         );
 
         if ($config['parameters'] != null) {
-            foreach ($config["parameters"] as $parameter) {
-                $extractor->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+            foreach ($config["parameters"] as $key => $value) {
+                $extractor->addParameter($key, compileValue($this->interpreter, $value));
             }
         }
 
