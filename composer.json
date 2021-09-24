@@ -1,7 +1,7 @@
 {
     "name": "php-etl/sql-plugin",
-    "description": "This plugin allows you to perform SQL queries",
-    "type": "library",
+    "description": "This plugin allows you to perform SQL queries in the ETL pipelines",
+    "type": "satellite-plugin",
     "license": "MIT",
     "authors": [
         {
