@@ -94,7 +94,7 @@ final class Extractor implements StepBuilderInterface
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Name\FullyQualified('Kibok\\Component\\Flow\\SQL\\Extractor'),
+            class: new Node\Name\FullyQualified('Kiboko\\Component\\Flow\\SQL\\Extractor'),
             args: [
                 new Node\Arg(
                     value: $this->connection->getNode()
