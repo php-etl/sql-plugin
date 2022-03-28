@@ -1,7 +1,7 @@
 {
     "name": "php-etl/sql-plugin",
     "description": "This plugin allows you to perform SQL queries in the ETL pipelines",
-    "type": "satellite-plugin",
+    "type": "gyroscops-plugin",
     "license": "MIT",
     "authors": [
         {
@@ -41,8 +41,8 @@
         "branch-alias": {
             "dev-master": "0.2.x-dev"
         },
-        "satellite": {
-            "class": "Kiboko\\Plugin\\SQL\\Service"
+        "gyroscops": {
+            "plugins": ["Kiboko\\Plugin\\SQL\\Service"]
         }
     },
     "config": {
