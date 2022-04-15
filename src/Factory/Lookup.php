@@ -7,12 +7,10 @@ use Kiboko\Component\FastMapConfig;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Plugin\SQL;
 use Kiboko\Contract\Configurator\FactoryInterface;
-use Kiboko\Contract\Configurator\RepositoryInterface;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
-use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Lookup implements FactoryInterface
@@ -82,8 +80,8 @@ final class Lookup implements FactoryInterface
             $lookup = new SQL\Builder\Lookup($alternativeBuilder);
 
             if (array_key_exists('parameters', $config)) {
-                foreach ($config["parameters"] as $parameter) {
-                    $alternativeBuilder->addParam($parameter["key"], compileValueWhenExpression($this->interpreter, $parameter["value"]));
+                foreach ($config["parameters"] as $key => $parameter) {
+                    $alternativeBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $parameter));
                 }
             }
 
@@ -97,8 +95,8 @@ final class Lookup implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative["parameters"] as $param) {
-                        $alternativeBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
+                    foreach ($alternative["parameters"] as $key => $parameter) {
+                        $alternativeBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $parameter));
                     }
                 }
 

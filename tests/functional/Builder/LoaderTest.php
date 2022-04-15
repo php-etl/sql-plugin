@@ -3,6 +3,7 @@
 namespace functional\Kiboko\Plugin\SQL;
 
 use Kiboko\Component\PHPUnitExtension\Assert;
+use Kiboko\Contract\Pipeline\PipelineRunnerInterface;
 use Kiboko\Plugin\SQL\Factory\Loader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -52,5 +53,10 @@ final class LoaderTest extends TestCase
                 ],
             ]),
         );
+    }
+
+    public function pipelineRunner(): PipelineRunnerInterface
+    {
+        return new PipelineRunner();
     }
 }

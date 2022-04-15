@@ -55,9 +55,9 @@ final class Loader implements FactoryInterface
                 compileValueWhenExpression($this->interpreter, $config["query"]),
             );
 
-            if ($config['parameters'] != null) {
-                foreach ($config["parameters"] as $parameter) {
-                    $loader->addParameter($parameter['key'], compileValue($this->interpreter, $parameter['value']));
+            if ($config['parameters'] !== null) {
+                foreach ($config["parameters"] as $key => $parameter) {
+                    $loader->addParameter($key, compileValue($this->interpreter, $parameter));
                 }
             }
         } else {
@@ -69,8 +69,8 @@ final class Loader implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative["parameters"] as $param) {
-                        $alternativeLoaderBuilder->addParam($param["key"], compileValueWhenExpression($this->interpreter, $param["value"]));
+                    foreach ($alternative["parameters"] as $key => $parameter) {
+                        $alternativeLoaderBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $parameter));
                     }
                 }
 

@@ -11,8 +11,6 @@ class Query implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder('query', 'scalar');
-
-        return $builder;
+        return new TreeBuilder('query', 'scalar');
     }
 }

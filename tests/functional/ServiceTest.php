@@ -3,6 +3,7 @@
 namespace functional\Kiboko\Plugin\SQL;
 
 use Kiboko\Component\PHPUnitExtension\Assert;
+use Kiboko\Contract\Pipeline\PipelineRunnerInterface;
 use Kiboko\Plugin\SQL\Service;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -49,12 +50,14 @@ final class ServiceTest extends TestCase
                 'extractor' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => new Expression('3'),
+                        [
+                            'key' => 'identifier',
+                            'value' => '@=3'
+                        ]
                     ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => []
                 ],
             ],
             $service->normalize([
@@ -75,8 +78,11 @@ final class ServiceTest extends TestCase
                     'extractor' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            'identifier' => '@=3',
-                        ]
+                            [
+                                'key' => 'identifier',
+                                'value' => '@=3'
+                            ]
+                        ],
                     ],
                     'connection' => [
                         'dsn' => 'sqlite::memory:',
@@ -108,7 +114,10 @@ final class ServiceTest extends TestCase
                 'lookup' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => new Expression('3'),
+                        [
+                            'key' => 'identifier',
+                            'value' => new Expression('3'),
+                        ]
                     ],
                     'merge' => [
                         'map' => [
@@ -121,7 +130,6 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => []
                 ],
             ],
             $service->normalize([
@@ -142,7 +150,10 @@ final class ServiceTest extends TestCase
                     'lookup' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            'identifier' => '@=3',
+                            [
+                                'key' => 'identifier',
+                                'value' => new Expression('3'),
+                            ]
                         ],
                         'merge' => [
                             'map' => [
@@ -534,10 +545,7 @@ final class ServiceTest extends TestCase
                 'lookup' => [
                     'query' => 'SELECT additionalValue FROM foo WHERE id = :id',
                     'parameters' => [
-                        [
-                            'key' => 'id',
-                            'value' => new Expression('input["id"]'),
-                        ]
+                        'id' => new Expression('input["id"]'),
                     ],
                     'merge' => [
                         'map' => [
@@ -659,14 +667,8 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        [
-                            'key' => 'id',
-                            'value' => new Expression('input["id"]')
-                        ],
-                        [
-                            'key' => 'value',
-                            'value' => new Expression('input["value"]'),
-                        ]
+                        'id' => new Expression('input["id"]'),
+                        'value' =>  new Expression('input["value"]'),
                     ]
                 ],
                 'connection' => [
@@ -737,14 +739,8 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        [
-                            'key' => 'id',
-                            'value' => new Expression('input["id"]')
-                        ],
-                        [
-                            'key' => 'value',
-                            'value' => new Expression('input["value"]'),
-                        ]
+                        'id' => new Expression('input["id"]'),
+                        'value' =>  new Expression('input["value"]'),
                     ]
                 ],
                 'connection' => [
@@ -805,24 +801,15 @@ final class ServiceTest extends TestCase
                             'condition' =>  new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
-                                [
-                                    'key' => 'id',
-                                    'value' => new Expression('input["id"]')
-                                ],
-                                [
-                                    'key' => 'value',
-                                    'value' => new Expression('input["value"]'),
-                                ]
+                                'id' => new Expression('input["id"]'),
+                                'value' =>  new Expression('input["value"]'),
                             ]
                         ],
                         [
                             'condition' => new Expression('input["id"] == 3'),
                             'query' => 'UPDATE foo SET value = :value WHERE id = 1',
                             'parameters' => [
-                                [
-                                    'key' => 'value',
-                                    'value' => new Expression('input["value"]'),
-                                ]
+                                'value' =>  new Expression('input["value"]'),
                             ]
                         ]
                     ]
@@ -909,24 +896,15 @@ final class ServiceTest extends TestCase
                             'condition' =>  new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
-                                [
-                                    'key' => 'id',
-                                    'value' => new Expression('input["id"]')
-                                ],
-                                [
-                                    'key' => 'value',
-                                    'value' => new Expression('input["value"]'),
-                                ]
+                                'id' => new Expression('input["id"]'),
+                                'value' =>  new Expression('input["value"]'),
                             ]
                         ],
                         [
                             'condition' => new Expression('input["id"] == 3'),
                             'query' => 'UPDATE foo SET value = :value WHERE id = 1',
                             'parameters' => [
-                                [
-                                    'key' => 'value',
-                                    'value' => new Expression('input["value"]'),
-                                ]
+                                'value' =>  new Expression('input["value"]'),
                             ]
                         ]
                     ]
@@ -960,5 +938,74 @@ final class ServiceTest extends TestCase
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_NAMED);
+    }
+
+    public function testLoaderConfigurationWithPersistentConnection(): void
+    {
+        $service = new Service();
+
+        $this->assertEquals(
+            [
+                'expression_language' => [],
+                'before' => [
+                    'queries' => [
+                        'CREATE TABLE foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)',
+                        'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")',
+                        'INSERT INTO foo (id, value) VALUES (2, "Sit amet consecutir")',
+                    ],
+                ],
+                'after' => [
+                    'queries' => [
+                        'DROP TABLE foo',
+                    ],
+                ],
+                'extractor' => [
+                    'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
+                    'parameters' => [
+                        'identifier' => new Expression('3'),
+                    ],
+                ],
+                'connection' => [
+                    'dsn' => 'sqlite::memory:',
+                    'options' => [
+                        'persistent' => true
+                    ]
+                ],
+            ],
+            $service->normalize([
+                [
+                    'expression_language' => [],
+                    'before' => [
+                        'queries' => [
+                            'CREATE TABLE foo (id INTEGER NOT NULL, value VARCHAR(255) NOT NULL)',
+                            'INSERT INTO foo (id, value) VALUES (1, "Lorem ipsum dolor")',
+                            'INSERT INTO foo (id, value) VALUES (2, "Sit amet consecutir")',
+                        ],
+                    ],
+                    'after' => [
+                        'queries' => [
+                            'DROP TABLE foo',
+                        ],
+                    ],
+                    'extractor' => [
+                        'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
+                        'parameters' => [
+                            'identifier' => '@=3',
+                        ]
+                    ],
+                    'connection' => [
+                        'dsn' => 'sqlite::memory:',
+                        'options' => [
+                            'persistent' => true
+                        ]
+                    ],
+                ],
+            ]),
+        );
+    }
+
+    public function pipelineRunner(): PipelineRunnerInterface
+    {
+        return new PipelineRunner();
     }
 }
