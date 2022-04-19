@@ -64,19 +64,21 @@ final class Service implements Configurator\PipelinePluginInterface
 
     public function compile(array $config): Factory\Repository\Extractor|Factory\Repository\Lookup|Factory\Repository\Loader
     {
+        $interpreter = clone $this->interpreter;
+
         if (array_key_exists('expression_language', $config)
             && is_array($config['expression_language'])
             && count($config['expression_language'])
         ) {
             foreach ($config['expression_language'] as $provider) {
-                $this->interpreter->registerProvider(new $provider);
+                $interpreter->registerProvider(new $provider);
             }
         }
 
-        $connection = (new Connection($this->interpreter))->compile($config['connection']);
+        $connection = (new Connection($interpreter))->compile($config['connection']);
 
         if (array_key_exists('extractor', $config)) {
-            $extractorFactory = new Factory\Extractor($this->interpreter);
+            $extractorFactory = new Factory\Extractor($interpreter);
 
             return $extractorFactory
                 ->compile($config['extractor'])
@@ -84,7 +86,7 @@ final class Service implements Configurator\PipelinePluginInterface
                 ->withBeforeQueries(...($config['before']['queries'] ?? []))
                 ->withAfterQueries(...($config['after']['queries'] ?? []));
         } elseif (array_key_exists('lookup', $config)) {
-            $lookupFactory = new Factory\Lookup($this->interpreter);
+            $lookupFactory = new Factory\Lookup($interpreter);
 
             return $lookupFactory
                 ->compile($config['lookup'])
@@ -92,7 +94,7 @@ final class Service implements Configurator\PipelinePluginInterface
                 ->withBeforeQueries(...($config['before']['queries'] ?? []))
                 ->withAfterQueries(...($config['after']['queries'] ?? []));
         } elseif (array_key_exists('loader', $config)) {
-            $loaderFactory = new Factory\Loader($this->interpreter);
+            $loaderFactory = new Factory\Loader($interpreter);
 
             return $loaderFactory
                 ->compile($config['loader'])
