@@ -15,8 +15,6 @@ class Parameters implements ConfigurationInterface
 
         /** @phpstan-ignore-next-line */
         $builder->getRootNode()
-            ->cannotBeEmpty()
-            ->requiresAtLeastOneElement()
             ->validate()
                 ->ifTrue(function ($data) {
                     return count($data) <= 0;
@@ -39,7 +37,9 @@ class Parameters implements ConfigurationInterface
                             ->then(asExpression())
                         ->end()
                     ->end()
-                    ->scalarNode('type')->end()
+                    ->enumNode('type')
+                        ->values(['boolean', 'integer'])
+                    ->end()
                 ->end()
             ->end();
 

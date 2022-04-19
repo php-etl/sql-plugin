@@ -23,8 +23,14 @@ final class LoaderTest extends TestCase
                 [
                     'query' => 'INSERT INTO foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => '@=3',
-                        'value' => '@=36',
+                        [
+                            'key' => 'identifier',
+                            'value' => '@=3',
+                        ],
+                        [
+                            'key' => 'value',
+                            'value' => '@=36',
+                        ],
                     ],
                 ],
             ]),
@@ -39,16 +45,28 @@ final class LoaderTest extends TestCase
             [
                 'query' => 'INSERT INTO foo WHERE value IS NOT NULL AND id <= :identifier',
                 'parameters' => [
-                    'identifier' => new Expression('3'),
-                    'value' => new Expression('36'),
+                    [
+                        'key' => 'identifier',
+                        'value' => new Expression('3'),
+                    ],
+                    [
+                        'key' => 'value',
+                        'value' => new Expression('36'),
+                    ],
                 ],
             ],
             $extractor->normalize([
                 [
                     'query' => 'INSERT INTO foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => '@=3',
-                        'value' => '@=36',
+                        [
+                            'key' => 'identifier',
+                            'value' => '@=3',
+                        ],
+                        [
+                            'key' => 'value',
+                            'value' => '@=36',
+                        ],
                     ],
                 ],
             ]),

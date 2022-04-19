@@ -52,7 +52,7 @@ final class ServiceTest extends TestCase
                     'parameters' => [
                         [
                             'key' => 'identifier',
-                            'value' => '@=3'
+                            'value' => new Expression('3')
                         ]
                     ],
                 ],
@@ -152,7 +152,7 @@ final class ServiceTest extends TestCase
                         'parameters' => [
                             [
                                 'key' => 'identifier',
-                                'value' => new Expression('3'),
+                                'value' => '@=3',
                             ]
                         ],
                         'merge' => [
@@ -197,7 +197,10 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 0'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                'identifier' => new Expression('3'),
+                                [
+                                    'key' => 'identifier',
+                                    'value' => new Expression('3'),
+                                ]
                             ],
                             'merge' => [
                                 'map' => [
@@ -212,7 +215,10 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 1'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                'identifier' => new Expression('3'),
+                                [
+                                    'key' => 'identifier',
+                                    'value' => new Expression('3'),
+                                ]
                             ],
                             'merge' => [
                                 'map' => [
@@ -227,7 +233,6 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => []
                 ],
             ],
             $service->normalize([
@@ -251,7 +256,10 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 0'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    'identifier' => '@=3',
+                                    [
+                                        'key' => 'identifier',
+                                        'value' => '@=3',
+                                    ],
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -266,7 +274,10 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 1'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    'identifier' => '@=3',
+                                    [
+                                        'key' => 'identifier',
+                                        'value' => '@=3',
+                                    ]
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -309,12 +320,14 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => new Expression('3'),
+                        [
+                            'key' => 'identifier',
+                            'value' => new Expression('3'),
+                        ],
                     ]
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => []
                 ],
             ],
             $service->normalize([
@@ -335,7 +348,10 @@ final class ServiceTest extends TestCase
                     'loader' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            'identifier' => '@=3',
+                            [
+                                'key' => 'identifier',
+                                'value' => '@=3',
+                            ]
                         ]
                     ],
                     'connection' => [
@@ -371,7 +387,10 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 0'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                'identifier' => new Expression('3'),
+                                [
+                                    'key' => 'identifier',
+                                    'value' => new Expression('3'),
+                                ],
                             ],
                             'merge' => [
                                 'map' => [
@@ -386,7 +405,10 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 1'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                'identifier' => new Expression('3'),
+                                [
+                                    'key' => 'identifier',
+                                    'value' => new Expression('3'),
+                                ],
                             ],
                             'merge' => [
                                 'map' => [
@@ -401,7 +423,6 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => []
                 ],
             ],
             $service->normalize([
@@ -425,7 +446,10 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 0'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    'identifier' => '@=3',
+                                    [
+                                        'key' => 'identifier',
+                                        'value' => '@=3',
+                                    ],
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -440,7 +464,10 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 1'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    'identifier' => '@=3',
+                                    [
+                                        'key' => 'identifier',
+                                        'value' => '@=3',
+                                    ],
                                 ],
                                 'merge' => [
                                     'map' => [
@@ -492,7 +519,6 @@ final class ServiceTest extends TestCase
                 ],
                 'extractor' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= 3',
-                    'parameters' => []
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
@@ -545,7 +571,10 @@ final class ServiceTest extends TestCase
                 'lookup' => [
                     'query' => 'SELECT additionalValue FROM foo WHERE id = :id',
                     'parameters' => [
-                        'id' => new Expression('input["id"]'),
+                        [
+                            'key' => 'id',
+                            'value' => new Expression('input["id"]')
+                        ],
                     ],
                     'merge' => [
                         'map' => [
@@ -667,8 +696,14 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        'id' => new Expression('input["id"]'),
-                        'value' =>  new Expression('input["value"]'),
+                        [
+                            'key' => 'id',
+                            'value' => new Expression('input["id"]')
+                        ],
+                        [
+                            'key' => 'value',
+                            'value' => new Expression('input["value"]')
+                        ],
                     ]
                 ],
                 'connection' => [
@@ -739,8 +774,84 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        'id' => new Expression('input["id"]'),
-                        'value' =>  new Expression('input["value"]'),
+                        [
+                            'key' => 'id',
+                            'value' => new Expression('input["id"]'),
+                        ],
+                        [
+                            'key' => 'value',
+                            'value' => new Expression('input["value"]'),
+                        ],
+                    ]
+                ],
+                'connection' => [
+                    'dsn' => 'sqlite::memory:',
+                    'options' => [
+                        'persistent' => true
+                    ]
+                ],
+            ])->getBuilder(),
+        );
+
+        /**
+         * Check if foo table is dropped
+         */
+        $results = $this->checkData("SELECT name FROM sqlite_master WHERE type='table' AND name='foo'");
+        $this->assertEquals(
+            [],
+            $results
+        );
+    }
+
+    public function testLoaderWithTypedParam(): void
+    {
+        $service = new Service();
+
+        $this->assertBuildsLoaderLoadsExactly(
+            [
+                [
+                    'id' => '1',
+                    'value' => false,
+                ],
+                [
+                    'id' => '2',
+                    'value' => true,
+                ]
+            ],
+            [
+                [
+                    'id' => '1',
+                    'value' => false,
+                ],
+                [
+                    'id' => '2',
+                    'value' => true,
+                ]
+            ],
+            $service->compile([
+                'expression_language' => [],
+                'before' => [
+                    'queries' => [
+                        'CREATE TABLE IF NOT EXISTS foo (id INTEGER NOT NULL, value BOOLEAN NOT NULL)',
+                    ],
+                ],
+                'after' => [
+                    'queries' => [
+                        'DROP TABLE foo',
+                    ],
+                ],
+                'loader' => [
+                    'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
+                    'parameters' => [
+                        [
+                            'key' => 'id',
+                            'value' => new Expression('input["id"]'),
+                        ],
+                        [
+                            'key' => 'value',
+                            'value' => new Expression('input["value"]'),
+                            'type' => 'boolean'
+                        ],
                     ]
                 ],
                 'connection' => [
@@ -801,15 +912,24 @@ final class ServiceTest extends TestCase
                             'condition' =>  new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
-                                'id' => new Expression('input["id"]'),
-                                'value' =>  new Expression('input["value"]'),
+                                [
+                                    'key' => 'id',
+                                    'value' => new Expression('input["id"]'),
+                                ],
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ],
                             ]
                         ],
                         [
                             'condition' => new Expression('input["id"] == 3'),
                             'query' => 'UPDATE foo SET value = :value WHERE id = 1',
                             'parameters' => [
-                                'value' =>  new Expression('input["value"]'),
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ],
                             ]
                         ]
                     ]
@@ -896,15 +1016,24 @@ final class ServiceTest extends TestCase
                             'condition' =>  new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
-                                'id' => new Expression('input["id"]'),
-                                'value' =>  new Expression('input["value"]'),
+                                [
+                                    'key' => 'id',
+                                    'value' => new Expression('input["id"]'),
+                                ],
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ],
                             ]
                         ],
                         [
                             'condition' => new Expression('input["id"] == 3'),
                             'query' => 'UPDATE foo SET value = :value WHERE id = 1',
                             'parameters' => [
-                                'value' =>  new Expression('input["value"]'),
+                                [
+                                    'key' => 'value',
+                                    'value' => new Expression('input["value"]'),
+                                ],
                             ]
                         ]
                     ]
@@ -928,7 +1057,7 @@ final class ServiceTest extends TestCase
         );
     }
 
-    public function checkData(string $query): array
+    private function checkData(string $query): array
     {
         $connection = new \PDO('sqlite::memory:', null, null, [
             \PDO::ATTR_PERSISTENT => true
@@ -940,7 +1069,7 @@ final class ServiceTest extends TestCase
         return $stmt->fetchAll(\PDO::FETCH_NAMED);
     }
 
-    public function testLoaderConfigurationWithPersistentConnection(): void
+    public function testExtractorConfigurationWithPersistentConnection(): void
     {
         $service = new Service();
 
@@ -962,7 +1091,10 @@ final class ServiceTest extends TestCase
                 'extractor' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => new Expression('3'),
+                        [
+                            'key' => 'identifier',
+                            'value' => new Expression('3')
+                        ]
                     ],
                 ],
                 'connection' => [
@@ -990,7 +1122,10 @@ final class ServiceTest extends TestCase
                     'extractor' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            'identifier' => '@=3',
+                            [
+                                'key' => 'identifier',
+                                'value' => '@=3'
+                            ]
                         ]
                     ],
                     'connection' => [

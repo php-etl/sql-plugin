@@ -80,8 +80,14 @@ final class Lookup implements FactoryInterface
             $lookup = new SQL\Builder\Lookup($alternativeBuilder);
 
             if (array_key_exists('parameters', $config)) {
-                foreach ($config["parameters"] as $key => $parameter) {
-                    $alternativeBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $parameter));
+                foreach ($config["parameters"] as $parameter) {
+                    $alternativeBuilder->addParam(
+                        new SQL\Builder\DTO\Parameter(
+                            $parameter["key"],
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            array_key_exists('type', $parameter) ? $parameter["type"] : null,
+                        )
+                    );
                 }
             }
 
@@ -95,8 +101,14 @@ final class Lookup implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative["parameters"] as $key => $parameter) {
-                        $alternativeBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $parameter));
+                    foreach ($alternative["parameters"] as $parameter) {
+                        $alternativeBuilder->addParam(
+                            new SQL\Builder\DTO\Parameter(
+                                $parameter["key"],
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                array_key_exists('type', $parameter) ? $parameter["type"] : null,
+                            )
+                        );
                     }
                 }
 

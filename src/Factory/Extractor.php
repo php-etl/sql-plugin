@@ -53,9 +53,15 @@ final class Extractor implements FactoryInterface
             compileValueWhenExpression($this->interpreter, $config['query']),
         );
 
-        if ($config['parameters'] !== null) {
-            foreach ($config["parameters"] as $key => $parameter) {
-                $extractor->addParameter($key, compileValueWhenExpression($this->interpreter, $parameter));
+        if (array_key_exists('parameters', $config)) {
+            foreach ($config["parameters"] as $parameter) {
+                $extractor->addParam(
+                    new SQL\Builder\DTO\Parameter(
+                        $parameter["key"],
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        array_key_exists('type', $parameter) ? $parameter["type"] : null
+                    )
+                );
             }
         }
 

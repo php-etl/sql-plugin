@@ -55,9 +55,15 @@ final class Loader implements FactoryInterface
                 compileValueWhenExpression($this->interpreter, $config["query"]),
             );
 
-            if ($config['parameters'] !== null) {
-                foreach ($config["parameters"] as $key => $parameter) {
-                    $loader->addParameter($key, compileValue($this->interpreter, $parameter));
+            if (array_key_exists('parameters', $config)) {
+                foreach ($config["parameters"] as $parameter) {
+                    $loader->addParam(
+                        new SQL\Builder\DTO\Parameter(
+                            $parameter["key"],
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            array_key_exists('type', $parameter) ? $parameter["type"] : null,
+                        )
+                    );
                 }
             }
         } else {
@@ -69,8 +75,14 @@ final class Loader implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative["parameters"] as $key => $parameter) {
-                        $alternativeLoaderBuilder->addParam($key, compileValueWhenExpression($this->interpreter, $parameter));
+                    foreach ($alternative["parameters"] as $parameter) {
+                        $alternativeLoaderBuilder->addParam(
+                            new SQL\Builder\DTO\Parameter(
+                                $parameter["key"],
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                array_key_exists('type', $parameter) ? $parameter["type"] : null,
+                            )
+                        );
                     }
                 }
 

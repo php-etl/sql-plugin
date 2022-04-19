@@ -4,6 +4,7 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Component\SatelliteToolbox\Builder\IsolatedValueAppendingBuilder;
 use Kiboko\Contract\Configurator\StepBuilderInterface;
+use Kiboko\Plugin\SQL\Builder\DTO\Parameter;
 use PhpParser\Builder;
 use PhpParser\Node;
 
@@ -46,9 +47,9 @@ final class AlternativeLookup implements StepBuilderInterface
         return $this;
     }
 
-    public function addParam(int|string $key, Node\Expr $param): StepBuilderInterface
+    public function addParam(Parameter $parameter): StepBuilderInterface
     {
-        $this->parameters[$key] = $param;
+        $this->parameters[] = $parameter;
 
         return $this;
     }
@@ -189,20 +190,32 @@ final class AlternativeLookup implements StepBuilderInterface
     {
         $output = [];
 
-        foreach ($this->parameters as $key => $parameter) {
+        /** @var Parameter $parameter */
+        foreach ($this->parameters as $parameter) {
             $output[] = new Node\Stmt\Expression(
                 expr: new Node\Expr\MethodCall(
                     var: new Node\Expr\Variable('stmt'),
                     name: new Node\Identifier('bindParam'),
-                    args: [
+                    args: array_filter([
                         new Node\Arg(
-                            is_string($key) ? new Node\Scalar\Encapsed([new Node\Scalar\EncapsedStringPart(':'), new Node\Scalar\EncapsedStringPart($key)]) : new Node\Scalar\LNumber($key)
+                            is_string($parameter->key) ? new Node\Scalar\Encapsed(
+                                [
+                                    new Node\Scalar\EncapsedStringPart(':'),
+                                    new Node\Scalar\EncapsedStringPart($parameter->key)
+                                ]
+                            ) : new Node\Scalar\LNumber($parameter->key)
                         ),
                         new Node\Arg(
-                            $parameter
+                            $parameter->value
                         ),
-                    ],
-                ),
+                        $parameter->type !== null ? new Node\Arg(
+                            value: new Node\Expr\ClassConstFetch(
+                                class: new Node\Name\FullyQualified(name: 'PDO'),
+                                name: $parameter->type === 'boolean' ? new Node\Identifier(name: 'PARAM_BOOL') : new Node\Identifier(name: 'PARAM_INT')
+                            )
+                        ) : null,
+                    ]),
+                )
             );
         }
 
