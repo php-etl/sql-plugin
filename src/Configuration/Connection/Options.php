@@ -10,7 +10,7 @@ use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 
 final class Options implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $builder = new TreeBuilder('options');
 
@@ -31,36 +31,6 @@ final class Options implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-
-        return $builder;
-    }
-
-    private function getConditionalTreeBuilder(): TreeBuilder
-    {
-        $builder = new TreeBuilder('conditional');
-
-        /** @phpstan-ignore-next-line */
-        $builder->getRootNode()
-            ->cannotBeEmpty()
-            ->requiresAtLeastOneElement()
-            ->validate()
-                ->ifTrue(fn ($data) => count($data) <= 0)
-                ->thenUnset()
-            ->end()
-            ->arrayPrototype()
-                ->children()
-                    ->variableNode('condition')
-                        ->validate()
-                            ->ifTrue(isExpression())
-                            ->then(asExpression())
-                        ->end()
-                    ->end()
-                    ->append((new Query())->getConfigTreeBuilder()->getRootNode())
-                    ->append((new Parameters())->getConfigTreeBuilder()->getRootNode())
-                    ->append((new FastMap\Configuration('merge'))->getConfigTreeBuilder()->getRootNode())
-                ->end()
-            ->end()
-        ->end();
 
         return $builder;
     }
