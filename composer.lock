@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1ac5522296554457e3da60f4b6ec9df",
+    "content-hash": "3a9fa8c8c89d5b5dee23f077e4f42514",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -159,7 +159,7 @@
         },
         {
             "name": "php-etl/configurator-contracts",
-            "version": "dev-master",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/configurator-contracts.git",
@@ -177,7 +177,6 @@
                 "php-etl/packaging-contracts": "^0.1.0",
                 "symfony/config": "^5.2"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -206,7 +205,7 @@
             "description": "This library describes contracts for defining configuration formats and building optimized code from it",
             "support": {
                 "issues": "https://github.com/php-etl/configurator-contracts/issues",
-                "source": "https://github.com/php-etl/configurator-contracts/tree/master"
+                "source": "https://github.com/php-etl/configurator-contracts/tree/v0.4.1"
             },
             "time": "2022-03-28T21:03:54+00:00"
         },
@@ -4659,9 +4658,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "php-etl/configurator-contracts": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
