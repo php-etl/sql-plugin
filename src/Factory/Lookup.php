@@ -33,7 +33,7 @@ final class Lookup implements FactoryInterface
     {
         try {
             return $this->processor->processConfiguration($this->configuration, $config);
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
+        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException $exception) {
             throw new InvalidConfigurationException($exception->getMessage(), 0, $exception);
         }
     }
@@ -44,7 +44,7 @@ final class Lookup implements FactoryInterface
             $this->processor->processConfiguration($this->configuration, $config);
 
             return true;
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException) {
+        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException) {
             return false;
         }
     }
@@ -80,14 +80,21 @@ final class Lookup implements FactoryInterface
             $lookup = new SQL\Builder\Lookup($alternativeBuilder);
 
             if (array_key_exists('parameters', $config)) {
-                foreach ($config["parameters"] as $parameter) {
-                    $alternativeBuilder->addParam(
-                        new SQL\Builder\DTO\Parameter(
-                            $parameter["key"],
+                foreach ($config["parameters"] as $key => $parameter) {
+                    match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
+                        'integer' => $alternativeBuilder->addIntegerParam(
+                            $key,
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
-                            array_key_exists('type', $parameter) ? $parameter["type"] : null,
-                        )
-                    );
+                        ),
+                        'boolean' => $alternativeBuilder->addBooleanParam(
+                            $key,
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        ),
+                        default => $alternativeBuilder->addStringParam(
+                            $key,
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        ),
+                    };
                 }
             }
 
@@ -101,14 +108,21 @@ final class Lookup implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative["parameters"] as $parameter) {
-                        $alternativeBuilder->addParam(
-                            new SQL\Builder\DTO\Parameter(
-                                $parameter["key"],
+                    foreach ($config["parameters"] as $key => $parameter) {
+                        match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
+                            'integer' => $alternativeBuilder->addIntegerParam(
+                                $key,
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
-                                array_key_exists('type', $parameter) ? $parameter["type"] : null,
-                            )
-                        );
+                            ),
+                            'boolean' => $alternativeBuilder->addBooleanParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            ),
+                            default => $alternativeBuilder->addStringParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            ),
+                        };
                     }
                 }
 

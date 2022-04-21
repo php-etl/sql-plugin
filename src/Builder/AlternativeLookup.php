@@ -47,9 +47,32 @@ final class AlternativeLookup implements StepBuilderInterface
         return $this;
     }
 
-    public function addParam(Parameter $parameter): StepBuilderInterface
+    public function addStringParam(int|string $key, Node\Expr $param): StepBuilderInterface
     {
-        $this->parameters[] = $parameter;
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'string',
+        ];
+
+        return $this;
+    }
+
+    public function addIntegerParam(int|string $key, Node\Expr $param): StepBuilderInterface
+    {
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'integer',
+        ];
+
+        return $this;
+    }
+
+    public function addBooleanParam(int|string $key, Node\Expr $param): StepBuilderInterface
+    {
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'boolean',
+        ];
 
         return $this;
     }
@@ -190,35 +213,54 @@ final class AlternativeLookup implements StepBuilderInterface
     {
         $output = [];
 
-        /** @var Parameter $parameter */
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $key => $parameter) {
             $output[] = new Node\Stmt\Expression(
                 expr: new Node\Expr\MethodCall(
                     var: new Node\Expr\Variable('stmt'),
                     name: new Node\Identifier('bindParam'),
                     args: array_filter([
                         new Node\Arg(
-                            is_string($parameter->key) ? new Node\Scalar\Encapsed(
+                            is_string($key) ? new Node\Scalar\Encapsed(
                                 [
                                     new Node\Scalar\EncapsedStringPart(':'),
-                                    new Node\Scalar\EncapsedStringPart($parameter->key)
+                                    new Node\Scalar\EncapsedStringPart($key)
                                 ]
-                            ) : new Node\Scalar\LNumber($parameter->key)
+                            ) : new Node\Scalar\LNumber($key)
                         ),
                         new Node\Arg(
-                            $parameter->value
+                            $parameter["value"]
                         ),
-                        $parameter->type !== null ? new Node\Arg(
-                            value: new Node\Expr\ClassConstFetch(
-                                class: new Node\Name\FullyQualified(name: 'PDO'),
-                                name: $parameter->type === 'boolean' ? new Node\Identifier(name: 'PARAM_BOOL') : new Node\Identifier(name: 'PARAM_INT')
-                            )
-                        ) : null,
+                        $this->compileParameterType($parameter)
                     ]),
                 )
             );
         }
 
         return $output;
+    }
+
+    private function compileParameterType(array $parameter): ?Node\Arg
+    {
+        return match ($parameter["type"]) {
+            'integer' => new Node\Arg(
+                value: new Node\Expr\ClassConstFetch(
+                    class: new Node\Name\FullyQualified(name: 'PDO'),
+                    name: new Node\Identifier(name: 'PARAM_INT')
+                )
+            ),
+            'boolean' => new Node\Arg(
+                value: new Node\Expr\ClassConstFetch(
+                    class: new Node\Name\FullyQualified(name: 'PDO'),
+                    name: new Node\Identifier(name: 'PARAM_BOOL')
+                )
+            ),
+            'string' => new Node\Arg(
+                value: new Node\Expr\ClassConstFetch(
+                    class: new Node\Name\FullyQualified(name: 'PDO'),
+                    name: new Node\Identifier(name: 'PARAM_STR')
+                )
+            ),
+            default => null
+        };
     }
 }

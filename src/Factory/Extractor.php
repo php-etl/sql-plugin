@@ -31,7 +31,7 @@ final class Extractor implements FactoryInterface
     {
         try {
             return $this->processor->processConfiguration($this->configuration, $config);
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
+        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException $exception) {
             throw new InvalidConfigurationException($exception->getMessage(), 0, $exception);
         }
     }
@@ -42,7 +42,7 @@ final class Extractor implements FactoryInterface
             $this->processor->processConfiguration($this->configuration, $config);
 
             return true;
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
+        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException $exception) {
             return false;
         }
     }
@@ -54,14 +54,21 @@ final class Extractor implements FactoryInterface
         );
 
         if (array_key_exists('parameters', $config)) {
-            foreach ($config["parameters"] as $parameter) {
-                $extractor->addParam(
-                    new SQL\Builder\DTO\Parameter(
-                        $parameter["key"],
+            foreach ($config["parameters"] as $key => $parameter) {
+                match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
+                    'integer' => $extractor->addIntegerParam(
+                        $key,
                         compileValueWhenExpression($this->interpreter, $parameter["value"]),
-                        array_key_exists('type', $parameter) ? $parameter["type"] : null
-                    )
-                );
+                    ),
+                    'boolean' => $extractor->addBooleanParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    default => $extractor->addStringParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                };
             }
         }
 

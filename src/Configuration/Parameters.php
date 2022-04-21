@@ -10,7 +10,7 @@ use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 
 class Parameters implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $builder = new TreeBuilder('parameters');
 
@@ -22,30 +22,17 @@ class Parameters implements ConfigurationInterface
                 })
                 ->thenUnset()
             ->end()
+            ->useAttributeAsKey('key')
             ->arrayPrototype()
                 ->children()
-                    ->variableNode('key')
-                        ->isRequired()
-                        ->validate()
-                            ->ifTrue(isExpression())
-                            ->then(asExpression())
-                        ->end()
-                        ->validate()
-                            ->ifTrue(function ($value) {
-                                return !is_string($value) && !is_int($value);
-                            })
-                            ->thenInvalid('The parameter\'s key must be of a string or an integer.')
-                        ->end()
-                    ->end()
                     ->scalarNode('value')
-                        ->isRequired()
                         ->validate()
                             ->ifTrue(isExpression())
                             ->then(asExpression())
                         ->end()
                     ->end()
                     ->enumNode('type')
-                        ->values(['boolean', 'integer'])
+                        ->values(['boolean', 'integer', 'string'])
                     ->end()
                 ->end()
             ->end();
