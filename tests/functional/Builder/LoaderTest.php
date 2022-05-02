@@ -41,7 +41,8 @@ final class LoaderTest extends TestCase
             [
                 'query' => 'INSERT INTO foo WHERE value IS NOT NULL AND id <= :identifier',
                 'parameters' => [
-                    'identifier' => [
+                    [
+                        'key' => 'identifier',
                         'value' => new Expression('3'),
                     ],
                 ],
@@ -50,9 +51,10 @@ final class LoaderTest extends TestCase
                 [
                     'query' => 'INSERT INTO foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => [
+                        [
+                            'key' => 'identifier',
                             'value' => '@=3',
-                        ],
+                        ]
                     ],
                 ],
             ]),

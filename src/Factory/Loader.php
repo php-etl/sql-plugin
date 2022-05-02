@@ -56,18 +56,18 @@ final class Loader implements FactoryInterface
             );
 
             if (array_key_exists('parameters', $config)) {
-                foreach ($config["parameters"] as $key => $parameter) {
+                foreach ($config["parameters"] as $parameter) {
                     match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
                         'integer' => $loader->addIntegerParam(
-                            $key,
+                            $parameter["key"],
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
                         ),
                         'boolean' => $loader->addBooleanParam(
-                            $key,
+                            $parameter["key"],
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
                         ),
                         default => $loader->addStringParam(
-                            $key,
+                            $parameter["key"],
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
                         ),
                     };
@@ -82,18 +82,18 @@ final class Loader implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative["parameters"] as $key => $parameter) {
+                    foreach ($alternative["parameters"] as $parameter) {
                         match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
                             'integer' => $alternativeLoaderBuilder->addIntegerParam(
-                                $key,
+                                $parameter["key"],
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
                             ),
                             'boolean' => $alternativeLoaderBuilder->addBooleanParam(
-                                $key,
+                                $parameter["key"],
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
                             ),
                             default => $alternativeLoaderBuilder->addStringParam(
-                                $key,
+                                $parameter["key"],
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
                             ),
                         };
