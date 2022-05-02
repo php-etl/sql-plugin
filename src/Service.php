@@ -14,9 +14,9 @@ use Symfony\Component\Config\Definition\Exception as Symfony;
         'ext-pdo',
     ],
     steps: [
-        "extractor" => "extractor",
-        "lookup" => "transformer",
-        "loader" => "loader",
+        new Configurator\Pipeline\StepExtractor(),
+        new Configurator\Pipeline\StepTransformer('lookup'),
+        new Configurator\Pipeline\StepLoader(),
     ],
 )]
 final class Service implements Configurator\PipelinePluginInterface
