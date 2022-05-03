@@ -23,8 +23,7 @@ final class ExtractorTest extends TestCase
                 [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
+                        'identifier' => [
                             'value' => '@=3',
                         ]
                     ],
@@ -41,8 +40,7 @@ final class ExtractorTest extends TestCase
             [
                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                 'parameters' => [
-                    [
-                        'key' => 'identifier',
+                    'identifier' => [
                         'value' => new Expression('3'),
                     ]
                 ],
@@ -51,8 +49,7 @@ final class ExtractorTest extends TestCase
                 [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
+                        'identifier' => [
                             'value' => '@=3',
                         ]
                     ],

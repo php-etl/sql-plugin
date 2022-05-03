@@ -80,18 +80,34 @@ final class Lookup implements FactoryInterface
             $lookup = new SQL\Builder\Lookup($alternativeBuilder);
 
             if (array_key_exists('parameters', $config)) {
-                foreach ($config["parameters"] as $parameter) {
+                foreach ($config["parameters"] as $key => $parameter) {
                     match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
                         'integer' => $alternativeBuilder->addIntegerParam(
-                            $parameter["key"],
+                            $key,
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
                         ),
                         'boolean' => $alternativeBuilder->addBooleanParam(
-                            $parameter["key"],
+                            $key,
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        ),
+                        'date' => $alternativeBuilder->addDateParam(
+                            $key,
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        ),
+                        'datetime' => $alternativeBuilder->addDateTimeParam(
+                            $key,
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        ),
+                        'json' => $alternativeBuilder->addJSONParam(
+                            $key,
+                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                        ),
+                        'binary' => $alternativeBuilder->addBinaryParam(
+                            $key,
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
                         ),
                         default => $alternativeBuilder->addStringParam(
-                            $parameter["key"],
+                            $key,
                             compileValueWhenExpression($this->interpreter, $parameter["value"]),
                         ),
                     };
@@ -108,18 +124,34 @@ final class Lookup implements FactoryInterface
                 );
 
                 if (array_key_exists('parameters', $alternative)) {
-                    foreach ($config["parameters"] as $parameter) {
+                    foreach ($config["parameters"] as $key => $parameter) {
                         match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
                             'integer' => $alternativeBuilder->addIntegerParam(
-                                $parameter["key"],
+                                $key,
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
                             ),
                             'boolean' => $alternativeBuilder->addBooleanParam(
-                                $parameter["key"],
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            ),
+                            'date' => $alternativeBuilder->addDateParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            ),
+                            'datetime' => $alternativeBuilder->addDateTimeParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            ),
+                            'json' => $alternativeBuilder->addJSONParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            ),
+                            'binary' => $alternativeBuilder->addBinaryParam(
+                                $key,
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
                             ),
                             default => $alternativeBuilder->addStringParam(
-                                $parameter["key"],
+                                $key,
                                 compileValueWhenExpression($this->interpreter, $parameter["value"]),
                             ),
                         };

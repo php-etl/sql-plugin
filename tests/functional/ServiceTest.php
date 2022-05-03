@@ -50,10 +50,9 @@ final class ServiceTest extends TestCase
                 'extractor' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                         [
-                            'key' => 'identifier',
+                        'identifier' => [
                             'value' => new Expression('3')
-                        ],
+                        ]
                     ],
                 ],
                 'connection' => [
@@ -78,8 +77,7 @@ final class ServiceTest extends TestCase
                     'extractor' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
+                            'identifier' => [
                                 'value' => '@=3'
                             ]
                         ],
@@ -114,8 +112,7 @@ final class ServiceTest extends TestCase
                 'lookup' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
+                        'identifier' => [
                             'value' => new Expression('3'),
                         ]
                     ],
@@ -150,8 +147,7 @@ final class ServiceTest extends TestCase
                     'lookup' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
+                            'identifier' => [
                                 'value' => '@=3',
                             ]
                         ],
@@ -197,8 +193,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 0'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
+                                'identifier' => [
                                     'value' => new Expression('3'),
                                 ]
                             ],
@@ -215,8 +210,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 1'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
+                                'identifier' => [
                                     'value' => new Expression('3'),
                                 ]
                             ],
@@ -256,8 +250,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 0'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
+                                    'identifier' => [
                                         'value' => '@=3',
                                     ],
                                 ],
@@ -274,8 +267,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 1'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
+                                    'identifier' => [
                                         'value' => '@=3',
                                     ],
                                 ],
@@ -320,8 +312,7 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
+                        'identifier' => [
                             'value' => new Expression('3'),
                         ],
                     ]
@@ -348,8 +339,7 @@ final class ServiceTest extends TestCase
                     'loader' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
+                            'identifier' => [
                                 'value' => '@=3',
                             ],
                         ]
@@ -387,8 +377,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 0'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
+                                'identifier' => [
                                     'value' => new Expression('3'),
                                 ],
                             ],
@@ -405,8 +394,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('(input["identifier"] % 2) == 1'),
                             'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                             'parameters' => [
-                                [
-                                    'key' => 'identifier',
+                                'identifier' => [
                                     'value' => new Expression('3'),
                                 ],
                             ],
@@ -446,8 +434,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 0'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
+                                    'identifier' => [
                                         'value' => '@=3',
                                     ],
                                 ],
@@ -464,8 +451,7 @@ final class ServiceTest extends TestCase
                                 'condition' => new Expression('(input["identifier"] % 2) == 1'),
                                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                                 'parameters' => [
-                                    [
-                                        'key' => 'identifier',
+                                    'identifier' => [
                                         'value' => '@=3',
                                     ],
                                 ],
@@ -571,8 +557,7 @@ final class ServiceTest extends TestCase
                 'lookup' => [
                     'query' => 'SELECT additionalValue FROM foo WHERE id = :id',
                     'parameters' => [
-                        [
-                            'key' => 'id',
+                        'id' => [
                             'value' => new Expression('input["id"]')
                         ],
                     ],
@@ -696,12 +681,10 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        [
-                            'key' => 'id',
+                        'id' => [
                             'value' => new Expression('input["id"]'),
                         ],
-                        [
-                            'key' => 'value',
+                        'value' => [
                             'value' => new Expression('input["value"]')
                         ],
                     ]
@@ -774,12 +757,10 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
+                        'id' => [
                             'value' => new Expression('input["id"]'),
                         ],
-                        [
-                            'key' => 'value',
+                        'value'=> [
                             'value' => new Expression('input["value"]'),
                         ],
                     ]
@@ -843,12 +824,10 @@ final class ServiceTest extends TestCase
                 'loader' => [
                     'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                     'parameters' => [
-                        [
-                            'key' => 'id',
+                        'id' => [
                             'value' => new Expression('input["id"]'),
                         ],
-                        [
-                            'key' => 'value',
+                        'value' => [
                             'value' => new Expression('input["value"]'),
                             'type' => 'boolean'
                         ],
@@ -912,12 +891,10 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
-                                [
-                                    'key' => 'id',
+                                'id' => [
                                     'value' => new Expression('input["id"]'),
                                 ],
-                                [
-                                    'key' => 'value',
+                                'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
                             ]
@@ -926,8 +903,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('input["id"] == 3'),
                             'query' => 'UPDATE foo SET value = :value WHERE id = 1',
                             'parameters' => [
-                                [
-                                    'key' => 'value',
+                                'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
                             ]
@@ -1016,12 +992,10 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('input["id"] == 2'),
                             'query' => 'INSERT INTO foo (id, value) VALUES (:id, :value)',
                             'parameters' => [
-                                [
-                                    'key' => 'id',
+                                'id' => [
                                     'value' => new Expression('input["id"]'),
                                 ],
-                                [
-                                    'key' => 'value',
+                                'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
                             ]
@@ -1030,8 +1004,7 @@ final class ServiceTest extends TestCase
                             'condition' => new Expression('input["id"] == 3'),
                             'query' => 'UPDATE foo SET value = :value WHERE id = 1',
                             'parameters' => [
-                                [
-                                    'key' => 'value',
+                                'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
                             ]
@@ -1091,8 +1064,7 @@ final class ServiceTest extends TestCase
                 'extractor' => [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        [
-                            'key' => 'identifier',
+                        'identifier' => [
                             'value' => new Expression('3')
                         ]
                     ],
@@ -1122,8 +1094,7 @@ final class ServiceTest extends TestCase
                     'extractor' => [
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
-                            [
-                                'key' => 'identifier',
+                            'identifier' => [
                                 'value' => '@=3'
                             ]
                         ]

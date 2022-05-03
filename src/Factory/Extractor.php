@@ -54,18 +54,34 @@ final class Extractor implements FactoryInterface
         );
 
         if (array_key_exists('parameters', $config)) {
-            foreach ($config["parameters"] as $parameter) {
+            foreach ($config["parameters"] as $key => $parameter) {
                 match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
                     'integer' => $extractor->addIntegerParam(
-                        $parameter["key"],
+                        $key,
                         compileValueWhenExpression($this->interpreter, $parameter["value"]),
                     ),
                     'boolean' => $extractor->addBooleanParam(
-                        $parameter["key"],
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'date' => $extractor->addDateParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'datetime' => $extractor->addDateTimeParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'json' => $extractor->addJSONParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'binary' => $extractor->addBinaryParam(
+                        $key,
                         compileValueWhenExpression($this->interpreter, $parameter["value"]),
                     ),
                     default => $extractor->addStringParam(
-                        $parameter["key"],
+                        $key,
                         compileValueWhenExpression($this->interpreter, $parameter["value"]),
                     ),
                 };

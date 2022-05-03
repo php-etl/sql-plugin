@@ -77,6 +77,46 @@ final class AlternativeLookup implements StepBuilderInterface
         return $this;
     }
 
+    public function addDateParam(int|string $key, Node\Expr $param): self
+    {
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'date',
+        ];
+
+        return $this;
+    }
+
+    public function addDateTimeParam(int|string $key, Node\Expr $param): self
+    {
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'datetime',
+        ];
+
+        return $this;
+    }
+
+    public function addJSONParam(int|string $key, Node\Expr $param): self
+    {
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'json',
+        ];
+
+        return $this;
+    }
+
+    public function addBinaryParam(int|string $key, Node\Expr $param): self
+    {
+        $this->parameters[$key] = [
+            'value' => $param,
+            'type' => 'binary',
+        ];
+
+        return $this;
+    }
+
     public function withMerge(Builder $merge): self
     {
         $this->merge = $merge;
