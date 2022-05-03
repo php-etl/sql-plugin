@@ -56,28 +56,28 @@ final class Loader implements StepBuilderInterface
         return $this;
     }
 
-    public function withBeforeQuery(?InitializerQueries $query): self
+    public function withBeforeQuery(InitializerQueries $query): self
     {
-        array_push($this->beforeQueries, $query);
+        $this->beforeQueries[] = $query;
 
         return $this;
     }
 
-    public function withBeforeQueries(?InitializerQueries ...$queries): self
+    public function withBeforeQueries(InitializerQueries ...$queries): self
     {
         array_push($this->beforeQueries, ...$queries);
 
         return $this;
     }
 
-    public function withAfterQuery(?InitializerQueries $query): self
+    public function withAfterQuery(InitializerQueries $query): self
     {
-        array_push($this->afterQueries, $query);
+        $this->afterQueries[] = $query;
 
         return $this;
     }
 
-    public function withAfterQueries(?InitializerQueries ...$queries): self
+    public function withAfterQueries(InitializerQueries ...$queries): self
     {
         array_push($this->afterQueries, ...$queries);
 

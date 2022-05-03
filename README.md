@@ -146,6 +146,3 @@ sql:
       - 'DROP TABLE foo'
   # ...
 ```
-
-## See more
-If you want to see complete configurations, please go to the [examples](/examples) folder.
