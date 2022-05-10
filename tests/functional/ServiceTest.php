@@ -457,11 +457,11 @@ final class ServiceTest extends TestCase
         $this->assertBuildsExtractorExtractsExactly(
             [
                 [
-                    'id' => '1',
+                    'id' => 1,
                     'value' => 'Lorem ipsum dolor',
                 ],
                 [
-                    'id' => '2',
+                    'id' => 2,
                     'value' => 'Sit amet consecutir',
                 ],
             ],
