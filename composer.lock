@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16f773b15e09fb2510a70215384657f8",
+    "content-hash": "8e95147526c6bedd73a88a4c781deba3",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -159,16 +159,16 @@
         },
         {
             "name": "php-etl/configurator-contracts",
-            "version": "v0.4.0",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/configurator-contracts.git",
-                "reference": "46ffa3bd58a7c60a3150b6ccdf505d12d039a261"
+                "reference": "c98c11de81f004c6c96351d108b36de574d8c60d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/configurator-contracts/zipball/46ffa3bd58a7c60a3150b6ccdf505d12d039a261",
-                "reference": "46ffa3bd58a7c60a3150b6ccdf505d12d039a261",
+                "url": "https://api.github.com/repos/php-etl/configurator-contracts/zipball/c98c11de81f004c6c96351d108b36de574d8c60d",
+                "reference": "c98c11de81f004c6c96351d108b36de574d8c60d",
                 "shasum": ""
             },
             "require": {
@@ -205,9 +205,9 @@
             "description": "This library describes contracts for defining configuration formats and building optimized code from it",
             "support": {
                 "issues": "https://github.com/php-etl/configurator-contracts/issues",
-                "source": "https://github.com/php-etl/configurator-contracts/tree/v0.4.0"
+                "source": "https://github.com/php-etl/configurator-contracts/tree/v0.4.1"
             },
-            "time": "2021-09-26T19:30:48+00:00"
+            "time": "2022-03-28T21:03:54+00:00"
         },
         {
             "name": "php-etl/fast-map",
@@ -4727,5 +4727,5 @@
         "php": "^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

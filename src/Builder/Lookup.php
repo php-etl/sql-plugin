@@ -190,6 +190,7 @@ final class Lookup implements StepBuilderInterface
                 new Node\Arg(
                     value: $this->compileAfterQueries()
                 ),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
             ],
         );
     }

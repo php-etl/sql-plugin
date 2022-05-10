@@ -130,6 +130,7 @@ final class Loader implements StepBuilderInterface
                     : new Node\Expr\Array_(attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
                     ]),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
             ],
         );
     }
