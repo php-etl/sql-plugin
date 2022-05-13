@@ -10,7 +10,7 @@ final class ConditionalLookup implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    /** @var array<Node\Expr> */
+    /** @var array<array{Node\Expr, AlternativeLoader}> */
     private iterable $alternatives;
     /** @var array<int, InitializerQueries> */
     private array $beforeQueries;

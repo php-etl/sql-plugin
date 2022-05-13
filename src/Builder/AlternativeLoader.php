@@ -10,7 +10,7 @@ final class AlternativeLoader implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    /** @var array<string|int<Node\Expr, string>> */
+    /** @var array<array-key, array{value: Node\Expr, type: string}> */
     private array $parameters;
 
     public function __construct(
