@@ -4,16 +4,15 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Contract\Configurator\StepBuilderInterface;
 use PhpParser\Node;
-use function Kiboko\Component\SatelliteToolbox\AST\variable;
 
 final class Loader implements StepBuilderInterface
 {
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $beforeQueries;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $afterQueries;
     private array $parameters;
 

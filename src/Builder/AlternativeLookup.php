@@ -4,7 +4,6 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Component\SatelliteToolbox\Builder\IsolatedValueAppendingBuilder;
 use Kiboko\Contract\Configurator\StepBuilderInterface;
-use Kiboko\Plugin\SQL\Builder\DTO\Parameter;
 use PhpParser\Builder;
 use PhpParser\Node;
 
@@ -13,7 +12,7 @@ final class AlternativeLookup implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    /** @var array<Node\Expr> */
+    /** @var array<string|int<Node\Expr, string>> */
     private array $parameters;
     private ?Builder $merge;
 

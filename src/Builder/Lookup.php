@@ -10,9 +10,9 @@ final class Lookup implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $beforeQueries;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $afterQueries;
 
     public function __construct(

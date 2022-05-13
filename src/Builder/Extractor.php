@@ -3,7 +3,6 @@
 namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Contract\Configurator\StepBuilderInterface;
-use Kiboko\Plugin\SQL\Builder\DTO\Parameter;
 use PhpParser\Node;
 
 final class Extractor implements StepBuilderInterface
@@ -11,9 +10,9 @@ final class Extractor implements StepBuilderInterface
     private ?Node\Expr $logger;
     private ?Node\Expr $rejection;
     private ?Node\Expr $state;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $beforeQueries;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $afterQueries;
     private array $parameters;
 

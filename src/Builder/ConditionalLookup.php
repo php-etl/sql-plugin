@@ -12,9 +12,9 @@ final class ConditionalLookup implements StepBuilderInterface
     private ?Node\Expr $state;
     /** @var array<Node\Expr> */
     private iterable $alternatives;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $beforeQueries;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $afterQueries;
 
     public function __construct(
