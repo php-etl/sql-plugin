@@ -246,37 +246,121 @@ final class AlternativeLookup implements StepBuilderInterface
         ))->getNode();
     }
 
-    /**
-     * @return array<int, Node\Stmt\Expression>
-     */
-    public function compileParameters(): array
+    public function compileParameters(): iterable
     {
-        $output = [];
-
         foreach ($this->parameters as $key => $parameter) {
-            $output[] = new Node\Stmt\Expression(
-                expr: new Node\Expr\MethodCall(
-                    var: new Node\Expr\Variable('stmt'),
-                    name: new Node\Identifier('bindParam'),
-                    args: array_filter([
-                        new Node\Arg(
-                            is_string($key) ? new Node\Scalar\Encapsed(
-                                [
-                                    new Node\Scalar\EncapsedStringPart(':'),
-                                    new Node\Scalar\EncapsedStringPart($key)
-                                ]
-                            ) : new Node\Scalar\LNumber($key)
-                        ),
-                        new Node\Arg(
-                            $parameter["value"]
-                        ),
-                        $this->compileParameterType($parameter)
-                    ]),
-                )
-            );
+            yield match ($parameter['type']) {
+                'datetime' => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('stmt'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
+                            ),
+                            new Node\Arg(
+                                value: new Node\Expr\StaticCall(
+                                    class: new Node\Name('DateTimeImmutable'),
+                                    name: new Node\Name('createFromFormat'),
+                                    args: [
+                                        new Node\Arg(
+                                            value: new Node\Scalar\String_('YYYY-MM-DD HH:MI:SS')
+                                        ),
+                                        new Node\Arg(
+                                            value: $parameter['value']
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            $this->compileParameterType($parameter)
+                        ],
+                    ),
+                ),
+                'date' => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('stmt'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
+                            ),
+                            new Node\Arg(
+                                value: new Node\Expr\StaticCall(
+                                    class: new Node\Name('DateTimeImmutable'),
+                                    name: new Node\Name('createFromFormat'),
+                                    args: [
+                                        new Node\Arg(
+                                            value: new Node\Scalar\String_('YYYY-MM-DD')
+                                        ),
+                                        new Node\Arg(
+                                            value: $parameter['value']
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            $this->compileParameterType($parameter)
+                        ],
+                    ),
+                ),
+                'json' => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('stmt'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
+                            ),
+                            new Node\Arg(
+                                new Node\Expr\FuncCall(
+                                    name: new Node\Name('json_decode'),
+                                    args: [
+                                        new Node\Arg(
+                                            value: $parameter['value']
+                                        )
+                                    ],
+                                ),
+                            ),
+                            $this->compileParameterType($parameter)
+                        ],
+                    ),
+                ),
+                default => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('stmt'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
+                            ),
+                            new Node\Arg(
+                                $parameter["value"]
+                            ),
+                            $this->compileParameterType($parameter)
+                        ],
+                    ),
+                ),
+            };
         }
-
-        return $output;
     }
 
     private function compileParameterType(array $parameter): ?Node\Arg
@@ -294,13 +378,18 @@ final class AlternativeLookup implements StepBuilderInterface
                     name: new Node\Identifier(name: 'PARAM_BOOL')
                 )
             ),
-            'string' => new Node\Arg(
+            'binary' => new Node\Arg(
+                value: new Node\Expr\ClassConstFetch(
+                    class: new Node\Name\FullyQualified(name: 'PDO'),
+                    name: new Node\Identifier(name: 'PARAM_LOB')
+                )
+            ),
+            default => new Node\Arg(
                 value: new Node\Expr\ClassConstFetch(
                     class: new Node\Name\FullyQualified(name: 'PDO'),
                     name: new Node\Identifier(name: 'PARAM_STR')
                 )
-            ),
-            default => null
+            )
         };
     }
 }

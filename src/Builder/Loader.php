@@ -249,132 +249,94 @@ final class Loader implements StepBuilderInterface
     {
         foreach ($this->parameters as $key => $parameter) {
             yield match ($parameter['type']) {
-                'datetime' => [
-                    new Node\Stmt\Expression(
-                        expr: new Node\Expr\Assign(
-                            var: new Node\Expr\Variable('datetime'),
-                            expr: new Node\Expr\FuncCall(
-                                name: new Node\Name('strtotime'),
-                                args: [
-                                    new Node\Arg(
-                                        value: new Node\Expr\MethodCall(
-                                            var: $parameter['value'],
-                                            name: new Node\Name('format'),
-                                            args: [
-                                                new Node\Arg(
-                                                    value: new Node\Scalar\String_('YYYY-MM-DD HH:MI:SS')
-                                                ),
-                                            ],
+                'datetime' => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('statement'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
+                            ),
+                            new Node\Arg(
+                                value: new Node\Expr\MethodCall(
+                                    var: $parameter['value'],
+                                    name: new Node\Name('format'),
+                                    args: [
+                                        new Node\Arg(
+                                            value: new Node\Scalar\String_('YYYY-MM-DD HH:MI:SS')
                                         ),
-                                    ),
-                                ],
+                                    ],
+                                ),
                             ),
-                        ),
+                            $this->compileParameterType($parameter)
+                        ],
                     ),
-                    new Node\Stmt\Expression(
-                        new Node\Expr\MethodCall(
-                            var: new Node\Expr\Variable('statement'),
-                            name: new Node\Identifier('bindParam'),
-                            args: array_filter([
-                                new Node\Arg(
-                                    is_string($key) ? new Node\Scalar\Encapsed(
-                                        [
-                                            new Node\Scalar\EncapsedStringPart(':'),
-                                            new Node\Scalar\EncapsedStringPart($key)
-                                        ]
-                                    ) : new Node\Scalar\LNumber($key)
-                                ),
-                                new Node\Arg(
-                                    new Node\Expr\Variable('datetime')
-                                ),
-                                $this->compileParameterType($parameter)
-                            ]),
-                        ),
-                    ),
-                ],
-                'date' => [
-                    new Node\Stmt\Expression(
-                        expr: new Node\Expr\Assign(
-                            var: new Node\Expr\Variable('date'),
-                            expr: new Node\Expr\FuncCall(
-                                name: new Node\Name('strtotime'),
-                                args: [
-                                    new Node\Arg(
-                                        value: new Node\Expr\MethodCall(
-                                            var: $parameter['value'],
-                                            name: new Node\Name('format'),
-                                            args: [
-                                                new Node\Arg(
-                                                    value: new Node\Scalar\String_('YYYY-MM-DD')
-                                                ),
-                                            ],
+                ),
+                'date' => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('statement'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
+                            ),
+                            new Node\Arg(
+                                value: new Node\Expr\MethodCall(
+                                    var: $parameter['value'],
+                                    name: new Node\Name('format'),
+                                    args: [
+                                        new Node\Arg(
+                                            value: new Node\Scalar\String_('YYYY-MM-DD')
                                         ),
-                                    ),
-                                ],
+                                    ],
+                                ),
                             ),
-                        ),
+                            $this->compileParameterType($parameter)
+                        ],
                     ),
-                    new Node\Stmt\Expression(
-                        new Node\Expr\MethodCall(
-                            var: new Node\Expr\Variable('statement'),
-                            name: new Node\Identifier('bindParam'),
-                            args: array_filter([
-                                new Node\Arg(
-                                    is_string($key) ? new Node\Scalar\Encapsed(
-                                        [
-                                            new Node\Scalar\EncapsedStringPart(':'),
-                                            new Node\Scalar\EncapsedStringPart($key)
-                                        ]
-                                    ) : new Node\Scalar\LNumber($key)
-                                ),
-                                new Node\Arg(
-                                    new Node\Expr\Variable('date')
-                                ),
-                                $this->compileParameterType($parameter)
-                            ]),
-                        ),
-                    ),
-                ],
-                'json' => [
-                    new Node\Stmt\Expression(
-                        expr: new Node\Expr\Assign(
-                            var: new Node\Expr\Variable('json'),
-                            expr: new Node\Expr\FuncCall(
-                                name: new Node\Name('json_encode'),
-                                args: [
-                                    new Node\Arg(
-                                        value: $parameter['value']
-                                    )
-                                ],
+                ),
+                'json' => new Node\Stmt\Expression(
+                    new Node\Expr\MethodCall(
+                        var: new Node\Expr\Variable('statement'),
+                        name: new Node\Identifier('bindValue'),
+                        args: [
+                            new Node\Arg(
+                                is_string($key) ? new Node\Scalar\Encapsed(
+                                    [
+                                        new Node\Scalar\EncapsedStringPart(':'),
+                                        new Node\Scalar\EncapsedStringPart($key)
+                                    ]
+                                ) : new Node\Scalar\LNumber($key)
                             ),
-                        ),
-                    ),
-                    new Node\Stmt\Expression(
-                        new Node\Expr\MethodCall(
-                            var: new Node\Expr\Variable('statement'),
-                            name: new Node\Identifier('bindParam'),
-                            args: array_filter([
-                                new Node\Arg(
-                                    is_string($key) ? new Node\Scalar\Encapsed(
-                                        [
-                                            new Node\Scalar\EncapsedStringPart(':'),
-                                            new Node\Scalar\EncapsedStringPart($key)
-                                        ]
-                                    ) : new Node\Scalar\LNumber($key)
+                            new Node\Arg(
+                                new Node\Expr\FuncCall(
+                                    name: new Node\Name('json_encode'),
+                                    args: [
+                                        new Node\Arg(
+                                            value: $parameter['value']
+                                        )
+                                    ],
                                 ),
-                                new Node\Arg(
-                                    new Node\Expr\Variable('json')
-                                ),
-                                $this->compileParameterType($parameter)
-                            ]),
-                        ),
+                            ),
+                            $this->compileParameterType($parameter)
+                        ],
                     ),
-                ],
+                ),
                 default => new Node\Stmt\Expression(
                     new Node\Expr\MethodCall(
                         var: new Node\Expr\Variable('statement'),
-                        name: new Node\Identifier('bindParam'),
-                        args: array_filter([
+                        name: new Node\Identifier('bindValue'),
+                        args: [
                             new Node\Arg(
                                 is_string($key) ? new Node\Scalar\Encapsed(
                                     [
@@ -387,7 +349,7 @@ final class Loader implements StepBuilderInterface
                                 $parameter["value"]
                             ),
                             $this->compileParameterType($parameter)
-                        ]),
+                        ],
                     ),
                 ),
             };
