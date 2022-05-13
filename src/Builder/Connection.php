@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -7,9 +9,6 @@ use PhpParser\Node;
 
 final class Connection implements Builder
 {
-    private ?Node\Expr $logger;
-    private ?Node\Expr $rejection;
-    private ?Node\Expr $state;
     private ?bool $persistentConnection;
 
     public function __construct(
@@ -17,9 +16,6 @@ final class Connection implements Builder
         private ?Node\Expr $username = null,
         private ?Node\Expr $password = null
     ) {
-        $this->logger = null;
-        $this->rejection = null;
-        $this->state = null;
         $this->persistentConnection = null;
     }
 

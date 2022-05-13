@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -159,11 +161,12 @@ final class ConditionalLoader implements StepBuilderInterface
                 ),
                 $this->afterQueries ? new Node\Arg(
                     value: $this->compileAfterQueries()
-                ): new Node\Expr\Array_(
+                ) : new Node\Expr\Array_(
                     attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
                     ],
                 ),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
             ],
         );
     }

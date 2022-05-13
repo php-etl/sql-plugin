@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -243,6 +245,7 @@ final class ConditionalLookup implements StepBuilderInterface
                 new Node\Arg(
                     value: $this->compileAfterQueries()
                 ),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
             ],
         );
     }

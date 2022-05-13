@@ -12,13 +12,8 @@ class Loader implements StepRepositoryInterface
 {
     use RepositoryTrait;
 
-    private Node\Expr\Variable $connectionVariable;
-
     public function __construct(private SQL\Builder\Loader|SQL\Builder\ConditionalLoader $builder)
     {
-        $this->files = [];
-        $this->packages = [];
-        $this->connectionVariable = variable('connection');
     }
 
     public function withConnection(Connection $connection): self
