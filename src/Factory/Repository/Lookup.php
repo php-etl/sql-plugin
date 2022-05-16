@@ -14,6 +14,8 @@ class Lookup implements StepRepositoryInterface
 
     public function __construct(private SQL\Builder\Lookup|SQL\Builder\ConditionalLookup $builder)
     {
+        $this->files = [];
+        $this->packages = [];
     }
 
     public function withConnection(Connection $connection): self

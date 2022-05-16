@@ -9,40 +9,28 @@ use PhpParser\Node;
 
 final class AlternativeLookup implements StepBuilderInterface
 {
-    private ?Node\Expr $logger;
-    private ?Node\Expr $rejection;
-    private ?Node\Expr $state;
     /** @var array<array-key, array{value: Node\Expr, type: string}> */
     private array $parameters;
     private ?Builder $merge;
 
     public function __construct(private Node\Expr $query)
     {
-        $this->logger = null;
-        $this->rejection = null;
-        $this->state = null;
         $this->parameters = [];
         $this->merge = null;
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
     {
-        $this->logger = $logger;
-
         return $this;
     }
 
     public function withRejection(Node\Expr $rejection): StepBuilderInterface
     {
-        $this->rejection = $rejection;
-
         return $this;
     }
 
     public function withState(Node\Expr $state): StepBuilderInterface
     {
-        $this->state = $state;
-
         return $this;
     }
 
@@ -362,7 +350,7 @@ final class AlternativeLookup implements StepBuilderInterface
         }
     }
 
-    private function compileParameterType(array $parameter): ?Node\Arg
+    private function compileParameterType(array $parameter): Node\Arg
     {
         return match ($parameter["type"]) {
             'integer' => new Node\Arg(

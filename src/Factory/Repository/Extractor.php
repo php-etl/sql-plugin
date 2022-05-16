@@ -14,6 +14,8 @@ class Extractor implements StepRepositoryInterface
 
     public function __construct(private SQL\Builder\Extractor $builder)
     {
+        $this->files = [];
+        $this->packages = [];
     }
 
     public function withConnection(Connection $connection): self

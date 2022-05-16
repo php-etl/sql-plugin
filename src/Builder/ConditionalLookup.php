@@ -10,8 +10,6 @@ use PhpParser\Node;
 final class ConditionalLookup implements StepBuilderInterface
 {
     private ?Node\Expr $logger;
-    private ?Node\Expr $rejection;
-    private ?Node\Expr $state;
     /** @var array<array{Node\Expr, AlternativeLoader}> */
     private iterable $alternatives;
     /** @var array<int, InitializerQueries> */
@@ -23,8 +21,6 @@ final class ConditionalLookup implements StepBuilderInterface
         private null|Node\Expr|Connection $connection = null
     ) {
         $this->logger = null;
-        $this->rejection = null;
-        $this->state = null;
         $this->alternatives = [];
         $this->beforeQueries = [];
         $this->afterQueries = [];
@@ -39,15 +35,11 @@ final class ConditionalLookup implements StepBuilderInterface
 
     public function withRejection(Node\Expr $rejection): StepBuilderInterface
     {
-        $this->rejection = $rejection;
-
         return $this;
     }
 
     public function withState(Node\Expr $state): StepBuilderInterface
     {
-        $this->state = $state;
-
         return $this;
     }
 
