@@ -9,10 +9,8 @@ use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 
 class Query implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $builder = new TreeBuilder('query', 'scalar');
-
-        return $builder;
+        return new TreeBuilder('query', 'scalar');
     }
 }

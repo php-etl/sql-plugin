@@ -9,7 +9,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Config\Definition\Exception as Symfony;
-use function Kiboko\Component\SatelliteToolbox\Configuration\compileValue;
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Extractor implements FactoryInterface
@@ -32,7 +31,7 @@ final class Extractor implements FactoryInterface
     {
         try {
             return $this->processor->processConfiguration($this->configuration, $config);
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
+        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException $exception) {
             throw new InvalidConfigurationException($exception->getMessage(), 0, $exception);
         }
     }
@@ -43,7 +42,7 @@ final class Extractor implements FactoryInterface
             $this->processor->processConfiguration($this->configuration, $config);
 
             return true;
-        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
+        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException $exception) {
             return false;
         }
     }
@@ -54,9 +53,38 @@ final class Extractor implements FactoryInterface
             compileValueWhenExpression($this->interpreter, $config['query']),
         );
 
-        if ($config['parameters'] != null) {
-            foreach ($config["parameters"] as $key => $value) {
-                $extractor->addParameter($key, compileValue($this->interpreter, $value));
+        if (array_key_exists('parameters', $config)) {
+            foreach ($config["parameters"] as $key => $parameter) {
+                match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
+                    'integer' => $extractor->addIntegerParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'boolean' => $extractor->addBooleanParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'date' => $extractor->addDateParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'datetime' => $extractor->addDateTimeParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'json' => $extractor->addJSONParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    'binary' => $extractor->addBinaryParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                    default => $extractor->addStringParam(
+                        $key,
+                        compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                    ),
+                };
             }
         }
 

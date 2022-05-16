@@ -3,6 +3,7 @@
 namespace functional\Kiboko\Plugin\SQL;
 
 use Kiboko\Component\PHPUnitExtension\Assert;
+use Kiboko\Contract\Pipeline\PipelineRunnerInterface;
 use Kiboko\Plugin\SQL\Factory\Extractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -22,7 +23,9 @@ final class ExtractorTest extends TestCase
                 [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => '@=3',
+                        'identifier' => [
+                            'value' => '@=3',
+                        ]
                     ],
                 ],
             ]),
@@ -37,17 +40,26 @@ final class ExtractorTest extends TestCase
             [
                 'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                 'parameters' => [
-                    'identifier' => new Expression('3'),
+                    'identifier' => [
+                        'value' => new Expression('3'),
+                    ]
                 ],
             ],
             $extractor->normalize([
                 [
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
-                        'identifier' => '@=3',
+                        'identifier' => [
+                            'value' => '@=3',
+                        ]
                     ],
                 ],
             ]),
         );
+    }
+
+    public function pipelineRunner(): PipelineRunnerInterface
+    {
+        return new PipelineRunner();
     }
 }

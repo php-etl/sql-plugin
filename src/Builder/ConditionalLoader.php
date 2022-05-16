@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -8,21 +10,17 @@ use PhpParser\Node;
 final class ConditionalLoader implements StepBuilderInterface
 {
     private ?Node\Expr $logger;
-    private ?Node\Expr $rejection;
-    private ?Node\Expr $state;
-    /** @var array<Node\Expr> */
+    /** @var array<array{Node\Expr, AlternativeLoader}> */
     private iterable $alternatives;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $beforeQueries;
-    /** @var array<int, Node\Expr> */
+    /** @var array<int, InitializerQueries> */
     private array $afterQueries;
 
     public function __construct(
         private null|Node\Expr|Connection $connection = null,
     ) {
         $this->logger = null;
-        $this->rejection = null;
-        $this->state = null;
         $this->alternatives = [];
         $this->beforeQueries = [];
         $this->afterQueries = [];
@@ -37,15 +35,11 @@ final class ConditionalLoader implements StepBuilderInterface
 
     public function withRejection(Node\Expr $rejection): StepBuilderInterface
     {
-        $this->rejection = $rejection;
-
         return $this;
     }
 
     public function withState(Node\Expr $state): StepBuilderInterface
     {
-        $this->state = $state;
-
         return $this;
     }
 
@@ -159,11 +153,12 @@ final class ConditionalLoader implements StepBuilderInterface
                 ),
                 $this->afterQueries ? new Node\Arg(
                     value: $this->compileAfterQueries()
-                ): new Node\Expr\Array_(
+                ) : new Node\Expr\Array_(
                     attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT
                     ],
                 ),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
             ],
         );
     }

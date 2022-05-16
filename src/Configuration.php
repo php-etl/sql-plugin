@@ -3,6 +3,7 @@
 namespace Kiboko\Plugin\SQL;
 
 use Kiboko\Contract\Configurator\PluginConfigurationInterface;
+use Kiboko\Plugin\SQL;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
 use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
@@ -58,19 +59,7 @@ final class Configuration implements PluginConfigurationInterface
                                 ->then(asExpression())
                             ->end()
                         ->end()
-                        ->arrayNode('options')
-                            ->arrayPrototype()
-                                ->children()
-                                    ->booleanNode('persistent')
-                                        ->defaultFalse()
-                                        ->validate()
-                                            ->ifTrue(isExpression())
-                                            ->then(asExpression())
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
+                        ->append((new SQL\Configuration\Connection\Options())->getConfigTreeBuilder()->getRootNode())
                     ->end()
                 ->end()
                 ->arrayNode('before')
