@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -64,7 +66,7 @@ final class Lookup implements StepBuilderInterface
                     expr: $this->connection->getNode(),
                 ),
             ),
-            $lookup->getNode()
+            $lookup->getNode(),
         ];
     }
 
@@ -110,7 +112,7 @@ final class Lookup implements StepBuilderInterface
                             name: null,
                             subNodes: [
                                 'implements' => [
-                                    new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface')
+                                    new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface'),
                                 ],
                                 'stmts' => [
                                     new Node\Stmt\ClassMethod(
@@ -131,7 +133,7 @@ final class Lookup implements StepBuilderInterface
                                                             )
                                                         )
                                                     )
-                                                )
+                                                ),
                                             ],
                                             'params' => [
                                                 new Node\Param(
@@ -152,7 +154,7 @@ final class Lookup implements StepBuilderInterface
                                             'flags' => Node\Stmt\Class_::MODIFIER_PUBLIC,
                                             'stmts' => [
                                                 ...$this->compileAlternative($this->alternative),
-                                               new Node\Stmt\Return_(new Node\Expr\Variable('output')),
+                                                new Node\Stmt\Return_(new Node\Expr\Variable('output')),
                                             ],
                                             'params' => [
                                                 new Node\Param(
@@ -202,10 +204,10 @@ final class Lookup implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }
@@ -225,10 +227,10 @@ final class Lookup implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }

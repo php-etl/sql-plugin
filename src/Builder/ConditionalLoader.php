@@ -122,14 +122,13 @@ final class ConditionalLoader implements StepBuilderInterface
                                     cond: $condition,
                                     subNodes: [
                                         'stmts' => [
-                                            ...$this->compileAlternative($alternative)
+                                            ...$this->compileAlternative($alternative),
                                         ],
                                         'elseifs' => array_map(
-                                            fn (Node\Expr $condition, AlternativeLoader $loader)
-                                                => new Node\Stmt\ElseIf_(
+                                            fn (Node\Expr $condition, AlternativeLoader $loader) => new Node\Stmt\ElseIf_(
                                                     cond: $condition,
                                                     stmts: [
-                                                        ...$this->compileAlternative($loader)
+                                                        ...$this->compileAlternative($loader),
                                                     ],
                                                 ),
                                             array_column($alternatives, 0),
@@ -148,14 +147,14 @@ final class ConditionalLoader implements StepBuilderInterface
                     value: $this->compileBeforeQueries()
                 ) : new Node\Expr\Array_(
                     attributes: [
-                        'kind' => Node\Expr\Array_::KIND_SHORT
+                        'kind' => Node\Expr\Array_::KIND_SHORT,
                     ]
                 ),
                 $this->afterQueries ? new Node\Arg(
                     value: $this->compileAfterQueries()
                 ) : new Node\Expr\Array_(
                     attributes: [
-                        'kind' => Node\Expr\Array_::KIND_SHORT
+                        'kind' => Node\Expr\Array_::KIND_SHORT,
                     ],
                 ),
                 new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
@@ -178,10 +177,10 @@ final class ConditionalLoader implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }
@@ -201,10 +200,10 @@ final class ConditionalLoader implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }

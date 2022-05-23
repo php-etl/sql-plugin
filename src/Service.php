@@ -1,15 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL;
 
 use Kiboko\Contract\Configurator;
 use Kiboko\Plugin\SQL\Factory\Connection;
+use Symfony\Component\Config\Definition\Exception as Symfony;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\Config\Definition\Exception as Symfony;
 
 #[Configurator\Pipeline(
-    name: "sql",
+    name: 'sql',
     dependencies: [
         'ext-pdo',
     ],
@@ -66,45 +68,47 @@ final class Service implements Configurator\PipelinePluginInterface
     {
         $interpreter = clone $this->interpreter;
 
-        if (array_key_exists('expression_language', $config)
-            && is_array($config['expression_language'])
-            && count($config['expression_language'])
+        if (\array_key_exists('expression_language', $config)
+            && \is_array($config['expression_language'])
+            && \count($config['expression_language'])
         ) {
             foreach ($config['expression_language'] as $provider) {
-                $interpreter->registerProvider(new $provider);
+                $interpreter->registerProvider(new $provider());
             }
         }
 
         $connection = (new Connection($interpreter))->compile($config['connection']);
 
-        if (array_key_exists('extractor', $config)) {
+        if (\array_key_exists('extractor', $config)) {
             $extractorFactory = new Factory\Extractor($interpreter);
 
             return $extractorFactory
                 ->compile($config['extractor'])
                 ->withConnection($connection)
                 ->withBeforeQueries(...($config['before']['queries'] ?? []))
-                ->withAfterQueries(...($config['after']['queries'] ?? []));
-        } elseif (array_key_exists('lookup', $config)) {
+                ->withAfterQueries(...($config['after']['queries'] ?? []))
+            ;
+        }
+        if (\array_key_exists('lookup', $config)) {
             $lookupFactory = new Factory\Lookup($interpreter);
 
             return $lookupFactory
                 ->compile($config['lookup'])
                 ->withConnection($connection)
                 ->withBeforeQueries(...($config['before']['queries'] ?? []))
-                ->withAfterQueries(...($config['after']['queries'] ?? []));
-        } elseif (array_key_exists('loader', $config)) {
+                ->withAfterQueries(...($config['after']['queries'] ?? []))
+            ;
+        }
+        if (\array_key_exists('loader', $config)) {
             $loaderFactory = new Factory\Loader($interpreter);
 
             return $loaderFactory
                 ->compile($config['loader'])
                 ->withConnection($connection)
                 ->withBeforeQueries(...($config['before']['queries'] ?? []))
-                ->withAfterQueries(...($config['after']['queries'] ?? []));
-        } else {
-            throw new Configurator\InvalidConfigurationException(
-                'Could not determine if the factory should build an extractor, a lookup or a loader.'
-            );
+                ->withAfterQueries(...($config['after']['queries'] ?? []))
+            ;
         }
+        throw new Configurator\InvalidConfigurationException('Could not determine if the factory should build an extractor, a lookup or a loader.');
     }
 }

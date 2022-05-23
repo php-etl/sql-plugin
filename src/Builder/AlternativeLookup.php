@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -125,13 +127,13 @@ final class AlternativeLookup implements StepBuilderInterface
                             new Node\Expr\Variable('output')
                         ),
                     ]
-                )
+                ),
             ],
             new Node\Expr\Variable('dbh'),
         ))->getNode();
     }
 
-    public function getAlternativeLookupNode() : Node
+    public function getAlternativeLookupNode(): Node
     {
         return (new IsolatedValueAppendingBuilder(
             new Node\Expr\Variable('input'),
@@ -146,7 +148,7 @@ final class AlternativeLookup implements StepBuilderInterface
                                     var: new Node\Expr\Variable('dbh'),
                                     name: new Node\Identifier('prepare'),
                                     args: [
-                                        new Node\Arg($this->query)
+                                        new Node\Arg($this->query),
                                     ],
                                 ),
                             ),
@@ -185,12 +187,12 @@ final class AlternativeLookup implements StepBuilderInterface
                         ),
                         new Node\Stmt\Return_(
                             expr: new Node\Expr\Variable('data')
-                        )
+                        ),
                     ],
                     catches: [
                         new Node\Stmt\Catch_(
                             types: [
-                                new Node\Name\FullyQualified('PDOException')
+                                new Node\Name\FullyQualified('PDOException'),
                             ],
                             var: new Node\Expr\Variable('exception'),
                             stmts: [
@@ -243,10 +245,10 @@ final class AlternativeLookup implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -264,7 +266,7 @@ final class AlternativeLookup implements StepBuilderInterface
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -274,10 +276,10 @@ final class AlternativeLookup implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -295,7 +297,7 @@ final class AlternativeLookup implements StepBuilderInterface
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -305,10 +307,10 @@ final class AlternativeLookup implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -318,11 +320,11 @@ final class AlternativeLookup implements StepBuilderInterface
                                     args: [
                                         new Node\Arg(
                                             value: $parameter['value']
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -332,17 +334,17 @@ final class AlternativeLookup implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
                             new Node\Arg(
-                                $parameter["value"]
+                                $parameter['value']
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -352,7 +354,7 @@ final class AlternativeLookup implements StepBuilderInterface
 
     private function compileParameterType(array $parameter): Node\Arg
     {
-        return match ($parameter["type"]) {
+        return match ($parameter['type']) {
             'integer' => new Node\Arg(
                 value: new Node\Expr\ClassConstFetch(
                     class: new Node\Name\FullyQualified(name: 'PDO'),

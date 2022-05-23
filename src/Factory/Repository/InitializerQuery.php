@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Factory\Repository;
 
-use Kiboko\Plugin\SQL;
 use Kiboko\Contract\Configurator;
+use Kiboko\Plugin\SQL;
 
 final class InitializerQuery implements Configurator\RepositoryInterface
 {

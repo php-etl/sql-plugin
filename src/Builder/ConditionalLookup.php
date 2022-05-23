@@ -116,8 +116,7 @@ final class ConditionalLookup implements StepBuilderInterface
                     ),
                 ],
                 'elseifs' => array_map(
-                    fn (Node\Expr $condition, AlternativeLookup $lookup)
-                        => new Node\Stmt\ElseIf_(
+                    fn (Node\Expr $condition, AlternativeLookup $lookup) => new Node\Stmt\ElseIf_(
                             cond: $condition,
                             stmts: [
                                 new Node\Stmt\Expression(
@@ -160,7 +159,7 @@ final class ConditionalLookup implements StepBuilderInterface
                             name: null,
                             subNodes: [
                                 'implements' => [
-                                    new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface')
+                                    new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface'),
                                 ],
                                 'stmts' => [
                                     new Node\Stmt\ClassMethod(
@@ -181,7 +180,7 @@ final class ConditionalLookup implements StepBuilderInterface
                                                             )
                                                         )
                                                     )
-                                                )
+                                                ),
                                             ],
                                             'params' => [
                                                 new Node\Param(
@@ -257,10 +256,10 @@ final class ConditionalLookup implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }
@@ -280,10 +279,10 @@ final class ConditionalLookup implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }

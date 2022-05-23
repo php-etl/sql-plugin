@@ -1,17 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Factory;
 
-use Kiboko\Plugin\FastMap;
 use Kiboko\Component\FastMapConfig;
-use Kiboko\Contract\Configurator\InvalidConfigurationException;
-use Kiboko\Plugin\SQL;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 use Kiboko\Contract\Configurator\FactoryInterface;
+use Kiboko\Contract\Configurator\InvalidConfigurationException;
+use Kiboko\Plugin\FastMap;
+use Kiboko\Plugin\SQL;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception as Symfony;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\Config\Definition\Exception as Symfony;
-use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Lookup implements FactoryInterface
 {
@@ -33,7 +35,7 @@ final class Lookup implements FactoryInterface
     {
         try {
             return $this->processor->processConfiguration($this->configuration, $config);
-        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException $exception) {
+        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException $exception) {
             throw new InvalidConfigurationException($exception->getMessage(), 0, $exception);
         }
     }
@@ -44,19 +46,18 @@ final class Lookup implements FactoryInterface
             $this->processor->processConfiguration($this->configuration, $config);
 
             return true;
-        } catch (Symfony\InvalidTypeException | Symfony\InvalidConfigurationException) {
+        } catch (Symfony\InvalidTypeException|Symfony\InvalidConfigurationException) {
             return false;
         }
     }
 
     /**
-     * @param SQL\Builder\AlternativeLookup $alternativeBuilder
      * @param array<array> $config
      */
     private function merge(SQL\Builder\AlternativeLookup $alternativeBuilder, array $config): void
     {
-        if (array_key_exists('merge', $config)) {
-            if (array_key_exists('map', $config['merge'])) {
+        if (\array_key_exists('merge', $config)) {
+            if (\array_key_exists('map', $config['merge'])) {
                 $mapper = new FastMapConfig\ArrayAppendBuilder(
                     interpreter: $this->interpreter,
                 );
@@ -72,43 +73,43 @@ final class Lookup implements FactoryInterface
 
     public function compile(array $config): SQL\Factory\Repository\Lookup
     {
-        if (!array_key_exists('conditional', $config)) {
+        if (!\array_key_exists('conditional', $config)) {
             $alternativeBuilder = new SQL\Builder\AlternativeLookup(
-                compileValueWhenExpression($this->interpreter, $config["query"])
+                compileValueWhenExpression($this->interpreter, $config['query'])
             );
 
             $lookup = new SQL\Builder\Lookup($alternativeBuilder);
 
-            if (array_key_exists('parameters', $config)) {
-                foreach ($config["parameters"] as $key => $parameter) {
-                    match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
+            if (\array_key_exists('parameters', $config)) {
+                foreach ($config['parameters'] as $key => $parameter) {
+                    match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
                         'integer' => $alternativeBuilder->addIntegerParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                         'boolean' => $alternativeBuilder->addBooleanParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                         'date' => $alternativeBuilder->addDateParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                         'datetime' => $alternativeBuilder->addDateTimeParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                         'json' => $alternativeBuilder->addJSONParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                         'binary' => $alternativeBuilder->addBinaryParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                         default => $alternativeBuilder->addStringParam(
                             $key,
-                            compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                            compileValueWhenExpression($this->interpreter, $parameter['value']),
                         ),
                     };
                 }
@@ -120,39 +121,39 @@ final class Lookup implements FactoryInterface
 
             foreach ($config['conditional'] as $alternative) {
                 $alternativeBuilder = new SQL\Builder\AlternativeLookup(
-                    compileValueWhenExpression($this->interpreter, $alternative["query"])
+                    compileValueWhenExpression($this->interpreter, $alternative['query'])
                 );
 
-                if (array_key_exists('parameters', $alternative)) {
-                    foreach ($config["parameters"] as $key => $parameter) {
-                        match (array_key_exists('type', $parameter) ? $parameter["type"] : null) {
+                if (\array_key_exists('parameters', $alternative)) {
+                    foreach ($config['parameters'] as $key => $parameter) {
+                        match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
                             'integer' => $alternativeBuilder->addIntegerParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                             'boolean' => $alternativeBuilder->addBooleanParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                             'date' => $alternativeBuilder->addDateParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                             'datetime' => $alternativeBuilder->addDateTimeParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                             'json' => $alternativeBuilder->addJSONParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                             'binary' => $alternativeBuilder->addBinaryParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                             default => $alternativeBuilder->addStringParam(
                                 $key,
-                                compileValueWhenExpression($this->interpreter, $parameter["value"]),
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                         };
                     }
