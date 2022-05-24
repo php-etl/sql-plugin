@@ -75,7 +75,8 @@ final class Configuration implements PluginConfigurationInterface
                 ->append(node: (new Configuration\Extractor())->getConfigTreeBuilder()->getRootNode())
                 ->append(node: (new Configuration\Lookup())->getConfigTreeBuilder()->getRootNode())
                 ->append(node: (new Configuration\Loader())->getConfigTreeBuilder()->getRootNode())
-            ->end();
+            ->end()
+        ;
 
         return $builder;
     }

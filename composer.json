@@ -25,7 +25,8 @@
         "php-etl/phpunit-extension": "^0.2.0",
         "adlawson/vfs": "^0.12.1",
         "phpstan/phpstan": "^0.12.93",
-        "php-etl/sql-flow": "^0.1.0"
+        "php-etl/sql-flow": "^0.1.0",
+        "friendsofphp/php-cs-fixer": "^3.0"
     },
     "autoload": {
         "psr-4": {

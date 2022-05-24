@@ -35,7 +35,8 @@ class Parameters implements ConfigurationInterface
                         ->values(['boolean', 'integer', 'string', 'date', 'datetime', 'json', 'binary'])
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $builder;
     }
