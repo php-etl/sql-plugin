@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -157,7 +159,7 @@ final class Extractor implements StepBuilderInterface
                 new Node\Arg(
                     value: $this->query
                 ),
-                count($this->parameters) > 0
+                \count($this->parameters) > 0
                     ? new Node\Arg(value: new Node\Expr\Closure(
                         subNodes: [
                             'params' => [
@@ -167,20 +169,20 @@ final class Extractor implements StepBuilderInterface
                                 ),
                             ],
                             'stmts' => [
-                                ...$this->compileParameters()
+                                ...$this->compileParameters(),
                             ],
                         ],
                     ))
                     : new Node\Expr\ConstFetch(new Node\Name('null')),
-                count($this->beforeQueries) > 0
+                \count($this->beforeQueries) > 0
                     ? new Node\Arg(value: $this->compileBeforeQueries())
                     : new Node\Expr\Array_(attributes: [
-                        'kind' => Node\Expr\Array_::KIND_SHORT
+                        'kind' => Node\Expr\Array_::KIND_SHORT,
                     ]),
-                count($this->afterQueries) > 0
+                \count($this->afterQueries) > 0
                     ? new Node\Arg(value: $this->compileAfterQueries())
                     : new Node\Expr\Array_(attributes: [
-                        'kind' => Node\Expr\Array_::KIND_SHORT
+                        'kind' => Node\Expr\Array_::KIND_SHORT,
                     ]),
                 new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
             ],
@@ -197,10 +199,10 @@ final class Extractor implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -218,7 +220,7 @@ final class Extractor implements StepBuilderInterface
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -228,10 +230,10 @@ final class Extractor implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -249,7 +251,7 @@ final class Extractor implements StepBuilderInterface
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -259,10 +261,10 @@ final class Extractor implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -272,11 +274,11 @@ final class Extractor implements StepBuilderInterface
                                     args: [
                                         new Node\Arg(
                                             value: $parameter['value']
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -286,17 +288,17 @@ final class Extractor implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
                             new Node\Arg(
-                                $parameter["value"]
+                                $parameter['value']
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -319,10 +321,10 @@ final class Extractor implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }
@@ -342,17 +344,17 @@ final class Extractor implements StepBuilderInterface
 
         return new Node\Expr\Array_(
             items: [
-                ...$output
+                ...$output,
             ],
             attributes: [
-                'kind' => Node\Expr\Array_::KIND_SHORT
+                'kind' => Node\Expr\Array_::KIND_SHORT,
             ]
         );
     }
 
     private function compileParameterType(array $parameter): Node\Arg
     {
-        return match ($parameter["type"]) {
+        return match ($parameter['type']) {
             'integer' => new Node\Arg(
                 value: new Node\Expr\ClassConstFetch(
                     class: new Node\Name\FullyQualified(name: 'PDO'),

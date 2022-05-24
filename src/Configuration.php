@@ -1,37 +1,33 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL;
 
+use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
+use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 use Kiboko\Contract\Configurator\PluginConfigurationInterface;
 use Kiboko\Plugin\SQL;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
-use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 
 final class Configuration implements PluginConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $builder = new TreeBuilder('sql');
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         $builder->getRootNode()
             ->validate()
-                ->ifTrue(function (array $value) {
-                    return array_key_exists('extractor', $value) && array_key_exists('loader', $value);
-                })
+                ->ifTrue(fn (array $value) => \array_key_exists('extractor', $value) && \array_key_exists('loader', $value))
                 ->thenInvalid('Your configuration should either contain the "extractor" or the "loader" key, not both.')
             ->end()
             ->validate()
-                ->ifTrue(function (array $value) {
-                    return array_key_exists('extractor', $value) && array_key_exists('lookup', $value);
-                })
+                ->ifTrue(fn (array $value) => \array_key_exists('extractor', $value) && \array_key_exists('lookup', $value))
                 ->thenInvalid('Your configuration should either contain the "extractor" or the "lookup" key, not both.')
             ->end()
             ->validate()
-                ->ifTrue(function (array $value) {
-                    return array_key_exists('loader', $value) && array_key_exists('lookup', $value);
-                })
+                ->ifTrue(fn (array $value) => \array_key_exists('loader', $value) && \array_key_exists('lookup', $value))
                 ->thenInvalid('Your configuration should either contain the "loader" or the "lookup" key, not both.')
             ->end()
             ->children()
@@ -79,7 +75,8 @@ final class Configuration implements PluginConfigurationInterface
                 ->append(node: (new Configuration\Extractor())->getConfigTreeBuilder()->getRootNode())
                 ->append(node: (new Configuration\Lookup())->getConfigTreeBuilder()->getRootNode())
                 ->append(node: (new Configuration\Loader())->getConfigTreeBuilder()->getRootNode())
-            ->end();
+            ->end()
+        ;
 
         return $builder;
     }

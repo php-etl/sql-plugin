@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Builder;
 
@@ -109,7 +111,7 @@ final class AlternativeLoader implements StepBuilderInterface
                     'params' => [
                         new Node\Param(
                             var: new Node\Expr\Variable('input'),
-                        )
+                        ),
                     ],
                     'stmts' => [
                         new Node\Stmt\Expression(
@@ -121,7 +123,7 @@ final class AlternativeLoader implements StepBuilderInterface
                                     args: [
                                         new Node\Arg(
                                             value: $this->query
-                                        )
+                                        ),
                                     ]
                                 )
                             )
@@ -132,10 +134,10 @@ final class AlternativeLoader implements StepBuilderInterface
                                 var: new Node\Expr\Variable('statement'),
                                 name: new Node\Identifier('execute'),
                             )
-                        )
+                        ),
                     ],
                     'uses' => [
-                        new Node\Expr\Variable('connection')
+                        new Node\Expr\Variable('connection'),
                     ],
                 ]),
                 args: [
@@ -157,10 +159,10 @@ final class AlternativeLoader implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -175,7 +177,7 @@ final class AlternativeLoader implements StepBuilderInterface
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -185,10 +187,10 @@ final class AlternativeLoader implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -203,7 +205,7 @@ final class AlternativeLoader implements StepBuilderInterface
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -213,10 +215,10 @@ final class AlternativeLoader implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
@@ -226,11 +228,11 @@ final class AlternativeLoader implements StepBuilderInterface
                                     args: [
                                         new Node\Arg(
                                             value: $parameter['value']
-                                        )
+                                        ),
                                     ],
                                 ),
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -240,17 +242,17 @@ final class AlternativeLoader implements StepBuilderInterface
                         name: new Node\Identifier('bindValue'),
                         args: [
                             new Node\Arg(
-                                is_string($key) ? new Node\Scalar\Encapsed(
+                                \is_string($key) ? new Node\Scalar\Encapsed(
                                     [
                                         new Node\Scalar\EncapsedStringPart(':'),
-                                        new Node\Scalar\EncapsedStringPart($key)
+                                        new Node\Scalar\EncapsedStringPart($key),
                                     ]
                                 ) : new Node\Scalar\LNumber($key)
                             ),
                             new Node\Arg(
-                                $parameter["value"]
+                                $parameter['value']
                             ),
-                            $this->compileParameterType($parameter)
+                            $this->compileParameterType($parameter),
                         ],
                     ),
                 ),
@@ -260,7 +262,7 @@ final class AlternativeLoader implements StepBuilderInterface
 
     private function compileParameterType(array $parameter): Node\Arg
     {
-        return match ($parameter["type"]) {
+        return match ($parameter['type']) {
             'integer' => new Node\Arg(
                 value: new Node\Expr\ClassConstFetch(
                     class: new Node\Name\FullyQualified(name: 'PDO'),

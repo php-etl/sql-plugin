@@ -55,12 +55,12 @@ final class Connection implements Builder
                                 value: new Node\Expr\ConstFetch(new Node\Name("{$this->persistentConnection}")),
                                 key: new Node\Expr\ClassConstFetch(
                                     class: new Node\Name\FullyQualified('PDO'),
-                                    name: new Node\Identifier("ATTR_PERSISTENT")
+                                    name: new Node\Identifier('ATTR_PERSISTENT')
                                 )
                             ) : null,
                         ],
                         attributes: [
-                            'kind' => Node\Expr\Array_::KIND_SHORT
+                            'kind' => Node\Expr\Array_::KIND_SHORT,
                         ],
                     ),
                 ),

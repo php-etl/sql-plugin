@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kiboko\Plugin\SQL\Factory\Repository;
 
-use Kiboko\Plugin\SQL;
-use Kiboko\Contract\Configurator\StepRepositoryInterface;
 use Kiboko\Contract\Configurator;
+use Kiboko\Contract\Configurator\StepRepositoryInterface;
+use Kiboko\Plugin\SQL;
 use PhpParser\Node;
-use function Kiboko\Component\SatelliteToolbox\AST\variable;
 
 class Extractor implements StepRepositoryInterface
 {
