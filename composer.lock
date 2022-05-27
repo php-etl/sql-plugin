@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f05ebe20d74ac72825cc217dfd89da52",
+    "content-hash": "4285aeddfe41cc32add9f6facd0ff32b",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -159,28 +159,31 @@
         },
         {
             "name": "php-etl/configurator-contracts",
-            "version": "v0.4.1",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/configurator-contracts.git",
-                "reference": "c98c11de81f004c6c96351d108b36de574d8c60d"
+                "reference": "5d4e2fe0ec058c548a465da28ba65e403fef03ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/configurator-contracts/zipball/c98c11de81f004c6c96351d108b36de574d8c60d",
-                "reference": "c98c11de81f004c6c96351d108b36de574d8c60d",
+                "url": "https://api.github.com/repos/php-etl/configurator-contracts/zipball/5d4e2fe0ec058c548a465da28ba65e403fef03ad",
+                "reference": "5d4e2fe0ec058c548a465da28ba65e403fef03ad",
                 "shasum": ""
             },
             "require": {
                 "nikic/php-parser": "^4.10",
                 "php": "^8.0",
                 "php-etl/packaging-contracts": "^0.1.0",
-                "symfony/config": "^5.2"
+                "psr/log": "^1.0",
+                "symfony/config": "^5.2",
+                "symfony/expression-language": "^5.2"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-main": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -205,22 +208,22 @@
             "description": "This library describes contracts for defining configuration formats and building optimized code from it",
             "support": {
                 "issues": "https://github.com/php-etl/configurator-contracts/issues",
-                "source": "https://github.com/php-etl/configurator-contracts/tree/v0.4.1"
+                "source": "https://github.com/php-etl/configurator-contracts/tree/main"
             },
-            "time": "2022-03-28T21:03:54+00:00"
+            "time": "2022-05-25T14:10:02+00:00"
         },
         {
             "name": "php-etl/fast-map",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/fast-map.git",
-                "reference": "f2a80b01b30a811e3bb6280541fcdf324984c767"
+                "reference": "30903f07f39211ab9eafec021dcf7005b8bd0099"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/fast-map/zipball/f2a80b01b30a811e3bb6280541fcdf324984c767",
-                "reference": "f2a80b01b30a811e3bb6280541fcdf324984c767",
+                "url": "https://api.github.com/repos/php-etl/fast-map/zipball/30903f07f39211ab9eafec021dcf7005b8bd0099",
+                "reference": "30903f07f39211ab9eafec021dcf7005b8bd0099",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +233,7 @@
                 "php-etl/mapping-contracts": "^0.2.0",
                 "php-etl/metadata": "^0.2.0",
                 "php-etl/metadata-contracts": "^0.1.0",
-                "php-etl/satellite-toolbox": "^0.1.0 || ^0.2.0",
+                "php-etl/satellite-toolbox": "^0.3.0",
                 "symfony/cache": "^5.2",
                 "symfony/expression-language": "^5.2",
                 "symfony/property-access": "^5.2"
@@ -249,7 +252,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+                    "dev-main": "0.3.x-dev"
                 }
             },
             "autoload": {
@@ -274,27 +277,27 @@
             "description": "This library implements a compiled data mapping library",
             "support": {
                 "issues": "https://github.com/php-etl/fast-map/issues",
-                "source": "https://github.com/php-etl/fast-map/tree/master"
+                "source": "https://github.com/php-etl/fast-map/tree/main"
             },
-            "time": "2021-10-18T22:37:31+00:00"
+            "time": "2022-05-27T08:57:42+00:00"
         },
         {
             "name": "php-etl/fast-map-config",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/fast-map-config.git",
-                "reference": "6120cc16e4dae8e1ccf10f8a2bb29454a78dc5c2"
+                "reference": "80967e7a83d4ff68a0e6e2ba5612d3e7a16dad18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/fast-map-config/zipball/6120cc16e4dae8e1ccf10f8a2bb29454a78dc5c2",
-                "reference": "6120cc16e4dae8e1ccf10f8a2bb29454a78dc5c2",
+                "url": "https://api.github.com/repos/php-etl/fast-map-config/zipball/80967e7a83d4ff68a0e6e2ba5612d3e7a16dad18",
+                "reference": "80967e7a83d4ff68a0e6e2ba5612d3e7a16dad18",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0",
-                "php-etl/fast-map": "^0.2.0",
+                "php-etl/fast-map": "^0.3.0",
                 "php-etl/mapping-contracts": "^0.2.0",
                 "php-etl/metadata": "^0.2.0",
                 "symfony/expression-language": "^5.2",
@@ -310,7 +313,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-main": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -335,37 +338,38 @@
             "description": "This library implements the Extract-Transform-Load pattern asynchronously in PHP with the help of iterators and generators",
             "support": {
                 "issues": "https://github.com/php-etl/fast-map-config/issues",
-                "source": "https://github.com/php-etl/fast-map-config/tree/master"
+                "source": "https://github.com/php-etl/fast-map-config/tree/main"
             },
-            "time": "2022-03-30T13:48:56+00:00"
+            "time": "2022-05-27T08:59:39+00:00"
         },
         {
             "name": "php-etl/fast-map-plugin",
-            "version": "dev-master",
+            "version": "dev-feature/update-configurator-contracts",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/fast-map-plugin.git",
-                "reference": "edccec51f37b1c310cae7a96b6447de10f074717"
+                "reference": "4719ffae70645eac60bec68a8a0c1d6aa32290b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/fast-map-plugin/zipball/edccec51f37b1c310cae7a96b6447de10f074717",
-                "reference": "edccec51f37b1c310cae7a96b6447de10f074717",
+                "url": "https://api.github.com/repos/php-etl/fast-map-plugin/zipball/4719ffae70645eac60bec68a8a0c1d6aa32290b2",
+                "reference": "4719ffae70645eac60bec68a8a0c1d6aa32290b2",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "nikic/php-parser": "^4.10",
                 "php": "^8.0",
-                "php-etl/configurator-contracts": "^0.4.0@dev",
-                "php-etl/fast-map-config": "^0.3.0@dev",
-                "php-etl/packaging-contracts": "^0.1.0@dev",
-                "php-etl/satellite-toolbox": "^0.2.0@dev",
+                "php-etl/configurator-contracts": "^0.5.0",
+                "php-etl/fast-map-config": "^0.4.0",
+                "php-etl/packaging-contracts": "^0.1.1",
+                "php-etl/satellite-toolbox": "^0.3.0",
                 "symfony/config": "^5.2"
             },
             "require-dev": {
                 "adlawson/vfs": "dev-develop",
                 "friends-of-phpspec/phpspec-code-coverage": "*",
+                "friendsofphp/php-cs-fixer": "^3.0",
                 "johnkary/phpunit-speedtrap": "*",
                 "mybuilder/phpunit-accelerator": "*",
                 "php-etl/bucket": "0.2.x-dev",
@@ -374,11 +378,10 @@
                 "phpunit/php-invoker": "*",
                 "phpunit/phpunit": "^9.0"
             },
-            "default-branch": true,
             "type": "gyroscops-plugin",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.6.x-dev"
+                    "dev-main": "0.7.x-dev"
                 },
                 "gyroscops": {
                     "plugins": [
@@ -404,9 +407,9 @@
             "description": "Adapters for the Fast Map mapping library",
             "support": {
                 "issues": "https://github.com/php-etl/fast-map-plugin/issues",
-                "source": "https://github.com/php-etl/fast-map-plugin/tree/master"
+                "source": "https://github.com/php-etl/fast-map-plugin/tree/feature/update-configurator-contracts"
             },
-            "time": "2022-03-28T21:03:54+00:00"
+            "time": "2022-05-27T09:01:11+00:00"
         },
         {
             "name": "php-etl/mapping-contracts",
@@ -462,16 +465,16 @@
         },
         {
             "name": "php-etl/metadata",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/metadata.git",
-                "reference": "16bd2980a576bc3e65715ef1ba595f39cf830920"
+                "reference": "2240d8ea1eb53152a715d7f35a2259ca866e0c2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/metadata/zipball/16bd2980a576bc3e65715ef1ba595f39cf830920",
-                "reference": "16bd2980a576bc3e65715ef1ba595f39cf830920",
+                "url": "https://api.github.com/repos/php-etl/metadata/zipball/2240d8ea1eb53152a715d7f35a2259ca866e0c2f",
+                "reference": "2240d8ea1eb53152a715d7f35a2259ca866e0c2f",
                 "shasum": ""
             },
             "require": {
@@ -493,7 +496,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+                    "dev-main": "0.2.x-dev"
                 }
             },
             "autoload": {
@@ -518,22 +521,22 @@
             "description": "Describe data structures, to auto-configure and handle data transformation and data manipulation.",
             "support": {
                 "issues": "https://github.com/php-etl/metadata/issues",
-                "source": "https://github.com/php-etl/metadata/tree/master"
+                "source": "https://github.com/php-etl/metadata/tree/main"
             },
-            "time": "2021-02-08T09:54:43+00:00"
+            "time": "2022-05-16T19:37:26+00:00"
         },
         {
             "name": "php-etl/metadata-contracts",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/metadata-contracts.git",
-                "reference": "652cddefa328c2819715a6ac1bc46f73d2b1666e"
+                "reference": "1f15158446f02e6397a0f95c728f377a3dcbb49f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/metadata-contracts/zipball/652cddefa328c2819715a6ac1bc46f73d2b1666e",
-                "reference": "652cddefa328c2819715a6ac1bc46f73d2b1666e",
+                "url": "https://api.github.com/repos/php-etl/metadata-contracts/zipball/1f15158446f02e6397a0f95c728f377a3dcbb49f",
+                "reference": "1f15158446f02e6397a0f95c728f377a3dcbb49f",
                 "shasum": ""
             },
             "require": {
@@ -543,7 +546,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.1.x-dev"
+                    "dev-main": "0.1.x-dev"
                 }
             },
             "autoload": {
@@ -568,9 +571,9 @@
             "description": "Interfaces for the Metadata package whose role is to describe data structures.",
             "support": {
                 "issues": "https://github.com/php-etl/metadata-contracts/issues",
-                "source": "https://github.com/php-etl/metadata-contracts/tree/master"
+                "source": "https://github.com/php-etl/metadata-contracts/tree/main"
             },
-            "time": "2021-02-04T13:29:20+00:00"
+            "time": "2022-05-16T19:37:24+00:00"
         },
         {
             "name": "php-etl/packaging-contracts",
@@ -624,22 +627,22 @@
         },
         {
             "name": "php-etl/satellite-toolbox",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/satellite-toolbox.git",
-                "reference": "5d2992195d110f12e1fccb05b254e75e42363dd9"
+                "reference": "df511d63c05116c6b576e99d697941d8c6505841"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/satellite-toolbox/zipball/5d2992195d110f12e1fccb05b254e75e42363dd9",
-                "reference": "5d2992195d110f12e1fccb05b254e75e42363dd9",
+                "url": "https://api.github.com/repos/php-etl/satellite-toolbox/zipball/df511d63c05116c6b576e99d697941d8c6505841",
+                "reference": "df511d63c05116c6b576e99d697941d8c6505841",
                 "shasum": ""
             },
             "require": {
                 "nikic/php-parser": "^4.10",
                 "php": "^8.0",
-                "php-etl/configurator-contracts": "^0.4.0@dev",
+                "php-etl/configurator-contracts": "^0.5.0",
                 "symfony/expression-language": "^5.2"
             },
             "require-dev": {
@@ -654,7 +657,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+                    "dev-main": "0.3.x-dev"
                 }
             },
             "autoload": {
@@ -683,9 +686,9 @@
             "description": "This library aims at building and running lambda PHP functions",
             "support": {
                 "issues": "https://github.com/php-etl/satellite-toolbox/issues",
-                "source": "https://github.com/php-etl/satellite-toolbox/tree/master"
+                "source": "https://github.com/php-etl/satellite-toolbox/tree/main"
             },
-            "time": "2021-12-03T10:50:38+00:00"
+            "time": "2022-05-27T07:12:54+00:00"
         },
         {
             "name": "phpactor/docblock",
@@ -3224,16 +3227,16 @@
         },
         {
             "name": "php-etl/phpunit-extension",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/phpunit-extension.git",
-                "reference": "600c2c8f2d493570d944d6a1d5455d04ce5d57c7"
+                "reference": "88da32b280743278877794c9b6865b6b2ee252d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/phpunit-extension/zipball/600c2c8f2d493570d944d6a1d5455d04ce5d57c7",
-                "reference": "600c2c8f2d493570d944d6a1d5455d04ce5d57c7",
+                "url": "https://api.github.com/repos/php-etl/phpunit-extension/zipball/88da32b280743278877794c9b6865b6b2ee252d9",
+                "reference": "88da32b280743278877794c9b6865b6b2ee252d9",
                 "shasum": ""
             },
             "require": {
@@ -3247,7 +3250,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+                    "dev-main": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3268,9 +3271,9 @@
             "description": "Extension for testing FastMap and ETL components with PHPUnit testing framework",
             "support": {
                 "issues": "https://github.com/php-etl/phpunit-extension/issues",
-                "source": "https://github.com/php-etl/phpunit-extension/tree/master"
+                "source": "https://github.com/php-etl/phpunit-extension/tree/main"
             },
-            "time": "2021-09-28T18:53:56+00:00"
+            "time": "2022-05-18T10:01:06+00:00"
         },
         {
             "name": "php-etl/pipeline-contracts",
@@ -3324,16 +3327,16 @@
         },
         {
             "name": "php-etl/sql-flow",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-etl/sql-flow.git",
-                "reference": "8bd16f5b10e591c189b55b4f3556970d9dc4ce5a"
+                "reference": "f2a398952a69cf6b388f1c8a1be80b9b3a5ee5e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-etl/sql-flow/zipball/8bd16f5b10e591c189b55b4f3556970d9dc4ce5a",
-                "reference": "8bd16f5b10e591c189b55b4f3556970d9dc4ce5a",
+                "url": "https://api.github.com/repos/php-etl/sql-flow/zipball/f2a398952a69cf6b388f1c8a1be80b9b3a5ee5e0",
+                "reference": "f2a398952a69cf6b388f1c8a1be80b9b3a5ee5e0",
                 "shasum": ""
             },
             "require": {
@@ -3354,7 +3357,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.1.x-dev"
+                    "dev-main": "0.1.x-dev"
                 }
             },
             "autoload": {
@@ -3375,9 +3378,9 @@
             "description": "SQL implementation for the ETL pipeline",
             "support": {
                 "issues": "https://github.com/php-etl/sql-flow/issues",
-                "source": "https://github.com/php-etl/sql-flow/tree/master"
+                "source": "https://github.com/php-etl/sql-flow/tree/main"
             },
-            "time": "2021-10-04T10:43:10+00:00"
+            "time": "2022-05-10T16:39:59+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -5727,7 +5730,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "php-etl/fast-map-plugin": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
