@@ -125,7 +125,7 @@ final class Lookup implements FactoryInterface
                 );
 
                 if (\array_key_exists('parameters', $alternative)) {
-                    foreach ($config['parameters'] as $key => $parameter) {
+                    foreach ($alternative['parameters'] as $key => $parameter) {
                         match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
                             'integer' => $alternativeBuilder->addIntegerParam(
                                 $key,
