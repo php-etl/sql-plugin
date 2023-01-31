@@ -53,7 +53,7 @@ final class Connection implements FactoryInterface
 
     public function compile(array $config): SQL\Factory\Repository\Connection
     {
-        if (true === $config['shared']) {
+        if (\array_key_exists('shared', $config) && true === $config['shared']) {
             $connection = new SQL\Builder\SharedConnection(
                 compileValueWhenExpression($this->interpreter, $config['dsn'])
             );
@@ -79,10 +79,10 @@ final class Connection implements FactoryInterface
 
         $repository = new SQL\Factory\Repository\Connection($connection);
 
-        if (true === $config['shared']) {
+        if (\array_key_exists('shared', $config) && true === $config['shared']) {
             $repository->addFiles(new File('PDOPool.php', new InMemory(<<<'PHP'
                 <?php
-            
+
                 namespace GyroscopsGenerated;
                 final class PDOPool {
                     private static array $connections = [];
