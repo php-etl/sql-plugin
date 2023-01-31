@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Configuration;
 
-use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
-use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 use Kiboko\Plugin\FastMap;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+
+use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
+use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 
 final class Loader implements ConfigurationInterface
 {

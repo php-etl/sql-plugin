@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL;
 
-use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
-use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 use Kiboko\Contract\Configurator\PluginConfigurationInterface;
 use Kiboko\Plugin\SQL;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+
+use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
+use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
 
 final class Configuration implements PluginConfigurationInterface
 {
