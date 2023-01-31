@@ -11,13 +11,13 @@ final class Connection implements Configurator\RepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\Connection $builder)
+    public function __construct(private SQL\Builder\ConnectionBuilderInterface $builder)
     {
         $this->files = [];
         $this->packages = [];
     }
 
-    public function getBuilder(): SQL\Builder\Connection
+    public function getBuilder(): SQL\Builder\ConnectionBuilderInterface
     {
         return $this->builder;
     }

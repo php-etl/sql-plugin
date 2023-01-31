@@ -6,7 +6,7 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use PhpParser\Node;
 
-final class Connection implements ConnectionBuilderInterface
+final class SharedConnection implements ConnectionBuilderInterface
 {
     private ?bool $persistentConnection;
 
@@ -32,6 +32,7 @@ final class Connection implements ConnectionBuilderInterface
         return $this;
     }
 
+
     public function withPersistentConnection(bool $option): self
     {
         $this->persistentConnection = $option;
@@ -43,9 +44,9 @@ final class Connection implements ConnectionBuilderInterface
     {
         return new Node\Expr\StaticCall(
             class: new Node\Name('GyroscopsGenerated\\PDOPool'),
-            name: new Node\Name('unique'),
+            name: new Node\Name('shared'),
             args: [
-                new Node\Arg($this->dsn),
+                new Node\Arg(value: $this->dsn),
                 $this->username ? new Node\Arg($this->username) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 $this->password ? new Node\Arg($this->password) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 new Node\Arg(

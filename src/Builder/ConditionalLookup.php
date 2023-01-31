@@ -18,7 +18,7 @@ final class ConditionalLookup implements StepBuilderInterface
     private array $afterQueries;
 
     public function __construct(
-        private null|Node\Expr|Connection $connection = null
+        private null|Node\Expr|ConnectionBuilderInterface $connection = null
     ) {
         $this->logger = null;
         $this->alternatives = [];
@@ -43,7 +43,7 @@ final class ConditionalLookup implements StepBuilderInterface
         return $this;
     }
 
-    public function withConnection(Node\Expr|Connection $connection): StepBuilderInterface
+    public function withConnection(Node\Expr|ConnectionBuilderInterface $connection): StepBuilderInterface
     {
         $this->connection = $connection;
 
