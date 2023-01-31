@@ -126,11 +126,11 @@ final class ConditionalLoader implements StepBuilderInterface
                                         ],
                                         'elseifs' => array_map(
                                             fn (Node\Expr $condition, AlternativeLoader $loader) => new Node\Stmt\ElseIf_(
-                                                    cond: $condition,
-                                                    stmts: [
-                                                        ...$this->compileAlternative($loader),
-                                                    ],
-                                                ),
+                                                cond: $condition,
+                                                stmts: [
+                                                    ...$this->compileAlternative($loader),
+                                                ],
+                                            ),
                                             array_column($alternatives, 0),
                                             array_column($alternatives, 1)
                                         ),

@@ -5,6 +5,8 @@ namespace functional\Kiboko\Plugin\SQL;
 use Kiboko\Component\PHPUnitExtension\Assert;
 use Kiboko\Contract\Pipeline\PipelineRunnerInterface;
 use Kiboko\Plugin\SQL\Factory\Extractor;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -13,6 +15,23 @@ final class ExtractorTest extends TestCase
 {
     use Assert\PipelineBuilderAssertTrait;
     use Assert\ExtractorBuilderAssertTrait;
+
+    private ?vfsStreamDirectory $fs = null;
+
+    protected function setUp(): void
+    {
+        $this->fs = vfsStream::setup();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->fs = null;
+    }
+
+    protected function getBuilderCompilePath(): string
+    {
+        return $this->fs->url();
+    }
 
     public function testValidatingConfiguration(): void
     {

@@ -117,20 +117,20 @@ final class ConditionalLookup implements StepBuilderInterface
                 ],
                 'elseifs' => array_map(
                     fn (Node\Expr $condition, AlternativeLookup $lookup) => new Node\Stmt\ElseIf_(
-                            cond: $condition,
-                            stmts: [
-                                new Node\Stmt\Expression(
-                                    new Node\Expr\Assign(
-                                        var: new Node\Expr\Variable('dbh'),
-                                        expr: $this->connection->getNode(),
-                                    ),
+                        cond: $condition,
+                        stmts: [
+                            new Node\Stmt\Expression(
+                                new Node\Expr\Assign(
+                                    var: new Node\Expr\Variable('dbh'),
+                                    expr: $this->connection->getNode(),
                                 ),
-                                ...$this->compileAlternative($lookup),
-                                new Node\Stmt\Return_(
-                                    new Node\Expr\Variable('output')
-                                ),
-                            ],
-                        ),
+                            ),
+                            ...$this->compileAlternative($lookup),
+                            new Node\Stmt\Return_(
+                                new Node\Expr\Variable('output')
+                            ),
+                        ],
+                    ),
                     array_column($alternatives, 0),
                     array_column($alternatives, 1)
                 ),
