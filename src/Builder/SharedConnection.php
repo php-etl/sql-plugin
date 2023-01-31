@@ -32,7 +32,6 @@ final class SharedConnection implements ConnectionBuilderInterface
         return $this;
     }
 
-
     public function withPersistentConnection(bool $option): self
     {
         $this->persistentConnection = $option;

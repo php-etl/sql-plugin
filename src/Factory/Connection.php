@@ -6,6 +6,7 @@ namespace Kiboko\Plugin\SQL\Factory;
 
 use Kiboko\Component\Packaging\Asset\InMemory;
 use Kiboko\Component\Packaging\File;
+use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 use Kiboko\Contract\Configurator\FactoryInterface;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Plugin\SQL;
@@ -13,8 +14,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception as Symfony;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-
-use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
 final class Connection implements FactoryInterface
 {
@@ -54,7 +53,7 @@ final class Connection implements FactoryInterface
 
     public function compile(array $config): SQL\Factory\Repository\Connection
     {
-        if ($config['shared'] === true) {
+        if (true === $config['shared']) {
             $connection = new SQL\Builder\SharedConnection(
                 compileValueWhenExpression($this->interpreter, $config['dsn'])
             );
@@ -80,27 +79,28 @@ final class Connection implements FactoryInterface
 
         $repository = new SQL\Factory\Repository\Connection($connection);
 
-        if ($config['shared'] === true) {
-            $repository->addFiles(new File('PDOPool.php', new InMemory(<<<PHP
-            <?php
+        if (true === $config['shared']) {
+            $repository->addFiles(new File('PDOPool.php', new InMemory(<<<'PHP'
+                <?php
             
-            namespace GyroscopsGenerated;
-            final class PDOPool {
-                private static array \$connections = [];
-                public static function unique(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \PDO {
-                    return new \PDO(\$dsn, \$username, \$password, \$options);
-                }
-                public static function shared(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \PDO {
-                    if (isset(self::\$connections[\$dsn])) {
-                        return self::\$connections[\$dsn];
+                namespace GyroscopsGenerated;
+                final class PDOPool {
+                    private static array $connections = [];
+                    public static function unique(string $dsn, ?string $username = null, ?string $password = null, $options = []): \PDO {
+                        return new \PDO($dsn, $username, $password, $options);
                     }
-                    
-                    return self::\$connections[\$dsn] = self::unique(\$dsn, \$username, \$password, \$options);
+                    public static function shared(string $dsn, ?string $username = null, ?string $password = null, $options = []): \PDO {
+                        if (isset(self::$connections[$dsn])) {
+                            return self::$connections[$dsn];
+                        }
+                        
+                        return self::$connections[$dsn] = self::unique($dsn, $username, $password, $options);
+                    }
                 }
-            }
-            PHP
+                PHP
             )));
         }
+
         return $repository;
     }
 }
