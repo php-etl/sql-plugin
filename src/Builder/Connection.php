@@ -13,7 +13,8 @@ final class Connection implements ConnectionBuilderInterface
     public function __construct(
         private Node\Expr $dsn,
         private ?Node\Expr $username = null,
-        private ?Node\Expr $password = null
+        private ?Node\Expr $password = null,
+        private readonly string $generatedNamespace = 'GyroscopsGenerated',
     ) {
         $this->persistentConnection = null;
     }
@@ -42,10 +43,10 @@ final class Connection implements ConnectionBuilderInterface
     public function getNode(): Node\Expr
     {
         return new Node\Expr\StaticCall(
-            class: new Node\Name('GyroscopsGenerated\\PDOPool'),
+            class: new Node\Name($this->generatedNamespace.'\\PDOPool'),
             name: new Node\Name('unique'),
             args: [
-                new Node\Arg($this->dsn),
+                new Node\Arg(value: $this->dsn),
                 $this->username ? new Node\Arg($this->username) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 $this->password ? new Node\Arg($this->password) : new Node\Expr\ConstFetch(new Node\Name('null')),
                 new Node\Arg(

@@ -13,7 +13,8 @@ final class SharedConnection implements ConnectionBuilderInterface
     public function __construct(
         private Node\Expr $dsn,
         private ?Node\Expr $username = null,
-        private ?Node\Expr $password = null
+        private ?Node\Expr $password = null,
+        private readonly string $generatedNamespace = 'GyroscopsGenerated',
     ) {
         $this->persistentConnection = null;
     }
@@ -42,7 +43,7 @@ final class SharedConnection implements ConnectionBuilderInterface
     public function getNode(): Node\Expr
     {
         return new Node\Expr\StaticCall(
-            class: new Node\Name('GyroscopsGenerated\\PDOPool'),
+            class: new Node\Name($this->generatedNamespace.'\\PDOPool'),
             name: new Node\Name('shared'),
             args: [
                 new Node\Arg(value: $this->dsn),

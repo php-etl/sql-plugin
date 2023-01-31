@@ -481,7 +481,7 @@ final class ServiceTest extends TestCase
 
     public function testExtractor(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsExtractorExtractsExactly(
             [
@@ -520,7 +520,7 @@ final class ServiceTest extends TestCase
 
     public function testLookup(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsTransformerTransformsExactly(
             [
@@ -587,7 +587,7 @@ final class ServiceTest extends TestCase
 
     public function testConditionalLookup(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsTransformerTransformsExactly(
             [
@@ -653,7 +653,7 @@ final class ServiceTest extends TestCase
 
     public function testLoader(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -724,7 +724,7 @@ final class ServiceTest extends TestCase
 
     public function testLoaderWithAfterQueries(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -791,7 +791,7 @@ final class ServiceTest extends TestCase
 
     public function testLoaderWithTypedParam(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -859,7 +859,7 @@ final class ServiceTest extends TestCase
 
     public function testConditionalLoader(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -955,7 +955,7 @@ final class ServiceTest extends TestCase
 
     public function testConditionalLoaderWithAfterQueries(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -1049,7 +1049,7 @@ final class ServiceTest extends TestCase
 
     public function testExtractorConfigurationWithPersistentConnection(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertEquals(
             [

@@ -21,8 +21,10 @@ final class Connection implements FactoryInterface
     private Processor $processor;
     private ConfigurationInterface $configuration;
 
-    public function __construct(private ExpressionLanguage $interpreter)
-    {
+    public function __construct(
+        private ExpressionLanguage $interpreter,
+        private readonly string $generatedNamespace = 'GyroscopsGenerated',
+    ) {
         $this->processor = new Processor();
         $this->configuration = new SQL\Configuration\Extractor();
     }
@@ -56,11 +58,13 @@ final class Connection implements FactoryInterface
     {
         if (\array_key_exists('shared', $config) && true === $config['shared']) {
             $connection = new SQL\Builder\SharedConnection(
-                compileValueWhenExpression($this->interpreter, $config['dsn'])
+                compileValueWhenExpression($this->interpreter, $config['dsn']),
+                generatedNamespace: $this->generatedNamespace,
             );
         } else {
             $connection = new SQL\Builder\Connection(
-                compileValueWhenExpression($this->interpreter, $config['dsn'])
+                compileValueWhenExpression($this->interpreter, $config['dsn']),
+                generatedNamespace: $this->generatedNamespace,
             );
         }
 
@@ -84,7 +88,7 @@ final class Connection implements FactoryInterface
             $repository->addFiles(new File('PDOPool.php', new InMemory(<<<'PHP'
                 <?php
 
-                namespace GyroscopsGenerated;
+                namespace ${$this->generatedNamespace};
                 final class PDOPool {
                     private static array $connections = [];
                     public static function unique(string $dsn, ?string $username = null, ?string $password = null, $options = []): \PDO {
