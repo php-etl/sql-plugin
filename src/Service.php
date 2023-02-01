@@ -27,8 +27,10 @@ final class Service implements Configurator\PipelinePluginInterface
     private Configurator\PluginConfigurationInterface $configuration;
     private ExpressionLanguage $interpreter;
 
-    public function __construct(?ExpressionLanguage $interpreter = null)
-    {
+    public function __construct(
+        ?ExpressionLanguage $interpreter = null,
+        private string $generatedNamespace = 'GyroscopsGenerated',
+    ) {
         $this->processor = new Processor();
         $this->configuration = new Configuration();
         $this->interpreter = $interpreter ?? new ExpressionLanguage();
@@ -77,7 +79,7 @@ final class Service implements Configurator\PipelinePluginInterface
             }
         }
 
-        $connection = (new Connection($interpreter))->compile($config['connection']);
+        $connection = (new Connection($interpreter, $this->generatedNamespace))->compile($config['connection']);
 
         if (\array_key_exists('extractor', $config)) {
             $extractorFactory = new Factory\Extractor($interpreter);

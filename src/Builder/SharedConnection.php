@@ -6,7 +6,7 @@ namespace Kiboko\Plugin\SQL\Builder;
 
 use PhpParser\Node;
 
-final class Connection implements ConnectionBuilderInterface
+final class SharedConnection implements ConnectionBuilderInterface
 {
     private ?bool $persistentConnection;
 
@@ -44,7 +44,7 @@ final class Connection implements ConnectionBuilderInterface
     {
         return new Node\Expr\StaticCall(
             class: new Node\Name($this->generatedNamespace.'\\PDOPool'),
-            name: new Node\Name('unique'),
+            name: new Node\Name('shared'),
             args: [
                 new Node\Arg(value: $this->dsn),
                 $this->username ? new Node\Arg($this->username) : new Node\Expr\ConstFetch(new Node\Name('null')),

@@ -56,6 +56,7 @@ final class Configuration implements PluginConfigurationInterface
                                 ->then(asExpression())
                             ->end()
                         ->end()
+                        ->booleanNode('shared')->end()
                         ->append((new SQL\Configuration\Connection\Options())->getConfigTreeBuilder()->getRootNode())
                     ->end()
                 ->end()

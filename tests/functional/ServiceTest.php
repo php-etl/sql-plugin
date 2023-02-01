@@ -2,6 +2,7 @@
 
 namespace functional\Kiboko\Plugin\SQL;
 
+use functional\Kiboko\Plugin\SQL\utils\AssertTrait;
 use Kiboko\Component\PHPUnitExtension\Assert;
 use Kiboko\Contract\Pipeline\PipelineRunnerInterface;
 use Kiboko\Plugin\SQL\Service;
@@ -15,6 +16,7 @@ final class ServiceTest extends TestCase
     use Assert\ExtractorBuilderAssertTrait;
     use Assert\TransformerBuilderAssertTrait;
     use Assert\LoaderBuilderAssertTrait;
+    use AssertTrait;
 
     private ?vfsStreamDirectory $fs = null;
 
@@ -481,7 +483,7 @@ final class ServiceTest extends TestCase
 
     public function testExtractor(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsExtractorExtractsExactly(
             [
@@ -520,7 +522,7 @@ final class ServiceTest extends TestCase
 
     public function testLookup(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsTransformerTransformsExactly(
             [
@@ -587,7 +589,7 @@ final class ServiceTest extends TestCase
 
     public function testConditionalLookup(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsTransformerTransformsExactly(
             [
@@ -653,7 +655,7 @@ final class ServiceTest extends TestCase
 
     public function testLoader(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -696,35 +698,17 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => [
-                        'persistent' => true
-                    ]
+                    'shared' => true,
                 ],
             ])->getBuilder(),
         );
 
-        /**
-         * Check if rows are inserted
-         */
-        $results = $this->checkData('SELECT * FROM foo');
-        $this->assertEquals(
-            [
-                [
-                    'id' => '1',
-                    'value' => 'Sit amet consecutir',
-                ],
-                [
-                    'id' => '2',
-                    'value' => 'Sit',
-                ]
-            ],
-            $results
-        );
+        $this->assertSQLiteTableExists(PDOPool::shared('sqlite::memory:'), 'foo');
     }
 
     public function testLoaderWithAfterQueries(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -772,26 +756,17 @@ final class ServiceTest extends TestCase
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
-                    'options' => [
-                        'persistent' => true
-                    ]
+                    'shared' => true,
                 ],
             ])->getBuilder(),
         );
 
-        /**
-         * Check if foo table is dropped
-         */
-        $results = $this->checkData("SELECT name FROM sqlite_master WHERE type='table' AND name='foo'");
-        $this->assertEquals(
-            [],
-            $results
-        );
+        $this->assertSQLiteTableDoesNotExist(PDOPool::shared('sqlite::memory:'), 'foo');
     }
 
     public function testLoaderWithTypedParam(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -846,20 +821,11 @@ final class ServiceTest extends TestCase
                 ],
             ])->getBuilder(),
         );
-
-        /**
-         * Check if foo table is dropped
-         */
-        $results = $this->checkData("SELECT name FROM sqlite_master WHERE type='table' AND name='foo'");
-        $this->assertEquals(
-            [],
-            $results
-        );
     }
 
     public function testConditionalLoader(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -923,39 +889,11 @@ final class ServiceTest extends TestCase
                 ],
             ])->getBuilder(),
         );
-
-        /**
-         * Check if row is inserted
-         */
-        $results = $this->checkData('SELECT * FROM foo WHERE id = 2');
-        $this->assertEquals(
-            [
-                [
-                    'id' => '2',
-                    'value' => 'Sit amet consecutir'
-                ]
-            ],
-            $results
-        );
-
-        /**
-         * Check if row is updated
-         */
-        $results = $this->checkData('SELECT * FROM foo WHERE id = 1');
-        $this->assertEquals(
-            [
-                [
-                    'id' => '1',
-                    'value' => 'Ut sed'
-                ]
-            ],
-            $results
-        );
     }
 
     public function testConditionalLoaderWithAfterQueries(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertBuildsLoaderLoadsExactly(
             [
@@ -1024,32 +962,11 @@ final class ServiceTest extends TestCase
                 ],
             ])->getBuilder(),
         );
-
-        /**
-         * Check if foo table is dropped
-         */
-        $results = $this->checkData("SELECT name FROM sqlite_master WHERE type='table' AND name='foo'");
-        $this->assertEquals(
-            [],
-            $results
-        );
-    }
-
-    private function checkData(string $query): array
-    {
-        $connection = new \PDO('sqlite::memory:', null, null, [
-            \PDO::ATTR_PERSISTENT => true
-        ]);
-
-        $stmt = $connection->prepare($query);
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_NAMED);
     }
 
     public function testExtractorConfigurationWithPersistentConnection(): void
     {
-        $service = new Service();
+        $service = new Service(generatedNamespace: 'functional\Kiboko\Plugin\SQL');
 
         $this->assertEquals(
             [

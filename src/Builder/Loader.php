@@ -18,7 +18,7 @@ final class Loader implements StepBuilderInterface
 
     public function __construct(
         private Node\Expr $query,
-        private null|Node\Expr|Connection $connection = null,
+        private null|Node\Expr|ConnectionBuilderInterface $connection = null,
     ) {
         $this->logger = null;
         $this->beforeQueries = [];
@@ -43,7 +43,7 @@ final class Loader implements StepBuilderInterface
         return $this;
     }
 
-    public function withConnection(Node\Expr|Connection $connection): StepBuilderInterface
+    public function withConnection(Node\Expr|ConnectionBuilderInterface $connection): StepBuilderInterface
     {
         $this->connection = $connection;
 

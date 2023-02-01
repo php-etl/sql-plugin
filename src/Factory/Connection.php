@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kiboko\Plugin\SQL\Factory;
 
+use Kiboko\Component\Packaging\Asset\InMemory;
+use Kiboko\Component\Packaging\File;
 use Kiboko\Contract\Configurator\FactoryInterface;
 use Kiboko\Contract\Configurator\InvalidConfigurationException;
 use Kiboko\Plugin\SQL;
@@ -19,8 +21,10 @@ final class Connection implements FactoryInterface
     private Processor $processor;
     private ConfigurationInterface $configuration;
 
-    public function __construct(private ExpressionLanguage $interpreter)
-    {
+    public function __construct(
+        private ExpressionLanguage $interpreter,
+        private string $generatedNamespace = 'GyroscopsGenerated',
+    ) {
         $this->processor = new Processor();
         $this->configuration = new SQL\Configuration\Extractor();
     }
@@ -52,24 +56,56 @@ final class Connection implements FactoryInterface
 
     public function compile(array $config): SQL\Factory\Repository\Connection
     {
-        $extractor = new SQL\Builder\Connection(
-            compileValueWhenExpression($this->interpreter, $config['dsn'])
-        );
+        if (\array_key_exists('shared', $config) && true === $config['shared']) {
+            $connection = new SQL\Builder\SharedConnection(
+                compileValueWhenExpression($this->interpreter, $config['dsn']),
+                generatedNamespace: $this->generatedNamespace,
+            );
+        } else {
+            $connection = new SQL\Builder\Connection(
+                compileValueWhenExpression($this->interpreter, $config['dsn']),
+                generatedNamespace: $this->generatedNamespace,
+            );
+        }
 
         if (\array_key_exists('username', $config)) {
-            $extractor->withUsername(compileValueWhenExpression($this->interpreter, $config['username']));
+            $connection->withUsername(compileValueWhenExpression($this->interpreter, $config['username']));
         }
 
         if (\array_key_exists('password', $config)) {
-            $extractor->withPassword(compileValueWhenExpression($this->interpreter, $config['password']));
+            $connection->withPassword(compileValueWhenExpression($this->interpreter, $config['password']));
         }
 
         if (\array_key_exists('options', $config)) {
             if (\array_key_exists('persistent', $config['options'])) {
-                $extractor->withPersistentConnection($config['options']['persistent']);
+                $connection->withPersistentConnection($config['options']['persistent']);
             }
         }
 
-        return new SQL\Factory\Repository\Connection($extractor);
+        $repository = new SQL\Factory\Repository\Connection($connection);
+
+        if (\array_key_exists('shared', $config) && true === $config['shared']) {
+            $repository->addFiles(new File('PDOPool.php', new InMemory(<<<PHP
+                <?php
+
+                namespace {$this->generatedNamespace};
+                final class PDOPool {
+                    private static array \$connections = [];
+                    public static function unique(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \\PDO {
+                        return new \\PDO(\$dsn, \$username, \$password, \$options);
+                    }
+                    public static function shared(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \\PDO {
+                        if (isset(self::\$connections[\$dsn])) {
+                            return self::\$connections[\$dsn];
+                        }
+                        
+                        return self::\$connections[\$dsn] = self::unique(\$dsn, \$username, \$password, \$options);
+                    }
+                }
+                PHP
+            )));
+        }
+
+        return $repository;
     }
 }

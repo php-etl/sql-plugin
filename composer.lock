@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "581e8eaf00f921ebf4da893ce989d3ae",
+    "content-hash": "69fceb9ec5952b915807306a5df4b8ce",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -575,6 +575,64 @@
                 "source": "https://github.com/php-etl/metadata-contracts/tree/main"
             },
             "time": "2022-05-16T19:37:24+00:00"
+        },
+        {
+            "name": "php-etl/packaging",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-etl/packaging.git",
+                "reference": "182e64e79ae8ddd210d93c9513e140fd7b6b2645"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-etl/packaging/zipball/182e64e79ae8ddd210d93c9513e140fd7b6b2645",
+                "reference": "182e64e79ae8ddd210d93c9513e140fd7b6b2645",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": "^4.10",
+                "php": "^8.0",
+                "php-etl/packaging-contracts": "^0.1.0"
+            },
+            "require-dev": {
+                "johnkary/phpunit-speedtrap": "*",
+                "mybuilder/phpunit-accelerator": "*",
+                "phpunit/php-invoker": "*",
+                "phpunit/phpunit": "^9.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kiboko\\Component\\Packaging\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kiboko SAS",
+                    "homepage": "http://kiboko.fr"
+                },
+                {
+                    "name": "Grégory Planchat",
+                    "email": "gregory@kiboko.fr"
+                }
+            ],
+            "description": "This library aims at building TAR archives, using PHP resources and streams",
+            "support": {
+                "issues": "https://github.com/php-etl/packaging/issues",
+                "source": "https://github.com/php-etl/packaging/tree/main"
+            },
+            "time": "2022-05-16T19:37:26+00:00"
         },
         {
             "name": "php-etl/packaging-contracts",
