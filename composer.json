@@ -37,7 +37,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "functional\\Kiboko\\Plugin\\SQL\\": "tests/functional/"
+            "functional\\Kiboko\\Plugin\\SQL\\": "tests/functional/",
+            "functional\\Kiboko\\Plugin\\SQL\\utils\\": "tests/utils/"
         }
     },
     "extra": {
