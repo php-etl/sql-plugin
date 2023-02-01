@@ -11,20 +11,20 @@ trait AssertTrait
 {
     abstract public static function assertThat($value, Constraint $constraint, string $message = ''): void;
 
-    public function assertTableDoesNotExist(\PDO $connection, string $table, string $message = ''): void
+    public function assertSQLiteTableDoesNotExist(\PDO $connection, string $table, string $message = ''): void
     {
         $this->assertThat(
             false,
-            new LogicalNot(new TableExists($connection, $table)),
+            new LogicalNot(new SQLiteTableExists($connection, $table)),
             $message
         );
     }
 
-    public function assertTableExists(\PDO $connection, string $table, string $message = ''): void
+    public function assertSQLiteTableExists(\PDO $connection, string $table, string $message = ''): void
     {
         $this->assertThat(
             false,
-            new TableExists($connection, $table),
+            new SQLiteTableExists($connection, $table),
             $message
         );
     }

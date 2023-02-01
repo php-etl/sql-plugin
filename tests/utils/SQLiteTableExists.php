@@ -7,7 +7,7 @@ namespace functional\Kiboko\Plugin\SQL\utils;
 use PHPUnit\Framework\Constraint\Constraint;
 
 /** @template Type */
-final class TableExists extends Constraint
+final class SQLiteTableExists extends Constraint
 {
     public function __construct(
         private readonly \PDO $connection,

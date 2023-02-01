@@ -703,7 +703,7 @@ final class ServiceTest extends TestCase
             ])->getBuilder(),
         );
 
-        $this->assertTableExists(PDOPool::shared('sqlite::memory:'), 'foo');
+        $this->assertSQLiteTableExists(PDOPool::shared('sqlite::memory:'), 'foo');
     }
 
     public function testLoaderWithAfterQueries(): void
@@ -761,7 +761,7 @@ final class ServiceTest extends TestCase
             ])->getBuilder(),
         );
 
-        $this->assertTableDoesNotExist(PDOPool::shared('sqlite::memory:'), 'foo');
+        $this->assertSQLiteTableDoesNotExist(PDOPool::shared('sqlite::memory:'), 'foo');
     }
 
     public function testLoaderWithTypedParam(): void
