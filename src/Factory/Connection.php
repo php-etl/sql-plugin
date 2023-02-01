@@ -23,7 +23,7 @@ final class Connection implements FactoryInterface
 
     public function __construct(
         private ExpressionLanguage $interpreter,
-        private readonly string $generatedNamespace = 'GyroscopsGenerated',
+        private string $generatedNamespace = 'GyroscopsGenerated',
     ) {
         $this->processor = new Processor();
         $this->configuration = new SQL\Configuration\Extractor();

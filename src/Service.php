@@ -29,7 +29,7 @@ final class Service implements Configurator\PipelinePluginInterface
 
     public function __construct(
         ?ExpressionLanguage $interpreter = null,
-        private readonly string $generatedNamespace = 'GyroscopsGenerated',
+        private string $generatedNamespace = 'GyroscopsGenerated',
     ) {
         $this->processor = new Processor();
         $this->configuration = new Configuration();

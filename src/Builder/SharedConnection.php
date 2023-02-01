@@ -14,7 +14,7 @@ final class SharedConnection implements ConnectionBuilderInterface
         private Node\Expr $dsn,
         private ?Node\Expr $username = null,
         private ?Node\Expr $password = null,
-        private readonly string $generatedNamespace = 'GyroscopsGenerated',
+        private string $generatedNamespace = 'GyroscopsGenerated',
     ) {
         $this->persistentConnection = null;
     }
