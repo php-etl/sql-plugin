@@ -10,12 +10,10 @@ use PhpParser\Node;
 final class AlternativeLoader implements StepBuilderInterface
 {
     /** @var array<array-key, array{value: Node\Expr, type: string}> */
-    private array $parameters;
+    private array $parameters = [];
 
-    public function __construct(
-        private Node\Expr $query
-    ) {
-        $this->parameters = [];
+    public function __construct(private readonly Node\Expr $query)
+    {
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface

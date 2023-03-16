@@ -55,7 +55,7 @@ final class Loader implements ConfigurationInterface
             ->cannotBeEmpty()
             ->requiresAtLeastOneElement()
             ->validate()
-                ->ifTrue(fn ($data) => \count($data) <= 0)
+                ->ifTrue(fn ($data) => (is_countable($data) ? \count($data) : 0) <= 0)
                 ->thenUnset()
             ->end()
             ->arrayPrototype()

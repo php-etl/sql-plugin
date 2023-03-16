@@ -13,7 +13,7 @@ class Loader implements StepRepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\Loader|SQL\Builder\ConditionalLoader $builder)
+    public function __construct(private readonly SQL\Builder\Loader|SQL\Builder\ConditionalLoader $builder)
     {
         $this->files = [];
         $this->packages = [];

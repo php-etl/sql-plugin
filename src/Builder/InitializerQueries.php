@@ -7,7 +7,7 @@ namespace Kiboko\Plugin\SQL\Builder;
 use PhpParser\Builder;
 use PhpParser\Node;
 
-final class InitializerQueries implements Builder
+final readonly class InitializerQueries implements Builder
 {
     public function __construct(
         private Node\Expr $query,

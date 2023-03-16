@@ -16,7 +16,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
-final class Lookup implements FactoryInterface
+final readonly class Lookup implements FactoryInterface
 {
     private Processor $processor;
     private ConfigurationInterface $configuration;

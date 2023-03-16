@@ -12,13 +12,11 @@ use PhpParser\Node;
 final class AlternativeLookup implements StepBuilderInterface
 {
     /** @var array<array-key, array{value: Node\Expr, type: string}> */
-    private array $parameters;
-    private ?Builder $merge;
+    private array $parameters = [];
+    private ?Builder $merge = null;
 
-    public function __construct(private Node\Expr $query)
+    public function __construct(private readonly Node\Expr $query)
     {
-        $this->parameters = [];
-        $this->merge = null;
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface

@@ -13,7 +13,7 @@ class Extractor implements StepRepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\Extractor $builder)
+    public function __construct(private readonly SQL\Builder\Extractor $builder)
     {
         $this->files = [];
         $this->packages = [];

@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "nikic/php-parser": "^4.10",
         "symfony/config": "^5.2",
         "symfony/expression-language": "^5.2",
@@ -25,10 +25,11 @@
         "phpunit/phpunit": "^9.5",
         "php-etl/phpunit-extension": "^0.4.0",
         "adlawson/vfs": "^0.12.1",
-        "phpstan/phpstan": "^0.12.93",
+        "phpstan/phpstan": "^1.10",
         "php-etl/sql-flow": "^0.1.0",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "mikey179/vfsstream": "^1.6"
+        "mikey179/vfsstream": "^1.6",
+        "rector/rector": "^0.15"
     },
     "autoload": {
         "psr-4": {
@@ -43,13 +44,16 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.3.x-dev"
+            "dev-main": "0.4.x-dev"
         },
         "gyroscops": {
             "plugins": ["Kiboko\\Plugin\\SQL\\Service"]
         }
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

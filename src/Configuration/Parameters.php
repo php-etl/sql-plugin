@@ -19,7 +19,7 @@ class Parameters implements ConfigurationInterface
         /* @phpstan-ignore-next-line */
         $builder->getRootNode()
             ->validate()
-                ->ifTrue(fn ($data) => \count($data) <= 0)
+                ->ifTrue(fn ($data) => (is_countable($data) ? \count($data) : 0) <= 0)
                 ->thenUnset()
             ->end()
             ->useAttributeAsKey('key', false)
