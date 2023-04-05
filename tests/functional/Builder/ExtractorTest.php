@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace functional\Kiboko\Plugin\SQL;
 
@@ -44,7 +46,7 @@ final class ExtractorTest extends TestCase
                     'parameters' => [
                         'identifier' => [
                             'value' => '@=3',
-                        ]
+                        ],
                     ],
                 ],
             ]),
@@ -61,7 +63,7 @@ final class ExtractorTest extends TestCase
                 'parameters' => [
                     'identifier' => [
                         'value' => new Expression('3'),
-                    ]
+                    ],
                 ],
             ],
             $extractor->normalize([
@@ -70,7 +72,7 @@ final class ExtractorTest extends TestCase
                     'parameters' => [
                         'identifier' => [
                             'value' => '@=3',
-                        ]
+                        ],
                     ],
                 ],
             ]),

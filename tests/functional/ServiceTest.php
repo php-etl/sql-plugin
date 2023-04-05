@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace functional\Kiboko\Plugin\SQL;
 
@@ -58,8 +60,8 @@ final class ServiceTest extends TestCase
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
                         'identifier' => [
-                            'value' => new Expression('3')
-                        ]
+                            'value' => new Expression('3'),
+                        ],
                     ],
                 ],
                 'connection' => [
@@ -85,8 +87,8 @@ final class ServiceTest extends TestCase
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
                             'identifier' => [
-                                'value' => '@=3'
-                            ]
+                                'value' => '@=3',
+                            ],
                         ],
                     ],
                     'connection' => [
@@ -121,14 +123,14 @@ final class ServiceTest extends TestCase
                     'parameters' => [
                         'identifier' => [
                             'value' => new Expression('3'),
-                        ]
+                        ],
                     ],
                     'merge' => [
                         'map' => [
                             [
                                 'field' => '[foo]',
                                 'copy' => '[foo]',
-                            ]
+                            ],
                         ],
                     ],
                 ],
@@ -156,14 +158,14 @@ final class ServiceTest extends TestCase
                         'parameters' => [
                             'identifier' => [
                                 'value' => '@=3',
-                            ]
+                            ],
                         ],
                         'merge' => [
                             'map' => [
                                 [
                                     'field' => '[foo]',
                                     'copy' => '[foo]',
-                                ]
+                                ],
                             ],
                         ],
                     ],
@@ -202,14 +204,14 @@ final class ServiceTest extends TestCase
                             'parameters' => [
                                 'identifier' => [
                                     'value' => new Expression('3'),
-                                ]
+                                ],
                             ],
                             'merge' => [
                                 'map' => [
                                     [
                                         'field' => '[foo]',
                                         'copy' => '[foo]',
-                                    ]
+                                    ],
                                 ],
                             ],
                         ],
@@ -219,14 +221,14 @@ final class ServiceTest extends TestCase
                             'parameters' => [
                                 'identifier' => [
                                     'value' => new Expression('3'),
-                                ]
+                                ],
                             ],
                             'merge' => [
                                 'map' => [
                                     [
                                         'field' => '[foo]',
                                         'copy' => '[foo]',
-                                    ]
+                                    ],
                                 ],
                             ],
                         ],
@@ -266,7 +268,7 @@ final class ServiceTest extends TestCase
                                         [
                                             'field' => '[foo]',
                                             'copy' => '[foo]',
-                                        ]
+                                        ],
                                     ],
                                 ],
                             ],
@@ -283,7 +285,7 @@ final class ServiceTest extends TestCase
                                         [
                                             'field' => '[foo]',
                                             'copy' => '[foo]',
-                                        ]
+                                        ],
                                     ],
                                 ],
                             ],
@@ -322,7 +324,7 @@ final class ServiceTest extends TestCase
                         'identifier' => [
                             'value' => new Expression('3'),
                         ],
-                    ]
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
@@ -349,7 +351,7 @@ final class ServiceTest extends TestCase
                             'identifier' => [
                                 'value' => '@=3',
                             ],
-                        ]
+                        ],
                     ],
                     'connection' => [
                         'dsn' => 'sqlite::memory:',
@@ -393,7 +395,7 @@ final class ServiceTest extends TestCase
                                     [
                                         'field' => '[foo]',
                                         'copy' => '[foo]',
-                                    ]
+                                    ],
                                 ],
                             ],
                         ],
@@ -410,7 +412,7 @@ final class ServiceTest extends TestCase
                                     [
                                         'field' => '[foo]',
                                         'copy' => '[foo]',
-                                    ]
+                                    ],
                                 ],
                             ],
                         ],
@@ -450,7 +452,7 @@ final class ServiceTest extends TestCase
                                         [
                                             'field' => '[foo]',
                                             'copy' => '[foo]',
-                                        ]
+                                        ],
                                     ],
                                 ],
                             ],
@@ -467,7 +469,7 @@ final class ServiceTest extends TestCase
                                         [
                                             'field' => '[foo]',
                                             'copy' => '[foo]',
-                                        ]
+                                        ],
                                     ],
                                 ],
                             ],
@@ -565,7 +567,7 @@ final class ServiceTest extends TestCase
                     'query' => 'SELECT additionalValue FROM foo WHERE id = :id',
                     'parameters' => [
                         'id' => [
-                            'value' => new Expression('input["id"]')
+                            'value' => new Expression('input["id"]'),
                         ],
                     ],
                     'merge' => [
@@ -573,15 +575,15 @@ final class ServiceTest extends TestCase
                             [
                                 'field' => '[additionalValue]',
                                 'expression' => 'lookup["additionalValue"]',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
                     'options' => [
-                        'persistent' => true
-                    ]
+                        'persistent' => true,
+                    ],
                 ],
             ])->getBuilder(),
         );
@@ -610,7 +612,7 @@ final class ServiceTest extends TestCase
                 ],
                 [
                     'id' => 2,
-                    'value' => 'Sit amet consecutir'
+                    'value' => 'Sit amet consecutir',
                 ],
             ],
             $service->compile([
@@ -637,17 +639,17 @@ final class ServiceTest extends TestCase
                                     [
                                         'field' => '[additionalValue]',
                                         'expression' => 'lookup["additionalValue"]',
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
                     'options' => [
-                        'persistent' => true
-                    ]
+                        'persistent' => true,
+                    ],
                 ],
             ])->getBuilder()
         );
@@ -666,7 +668,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => 'Sit',
-                ]
+                ],
             ],
             [
                 [
@@ -676,7 +678,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => 'Sit',
-                ]
+                ],
             ],
             $service->compile([
                 'expression_language' => [],
@@ -692,9 +694,9 @@ final class ServiceTest extends TestCase
                             'value' => new Expression('input["id"]'),
                         ],
                         'value' => [
-                            'value' => new Expression('input["value"]')
+                            'value' => new Expression('input["value"]'),
                         ],
-                    ]
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
@@ -719,7 +721,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => 'Sit',
-                ]
+                ],
             ],
             [
                 [
@@ -729,7 +731,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => 'Sit',
-                ]
+                ],
             ],
             $service->compile([
                 'expression_language' => [],
@@ -749,10 +751,10 @@ final class ServiceTest extends TestCase
                         'id' => [
                             'value' => new Expression('input["id"]'),
                         ],
-                        'value'=> [
+                        'value' => [
                             'value' => new Expression('input["value"]'),
                         ],
-                    ]
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
@@ -777,7 +779,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => true,
-                ]
+                ],
             ],
             [
                 [
@@ -787,7 +789,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '2',
                     'value' => true,
-                ]
+                ],
             ],
             $service->compile([
                 'expression_language' => [],
@@ -809,15 +811,15 @@ final class ServiceTest extends TestCase
                         ],
                         'value' => [
                             'value' => new Expression('input["value"]'),
-                            'type' => 'boolean'
+                            'type' => 'boolean',
                         ],
-                    ]
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
                     'options' => [
-                        'persistent' => true
-                    ]
+                        'persistent' => true,
+                    ],
                 ],
             ])->getBuilder(),
         );
@@ -836,7 +838,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '3',
                     'value' => 'Ut sed',
-                ]
+                ],
             ],
             [
                 [
@@ -846,7 +848,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '3',
                     'value' => 'Ut sed',
-                ]
+                ],
             ],
             $service->compile([
                 'expression_language' => [],
@@ -868,7 +870,7 @@ final class ServiceTest extends TestCase
                                 'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
-                            ]
+                            ],
                         ],
                         [
                             'condition' => new Expression('input["id"] == 3'),
@@ -877,15 +879,15 @@ final class ServiceTest extends TestCase
                                 'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
                     'options' => [
-                        'persistent' => true
-                    ]
+                        'persistent' => true,
+                    ],
                 ],
             ])->getBuilder(),
         );
@@ -904,7 +906,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '3',
                     'value' => 'Ut sed',
-                ]
+                ],
             ],
             [
                 [
@@ -914,7 +916,7 @@ final class ServiceTest extends TestCase
                 [
                     'id' => '3',
                     'value' => 'Ut sed',
-                ]
+                ],
             ],
             $service->compile([
                 'expression_language' => [],
@@ -941,7 +943,7 @@ final class ServiceTest extends TestCase
                                 'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
-                            ]
+                            ],
                         ],
                         [
                             'condition' => new Expression('input["id"] == 3'),
@@ -950,15 +952,15 @@ final class ServiceTest extends TestCase
                                 'value' => [
                                     'value' => new Expression('input["value"]'),
                                 ],
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
                     'options' => [
-                        'persistent' => true
-                    ]
+                        'persistent' => true,
+                    ],
                 ],
             ])->getBuilder(),
         );
@@ -987,15 +989,15 @@ final class ServiceTest extends TestCase
                     'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                     'parameters' => [
                         'identifier' => [
-                            'value' => new Expression('3')
-                        ]
+                            'value' => new Expression('3'),
+                        ],
                     ],
                 ],
                 'connection' => [
                     'dsn' => 'sqlite::memory:',
                     'options' => [
-                        'persistent' => true
-                    ]
+                        'persistent' => true,
+                    ],
                 ],
             ],
             $service->normalize([
@@ -1017,15 +1019,15 @@ final class ServiceTest extends TestCase
                         'query' => 'SELECT * FROM foo WHERE value IS NOT NULL AND id <= :identifier',
                         'parameters' => [
                             'identifier' => [
-                                'value' => '@=3'
-                            ]
-                        ]
+                                'value' => '@=3',
+                            ],
+                        ],
                     ],
                     'connection' => [
                         'dsn' => 'sqlite::memory:',
                         'options' => [
-                            'persistent' => true
-                        ]
+                            'persistent' => true,
+                        ],
                     ],
                 ],
             ]),

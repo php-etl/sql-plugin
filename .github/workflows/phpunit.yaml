@@ -9,6 +9,7 @@ jobs:
                 with:
                     php-version: '8.2'
                     tools: composer:v2
+                    extension: pdo
                     coverage: pcov
             -   uses: actions/cache@v3
                 with:
@@ -22,7 +23,7 @@ jobs:
                     php_version: '8.2'
 
             -   name: Run tests & generate Coverage
-                run: bin/phpunit functional --coverage-html var/coverage
+                run: bin/phpunit --coverage-html var/coverage
 
             -   name: Store coverage files
                 uses: actions/upload-artifact@v3
