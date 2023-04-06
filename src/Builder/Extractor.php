@@ -9,21 +9,15 @@ use PhpParser\Node;
 
 final class Extractor implements StepBuilderInterface
 {
-    private ?Node\Expr $logger;
+    private ?Node\Expr $logger = null;
     /** @var array<int, InitializerQueries> */
-    private array $beforeQueries;
+    private array $beforeQueries = [];
     /** @var array<int, InitializerQueries> */
-    private array $afterQueries;
-    private array $parameters;
+    private array $afterQueries = [];
+    private array $parameters = [];
 
-    public function __construct(
-        private Node\Expr $query,
-        private null|Node\Expr|ConnectionBuilderInterface $connection = null,
-    ) {
-        $this->logger = null;
-        $this->beforeQueries = [];
-        $this->afterQueries = [];
-        $this->parameters = [];
+    public function __construct(private readonly Node\Expr $query, private null|Node\Expr|ConnectionBuilderInterface $connection = null)
+    {
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -151,7 +145,7 @@ final class Extractor implements StepBuilderInterface
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Name\FullyQualified('Kiboko\\Component\\Flow\\SQL\\Extractor'),
+            class: new Node\Name\FullyQualified(\Kiboko\Component\Flow\SQL\Extractor::class),
             args: [
                 new Node\Arg(
                     value: $this->connection->getNode()
@@ -184,7 +178,7 @@ final class Extractor implements StepBuilderInterface
                     : new Node\Expr\Array_(attributes: [
                         'kind' => Node\Expr\Array_::KIND_SHORT,
                     ]),
-                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified(\Psr\Log\NullLogger::class))),
             ],
         );
     }

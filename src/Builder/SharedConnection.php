@@ -8,15 +8,10 @@ use PhpParser\Node;
 
 final class SharedConnection implements ConnectionBuilderInterface
 {
-    private ?bool $persistentConnection;
+    private ?bool $persistentConnection = null;
 
-    public function __construct(
-        private Node\Expr $dsn,
-        private ?Node\Expr $username = null,
-        private ?Node\Expr $password = null,
-        private string $generatedNamespace = 'GyroscopsGenerated',
-    ) {
-        $this->persistentConnection = null;
+    public function __construct(private readonly Node\Expr $dsn, private ?Node\Expr $username = null, private ?Node\Expr $password = null, private readonly string $generatedNamespace = 'GyroscopsGenerated')
+    {
     }
 
     public function withUsername(Node\Expr $username): self

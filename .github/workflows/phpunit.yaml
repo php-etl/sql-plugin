@@ -1,23 +1,16 @@
-name: Quality
+name: PHPUnit
 on: push
 jobs:
-    cs-fixer:
+    phpunit:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
             -   uses: shivammathur/setup-php@v2
                 with:
                     php-version: '8.2'
-            -   name: Cs-Fixer
-                run: |
-                    wget -q https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer
-                    chmod a+x php-cs-fixer
-                    PHP_CS_FIXER_IGNORE_ENV=true ./php-cs-fixer fix --dry-run --config=.php-cs-fixer.dist.php
-
-    phpstan:
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v3
+                    tools: composer:v2
+                    extension: pdo
+                    coverage: pcov
             -   uses: actions/cache@v3
                 with:
                     path: '**/vendor'
@@ -29,9 +22,10 @@ jobs:
                     args: --prefer-dist
                     php_version: '8.2'
 
-            -   name: PHPStan
-                uses: php-actions/phpstan@v3
-                with:
-                    path: src/
-                    args: --level=4
+            -   name: Run tests & generate Coverage
+                run: bin/phpunit --coverage-html var/coverage
 
+            -   name: Store coverage files
+                uses: actions/upload-artifact@v3
+                with:
+                    path: var/coverage

@@ -16,7 +16,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 use function Kiboko\Component\SatelliteToolbox\Configuration\compileValueWhenExpression;
 
-final class Connection implements FactoryInterface
+final readonly class Connection implements FactoryInterface
 {
     private Processor $processor;
     private ConfigurationInterface $configuration;

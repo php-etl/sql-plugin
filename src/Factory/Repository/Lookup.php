@@ -13,7 +13,7 @@ class Lookup implements StepRepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\Lookup|SQL\Builder\ConditionalLookup $builder)
+    public function __construct(private readonly SQL\Builder\Lookup|SQL\Builder\ConditionalLookup $builder)
     {
         $this->files = [];
         $this->packages = [];

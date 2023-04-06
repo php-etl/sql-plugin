@@ -9,21 +9,16 @@ use PhpParser\Node;
 
 final class ConditionalLoader implements StepBuilderInterface
 {
-    private ?Node\Expr $logger;
+    private ?Node\Expr $logger = null;
     /** @var array<array{Node\Expr, AlternativeLoader}> */
-    private iterable $alternatives;
+    private iterable $alternatives = [];
     /** @var array<int, InitializerQueries> */
-    private array $beforeQueries;
+    private array $beforeQueries = [];
     /** @var array<int, InitializerQueries> */
-    private array $afterQueries;
+    private array $afterQueries = [];
 
-    public function __construct(
-        private null|Node\Expr|ConnectionBuilderInterface $connection = null,
-    ) {
-        $this->logger = null;
-        $this->alternatives = [];
-        $this->beforeQueries = [];
-        $this->afterQueries = [];
+    public function __construct(private null|Node\Expr|ConnectionBuilderInterface $connection = null)
+    {
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -101,7 +96,7 @@ final class ConditionalLoader implements StepBuilderInterface
         [$condition, $alternative] = array_shift($alternatives);
 
         return new Node\Expr\New_(
-            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\ConditionalLoader'),
+            class: new Node\Name\FullyQualified(\Kiboko\Component\Flow\SQL\ConditionalLoader::class),
             args: [
                 new Node\Arg(
                     value: $this->connection->getNode()
@@ -157,7 +152,7 @@ final class ConditionalLoader implements StepBuilderInterface
                         'kind' => Node\Expr\Array_::KIND_SHORT,
                     ],
                 ),
-                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified(\Psr\Log\NullLogger::class))),
             ],
         );
     }

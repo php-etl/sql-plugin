@@ -11,7 +11,7 @@ final class Connection implements Configurator\RepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\ConnectionBuilderInterface $builder)
+    public function __construct(private readonly SQL\Builder\ConnectionBuilderInterface $builder)
     {
         $this->files = [];
         $this->packages = [];

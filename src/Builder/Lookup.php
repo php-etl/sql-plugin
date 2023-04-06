@@ -9,19 +9,14 @@ use PhpParser\Node;
 
 final class Lookup implements StepBuilderInterface
 {
-    private ?Node\Expr $logger;
+    private ?Node\Expr $logger = null;
     /** @var array<int, InitializerQueries> */
-    private array $beforeQueries;
+    private array $beforeQueries = [];
     /** @var array<int, InitializerQueries> */
-    private array $afterQueries;
+    private array $afterQueries = [];
 
-    public function __construct(
-        private AlternativeLookup $alternative,
-        private null|Node\Expr|ConnectionBuilderInterface $connection = null,
-    ) {
-        $this->logger = null;
-        $this->beforeQueries = [];
-        $this->afterQueries = [];
+    public function __construct(private readonly AlternativeLookup $alternative, private null|Node\Expr|ConnectionBuilderInterface $connection = null)
+    {
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
@@ -101,7 +96,7 @@ final class Lookup implements StepBuilderInterface
     public function getNode(): Node
     {
         return new Node\Expr\New_(
-            class: new Node\Name\FullyQualified('Kiboko\Component\Flow\SQL\Lookup'),
+            class: new Node\Name\FullyQualified(\Kiboko\Component\Flow\SQL\Lookup::class),
             args: [
                 new Node\Arg(
                     $this->connection->getNode()
@@ -112,7 +107,7 @@ final class Lookup implements StepBuilderInterface
                             name: null,
                             subNodes: [
                                 'implements' => [
-                                    new Node\Name\FullyQualified('Kiboko\Contract\Mapping\CompiledMapperInterface'),
+                                    new Node\Name\FullyQualified(\Kiboko\Contract\Mapping\CompiledMapperInterface::class),
                                 ],
                                 'stmts' => [
                                     new Node\Stmt\ClassMethod(
@@ -129,7 +124,7 @@ final class Lookup implements StepBuilderInterface
                                                         expr: new Node\Expr\BinaryOp\Coalesce(
                                                             left: new Node\Expr\Variable('logger'),
                                                             right: new Node\Expr\New_(
-                                                                class: new Node\Name\FullyQualified('Psr\Log\NullLogger')
+                                                                class: new Node\Name\FullyQualified(\Psr\Log\NullLogger::class)
                                                             )
                                                         )
                                                     )
@@ -143,7 +138,7 @@ final class Lookup implements StepBuilderInterface
                                                     default: new Node\Expr\ConstFetch(
                                                         name: new Node\Name(name: 'null'),
                                                     ),
-                                                    type: new Node\Name\FullyQualified('Psr\Log\LoggerInterface')
+                                                    type: new Node\Name\FullyQualified(\Psr\Log\LoggerInterface::class)
                                                 ),
                                             ],
                                         ],
@@ -184,7 +179,7 @@ final class Lookup implements StepBuilderInterface
                 new Node\Arg(
                     value: $this->compileAfterQueries()
                 ),
-                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified('Psr\\Log\\NullLogger'))),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified(\Psr\Log\NullLogger::class))),
             ],
         );
     }

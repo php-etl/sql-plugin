@@ -11,7 +11,7 @@ final class InitializerQuery implements Configurator\RepositoryInterface
 {
     use RepositoryTrait;
 
-    public function __construct(private SQL\Builder\InitializerQueries $builder)
+    public function __construct(private readonly SQL\Builder\InitializerQueries $builder)
     {
         $this->files = [];
         $this->packages = [];
