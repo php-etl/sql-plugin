@@ -20,7 +20,8 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
         new Configurator\Pipeline\StepTransformer('lookup'),
         new Configurator\Pipeline\StepLoader(),
     ],
-)] final readonly class Service implements Configurator\PipelinePluginInterface
+)]
+final readonly class Service implements Configurator\PipelinePluginInterface
 {
     private Processor $processor;
     private Configurator\PluginConfigurationInterface $configuration;
