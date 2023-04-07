@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Kiboko\Plugin\SQL\Builder;
 
 use Kiboko\Contract\Configurator\StepBuilderInterface;
+use Kiboko\Contract\Mapping\CompiledMapperInterface;
 use PhpParser\Node;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class ConditionalLookup implements StepBuilderInterface
 {
@@ -154,7 +157,7 @@ final class ConditionalLookup implements StepBuilderInterface
                             name: null,
                             subNodes: [
                                 'implements' => [
-                                    new Node\Name\FullyQualified(\Kiboko\Contract\Mapping\CompiledMapperInterface::class),
+                                    new Node\Name\FullyQualified(CompiledMapperInterface::class),
                                 ],
                                 'stmts' => [
                                     new Node\Stmt\ClassMethod(
@@ -171,7 +174,7 @@ final class ConditionalLookup implements StepBuilderInterface
                                                         expr: new Node\Expr\BinaryOp\Coalesce(
                                                             left: new Node\Expr\Variable('logger'),
                                                             right: new Node\Expr\New_(
-                                                                class: new Node\Name\FullyQualified(\Psr\Log\NullLogger::class)
+                                                                class: new Node\Name\FullyQualified(NullLogger::class)
                                                             )
                                                         )
                                                     )
@@ -185,7 +188,7 @@ final class ConditionalLookup implements StepBuilderInterface
                                                     default: new Node\Expr\ConstFetch(
                                                         name: new Node\Name(name: 'null'),
                                                     ),
-                                                    type: new Node\Name\FullyQualified(\Psr\Log\LoggerInterface::class)
+                                                    type: new Node\Name\FullyQualified(LoggerInterface::class)
                                                 ),
                                             ],
                                         ],
@@ -231,7 +234,7 @@ final class ConditionalLookup implements StepBuilderInterface
                 new Node\Arg(
                     value: $this->compileAfterQueries()
                 ),
-                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified(\Psr\Log\NullLogger::class))),
+                new Node\Arg(value: $this->logger ?? new Node\Expr\New_(new Node\Name\FullyQualified(NullLogger::class))),
             ],
         );
     }

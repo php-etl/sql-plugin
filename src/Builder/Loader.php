@@ -16,8 +16,10 @@ final class Loader implements StepBuilderInterface
     private array $afterQueries = [];
     private array $parameters = [];
 
-    public function __construct(private readonly Node\Expr $query, private null|Node\Expr|ConnectionBuilderInterface $connection = null)
-    {
+    public function __construct(
+        private readonly Node\Expr $query,
+        private null|Node\Expr|ConnectionBuilderInterface $connection = null
+    ) {
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface

@@ -52,14 +52,9 @@ final class ConditionalLoader implements StepBuilderInterface
         return $this;
     }
 
-    /**
-     * @return array<int, Node>
-     */
-    private function compileAlternative(AlternativeLoader $loader): array
+    private function compileAlternative(AlternativeLoader $loader): Node
     {
-        return [
-            $loader->getNode(),
-        ];
+        return $loader->getNode();
     }
 
     public function withBeforeQuery(InitializerQueries $query): self
@@ -117,13 +112,13 @@ final class ConditionalLoader implements StepBuilderInterface
                                     cond: $condition,
                                     subNodes: [
                                         'stmts' => [
-                                            ...$this->compileAlternative($alternative),
+                                            $this->compileAlternative($alternative),
                                         ],
                                         'elseifs' => array_map(
                                             fn (Node\Expr $condition, AlternativeLoader $loader) => new Node\Stmt\ElseIf_(
                                                 cond: $condition,
                                                 stmts: [
-                                                    ...$this->compileAlternative($loader),
+                                                    $this->compileAlternative($loader),
                                                 ],
                                             ),
                                             array_column($alternatives, 0),
