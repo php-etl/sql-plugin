@@ -15,8 +15,10 @@ final class Lookup implements StepBuilderInterface
     /** @var array<int, InitializerQueries> */
     private array $afterQueries = [];
 
-    public function __construct(private readonly AlternativeLookup $alternative, private null|Node\Expr|ConnectionBuilderInterface $connection = null)
-    {
+    public function __construct(
+        private readonly AlternativeLookup $alternative,
+        private null|Node\Expr|ConnectionBuilderInterface $connection = null
+    ) {
     }
 
     public function withLogger(Node\Expr $logger): StepBuilderInterface
