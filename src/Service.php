@@ -14,7 +14,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
     name: 'sql',
     dependencies: [
         'ext-pdo',
-        'php-etl/sql-flow:~0.2.0@dev',
+        'php-etl/sql-flow:"*"',
     ],
     steps: [
         new Configurator\Pipeline\StepExtractor(),
