@@ -13,6 +13,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
+        "ext-pdo": "*",
         "nikic/php-parser": "^4.10",
         "symfony/config": "^6.0",
         "symfony/expression-language": "^6.0",
@@ -22,7 +23,6 @@
         "php-etl/packaging": "*"
     },
     "require-dev": {
-        "ext-pdo": "*",
         "phpunit/phpunit": "^10.0",
         "php-etl/phpunit-extension": "*",
         "phpstan/phpstan": "^1.10",
