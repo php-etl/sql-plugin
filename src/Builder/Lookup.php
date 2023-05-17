@@ -140,7 +140,8 @@ final class Lookup implements StepBuilderInterface
                                                     default: new Node\Expr\ConstFetch(
                                                         name: new Node\Name(name: 'null'),
                                                     ),
-                                                    type: new Node\Name\FullyQualified(\Psr\Log\LoggerInterface::class)
+                                                    type: new Node\NullableType(\Psr\Log\LoggerInterface::class),
+                                                    flags: Node\Stmt\Class_::MODIFIER_PRIVATE
                                                 ),
                                             ],
                                         ],
