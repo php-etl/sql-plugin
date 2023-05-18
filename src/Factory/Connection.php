@@ -84,27 +84,25 @@ final readonly class Connection implements FactoryInterface
 
         $repository = new SQL\Factory\Repository\Connection($connection);
 
-        if (\array_key_exists('shared', $config) && true === $config['shared']) {
-            $repository->addFiles(new File('PDOPool.php', new InMemory(<<<PHP
-                <?php
+        $repository->addFiles(new File('PDOPool.php', new InMemory(<<<PHP
+            <?php
 
-                namespace {$this->generatedNamespace};
-                final class PDOPool {
-                    private static array \$connections = [];
-                    public static function unique(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \\PDO {
-                        return new \\PDO(\$dsn, \$username, \$password, \$options);
-                    }
-                    public static function shared(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \\PDO {
-                        if (isset(self::\$connections[\$dsn])) {
-                            return self::\$connections[\$dsn];
-                        }
-                        
-                        return self::\$connections[\$dsn] = self::unique(\$dsn, \$username, \$password, \$options);
-                    }
+            namespace {$this->generatedNamespace};
+            final class PDOPool {
+                private static array \$connections = [];
+                public static function unique(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \\PDO {
+                    return new \\PDO(\$dsn, \$username, \$password, \$options);
                 }
-                PHP
-            )));
-        }
+                public static function shared(string \$dsn, ?string \$username = null, ?string \$password = null, \$options = []): \\PDO {
+                    if (isset(self::\$connections[\$dsn])) {
+                        return self::\$connections[\$dsn];
+                    }
+                    
+                    return self::\$connections[\$dsn] = self::unique(\$dsn, \$username, \$password, \$options);
+                }
+            }
+            PHP
+        )));
 
         return $repository;
     }
