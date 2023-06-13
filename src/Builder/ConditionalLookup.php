@@ -7,7 +7,6 @@ namespace Kiboko\Plugin\SQL\Builder;
 use Kiboko\Contract\Configurator\StepBuilderInterface;
 use Kiboko\Contract\Mapping\CompiledMapperInterface;
 use PhpParser\Node;
-use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 final class ConditionalLookup implements StepBuilderInterface
@@ -188,7 +187,8 @@ final class ConditionalLookup implements StepBuilderInterface
                                                     default: new Node\Expr\ConstFetch(
                                                         name: new Node\Name(name: 'null'),
                                                     ),
-                                                    type: new Node\Name\FullyQualified(LoggerInterface::class)
+                                                    type: new Node\NullableType(\Psr\Log\LoggerInterface::class),
+                                                    flags: Node\Stmt\Class_::MODIFIER_PRIVATE
                                                 ),
                                             ],
                                         ],
