@@ -127,34 +127,47 @@ final readonly class Lookup implements FactoryInterface
 
                 if (\array_key_exists('parameters', $alternative)) {
                     foreach ($alternative['parameters'] as $key => $parameter) {
+                        $isIterable = false;
+                        if (\array_key_exists('from', $parameter) && isset($parameter['from'])) {
+                            $parameter['value'] = $parameter['from'];
+                            $isIterable = true;
+                        }
+
                         match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
                             'integer' => $alternativeBuilder->addIntegerParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                             'boolean' => $alternativeBuilder->addBooleanParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                             'date' => $alternativeBuilder->addDateParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                             'datetime' => $alternativeBuilder->addDateTimeParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                             'json' => $alternativeBuilder->addJSONParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                             'binary' => $alternativeBuilder->addBinaryParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                             default => $alternativeBuilder->addStringParam(
                                 $key,
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                $isIterable,
                             ),
                         };
                     }
