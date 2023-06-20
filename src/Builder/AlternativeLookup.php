@@ -127,7 +127,14 @@ final class AlternativeLookup implements StepBuilderInterface
                 ...array_filter(
                     [
                         $this->getAlternativeLookupNode(),
-                        $this->merge?->getNode(),
+                        new Node\Stmt\If_(
+                            cond: new Node\Expr\Variable('lookup'),
+                            subNodes: [
+                                'stmts' => [
+                                    $this->merge?->getNode(),
+                                ],
+                            ]
+                        ),
                         new Node\Stmt\Return_(
                             new Node\Expr\Variable('output')
                         ),
