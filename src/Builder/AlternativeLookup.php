@@ -11,8 +11,10 @@ use PhpParser\Node;
 
 final class AlternativeLookup implements StepBuilderInterface
 {
-    /** @var array<array-key, array{value: Node\Expr, iterable: bool, type: string}> */
+    /** @var array<array-key, array{value: Node\Expr, type: string}> */
     private array $parameters = [];
+    /** @var array<array-key, array{value: Node\Expr, type: string}> */
+    private array $parametersLists = [];
     private ?Builder $merge = null;
 
     public function __construct(private readonly Node\Expr $query)
@@ -34,78 +36,71 @@ final class AlternativeLookup implements StepBuilderInterface
         return $this;
     }
 
-    public function addStringParam(int|string $key, Node\Expr $param, null|bool $iterable = false): StepBuilderInterface
+    public function addStringParam(int|string $key, Node\Expr $param): StepBuilderInterface
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'string',
-            'iterable' => $iterable,
         ];
 
         return $this;
     }
 
-    public function addIntegerParam(int|string $key, Node\Expr $param, null|bool $iterable = false): StepBuilderInterface
+    public function addIntegerParam(int|string $key, Node\Expr $param): StepBuilderInterface
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'integer',
-            'iterable' => $iterable,
         ];
 
         return $this;
     }
 
-    public function addBooleanParam(int|string $key, Node\Expr $param, null|bool $iterable = false): StepBuilderInterface
+    public function addBooleanParam(int|string $key, Node\Expr $param): StepBuilderInterface
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'boolean',
-            'iterable' => $iterable,
         ];
 
         return $this;
     }
 
-    public function addDateParam(int|string $key, Node\Expr $param, null|bool $iterable = false): self
+    public function addDateParam(int|string $key, Node\Expr $param): self
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'date',
-            'iterable' => $iterable,
         ];
 
         return $this;
     }
 
-    public function addDateTimeParam(int|string $key, Node\Expr $param, null|bool $iterable = false): self
+    public function addDateTimeParam(int|string $key, Node\Expr $param): self
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'datetime',
-            'iterable' => $iterable,
         ];
 
         return $this;
     }
 
-    public function addJSONParam(int|string $key, Node\Expr $param, null|bool $iterable = false): self
+    public function addJSONParam(int|string $key, Node\Expr $param): self
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'json',
-            'iterable' => $iterable,
         ];
 
         return $this;
     }
 
-    public function addBinaryParam(int|string $key, Node\Expr $param, null|bool $iterable = false): self
+    public function addBinaryParam(int|string $key, Node\Expr $param): self
     {
         $this->parameters[$key] = [
             'value' => $param,
             'type' => 'binary',
-            'iterable' => $iterable,
         ];
 
         return $this;
@@ -114,6 +109,76 @@ final class AlternativeLookup implements StepBuilderInterface
     public function withMerge(Builder $merge): self
     {
         $this->merge = $merge;
+
+        return $this;
+    }
+
+    public function addStringParamList(int|string $key, Node\Expr $param): StepBuilderInterface
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'string',
+        ];
+
+        return $this;
+    }
+
+    public function addIntegerParamList(int|string $key, Node\Expr $param): StepBuilderInterface
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'integer',
+        ];
+
+        return $this;
+    }
+
+    public function addBooleanParamList(int|string $key, Node\Expr $param): StepBuilderInterface
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'boolean',
+        ];
+
+        return $this;
+    }
+
+    public function addDateParamList(int|string $key, Node\Expr $param): self
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'date',
+        ];
+
+        return $this;
+    }
+
+    public function addDateTimeParamList(int|string $key, Node\Expr $param): self
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'datetime',
+        ];
+
+        return $this;
+    }
+
+    public function addJSONParamList(int|string $key, Node\Expr $param): self
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'json',
+        ];
+
+        return $this;
+    }
+
+    public function addBinaryParamList(int|string $key, Node\Expr $param): self
+    {
+        $this->parametersLists[$key] = [
+            'value' => $param,
+            'type' => 'binary',
+        ];
 
         return $this;
     }
@@ -177,7 +242,7 @@ final class AlternativeLookup implements StepBuilderInterface
                                 var: new Node\Expr\Variable('data'),
                                 expr: new Node\Expr\MethodCall(
                                     var: new Node\Expr\Variable('stmt'),
-                                    name: new Node\Identifier('fetchAll'),
+                                    name: new Node\Identifier('fetch'),
                                     args: [
                                         new Node\Arg(
                                             new Node\Expr\ClassConstFetch(
@@ -250,35 +315,35 @@ final class AlternativeLookup implements StepBuilderInterface
     public function getParameters(): iterable
     {
         foreach ($this->parameters as $key => $parameter) {
-            if (\array_key_exists('iterable', $parameter) && true === $parameter['iterable']) {
-                yield new Node\Stmt\Foreach_(
-                    expr: $parameter['value'],
-                    valueVar: new Node\Expr\Variable('value'),
-                    subNodes: [
-                        'keyVar' => new Node\Expr\Variable('key'),
-                        'stmts' => [
-                            $this->compileParameters(
-                                new Node\Arg(
-                                    new Node\Expr\BinaryOp\Concat(
-                                        new Node\Scalar\String_($key.'_'),
-                                        new Node\Expr\Variable('key'),
-                                    )
-                                ),
-                                [
-                                    'type' => $parameter['type'],
-                                    'value' => new Node\Expr\Variable('value'),
-                                ]
+            yield $this->compileParameter($key, $parameter);
+        }
+
+        foreach ($this->parametersLists as $key => $parameter) {
+            yield new Node\Stmt\Foreach_(
+                expr: $parameter['value'],
+                valueVar: new Node\Expr\Variable('value'),
+                subNodes: [
+                    'keyVar' => new Node\Expr\Variable('key'),
+                    'stmts' => [
+                        $this->compileParameter(
+                            new Node\Arg(
+                                new Node\Expr\BinaryOp\Concat(
+                                    new Node\Scalar\String_($key.'_'),
+                                    new Node\Expr\Variable('key'),
+                                )
                             ),
-                        ],
-                    ]
-                );
-            } else {
-                yield $this->compileParameters($key, $parameter);
-            }
+                            [
+                                'type' => $parameter['type'],
+                                'value' => new Node\Expr\Variable('value'),
+                            ]
+                        ),
+                    ],
+                ]
+            );
         }
     }
 
-    private function compileParameters(int|string|Node\Arg $key, array $parameter): Node\Stmt\Expression
+    private function compileParameter(int|string|Node\Arg $key, array $parameter): Node\Stmt\Expression
     {
         return match ($parameter['type']) {
             'datetime' => new Node\Stmt\Expression(
