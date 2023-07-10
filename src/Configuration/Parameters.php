@@ -9,6 +9,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 use function Kiboko\Component\SatelliteToolbox\Configuration\asExpression;
 use function Kiboko\Component\SatelliteToolbox\Configuration\isExpression;
+use function Kiboko\Component\SatelliteToolbox\Configuration\mutuallyExclusiveFields;
 
 class Parameters implements ConfigurationInterface
 {
@@ -24,9 +25,21 @@ class Parameters implements ConfigurationInterface
             ->end()
             ->useAttributeAsKey('key', false)
             ->arrayPrototype()
+                ->validate()
+                    ->always(mutuallyExclusiveFields('value', 'from'))
+                ->end()
+                ->validate()
+                    ->ifTrue(fn (array $data) => !\array_key_exists('value', $data) && !\array_key_exists('from', $data))
+                    ->thenInvalid('Your configuration should either contain the "value" or the "from" key.')
+                ->end()
                 ->children()
                     ->scalarNode('value')
-                        ->isRequired()
+                        ->validate()
+                            ->ifTrue(isExpression())
+                            ->then(asExpression())
+                        ->end()
+                    ->end()
+                    ->scalarNode('from')
                         ->validate()
                             ->ifTrue(isExpression())
                             ->then(asExpression())

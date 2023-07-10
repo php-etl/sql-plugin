@@ -59,36 +59,69 @@ final readonly class Loader implements FactoryInterface
 
             if (\array_key_exists('parameters', $config)) {
                 foreach ($config['parameters'] as $key => $parameter) {
-                    match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
-                        'integer' => $loader->addIntegerParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'boolean' => $loader->addBooleanParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'date' => $loader->addDateParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'datetime' => $loader->addDateTimeParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'json' => $loader->addJSONParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'binary' => $loader->addBinaryParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        default => $loader->addStringParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                    };
+                    if (\array_key_exists('from', $parameter) && isset($parameter['from'])) {
+                        match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                            'integer' => $loader->addIntegerParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'boolean' => $loader->addBooleanParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'date' => $loader->addDateParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'datetime' => $loader->addDateTimeParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'json' => $loader->addJSONParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'binary' => $loader->addBinaryParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            default => $loader->addStringParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                        };
+                    } else {
+                        match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                            'integer' => $loader->addIntegerParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                            'boolean' => $loader->addBooleanParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                            'date' => $loader->addDateParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                            'datetime' => $loader->addDateTimeParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                            'json' => $loader->addJSONParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                            'binary' => $loader->addBinaryParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                            default => $loader->addStringParam(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['value']),
+                            ),
+                        };
+                    }
                 }
             }
         } else {
@@ -101,36 +134,69 @@ final readonly class Loader implements FactoryInterface
 
                 if (\array_key_exists('parameters', $alternative)) {
                     foreach ($alternative['parameters'] as $key => $parameter) {
-                        match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
-                            'integer' => $alternativeLoaderBuilder->addIntegerParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                            'boolean' => $alternativeLoaderBuilder->addBooleanParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                            'date' => $alternativeLoaderBuilder->addDateParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                            'datetime' => $alternativeLoaderBuilder->addDateTimeParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                            'json' => $alternativeLoaderBuilder->addJSONParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                            'binary' => $alternativeLoaderBuilder->addBinaryParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                            default => $alternativeLoaderBuilder->addStringParam(
-                                $key,
-                                compileValueWhenExpression($this->interpreter, $parameter['value']),
-                            ),
-                        };
+                        if (\array_key_exists('from', $parameter) && isset($parameter['from'])) {
+                            match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                                'integer' => $alternativeLoaderBuilder->addIntegerParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                                'boolean' => $alternativeLoaderBuilder->addBooleanParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                                'date' => $alternativeLoaderBuilder->addDateParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                                'datetime' => $alternativeLoaderBuilder->addDateTimeParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                                'json' => $alternativeLoaderBuilder->addJSONParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                                'binary' => $alternativeLoaderBuilder->addBinaryParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                                default => $alternativeLoaderBuilder->addStringParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from'])
+                                ),
+                            };
+                        } else {
+                            match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                                'integer' => $alternativeLoaderBuilder->addIntegerParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                                'boolean' => $alternativeLoaderBuilder->addBooleanParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                                'date' => $alternativeLoaderBuilder->addDateParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                                'datetime' => $alternativeLoaderBuilder->addDateTimeParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                                'json' => $alternativeLoaderBuilder->addJSONParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                                'binary' => $alternativeLoaderBuilder->addBinaryParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                                default => $alternativeLoaderBuilder->addStringParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value'])
+                                ),
+                            };
+                        }
                     }
                 }
 

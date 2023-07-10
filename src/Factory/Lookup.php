@@ -83,50 +83,38 @@ final readonly class Lookup implements FactoryInterface
 
             if (\array_key_exists('parameters', $config)) {
                 foreach ($config['parameters'] as $key => $parameter) {
-                    match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
-                        'integer' => $alternativeBuilder->addIntegerParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'boolean' => $alternativeBuilder->addBooleanParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'date' => $alternativeBuilder->addDateParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'datetime' => $alternativeBuilder->addDateTimeParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'json' => $alternativeBuilder->addJSONParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        'binary' => $alternativeBuilder->addBinaryParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                        default => $alternativeBuilder->addStringParam(
-                            $key,
-                            compileValueWhenExpression($this->interpreter, $parameter['value']),
-                        ),
-                    };
-                }
-            }
-
-            $this->merge($alternativeBuilder, $config);
-        } else {
-            $lookup = new SQL\Builder\ConditionalLookup();
-
-            foreach ($config['conditional'] as $alternative) {
-                $alternativeBuilder = new SQL\Builder\AlternativeLookup(
-                    compileValueWhenExpression($this->interpreter, $alternative['query'])
-                );
-
-                if (\array_key_exists('parameters', $alternative)) {
-                    foreach ($alternative['parameters'] as $key => $parameter) {
+                    if (\array_key_exists('from', $parameter) && isset($parameter['from'])) {
+                        match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                            'integer' => $alternativeBuilder->addIntegerParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'boolean' => $alternativeBuilder->addBooleanParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'date' => $alternativeBuilder->addDateParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'datetime' => $alternativeBuilder->addDateTimeParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'json' => $alternativeBuilder->addJSONParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            'binary' => $alternativeBuilder->addBinaryParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                            default => $alternativeBuilder->addStringParamList(
+                                $key,
+                                compileValueWhenExpression($this->interpreter, $parameter['from']),
+                            ),
+                        };
+                    } else {
                         match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
                             'integer' => $alternativeBuilder->addIntegerParam(
                                 $key,
@@ -157,6 +145,84 @@ final readonly class Lookup implements FactoryInterface
                                 compileValueWhenExpression($this->interpreter, $parameter['value']),
                             ),
                         };
+                    }
+                }
+            }
+
+            $this->merge($alternativeBuilder, $config);
+        } else {
+            $lookup = new SQL\Builder\ConditionalLookup();
+
+            foreach ($config['conditional'] as $alternative) {
+                $alternativeBuilder = new SQL\Builder\AlternativeLookup(
+                    compileValueWhenExpression($this->interpreter, $alternative['query'])
+                );
+
+                if (\array_key_exists('parameters', $alternative)) {
+                    foreach ($alternative['parameters'] as $key => $parameter) {
+                        if (\array_key_exists('from', $parameter) && isset($parameter['from'])) {
+                            match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                                'integer' => $alternativeBuilder->addIntegerParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                                'boolean' => $alternativeBuilder->addBooleanParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                                'date' => $alternativeBuilder->addDateParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                                'datetime' => $alternativeBuilder->addDateTimeParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                                'json' => $alternativeBuilder->addJSONParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                                'binary' => $alternativeBuilder->addBinaryParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                                default => $alternativeBuilder->addStringParamList(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['from']),
+                                ),
+                            };
+                        } else {
+                            match (\array_key_exists('type', $parameter) ? $parameter['type'] : null) {
+                                'integer' => $alternativeBuilder->addIntegerParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                                'boolean' => $alternativeBuilder->addBooleanParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                                'date' => $alternativeBuilder->addDateParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                                'datetime' => $alternativeBuilder->addDateTimeParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                                'json' => $alternativeBuilder->addJSONParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                                'binary' => $alternativeBuilder->addBinaryParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                                default => $alternativeBuilder->addStringParam(
+                                    $key,
+                                    compileValueWhenExpression($this->interpreter, $parameter['value']),
+                                ),
+                            };
+                        }
                     }
                 }
 
