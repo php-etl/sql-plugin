@@ -230,7 +230,7 @@ final class AlternativeLookup implements StepBuilderInterface
                                 ),
                             ),
                         ),
-                        ...$this->getParameters(),
+                        ...$this->walkParameters(),
                         new Node\Stmt\Expression(
                             expr: new Node\Expr\MethodCall(
                                 var: new Node\Expr\Variable('stmt'),
@@ -312,7 +312,7 @@ final class AlternativeLookup implements StepBuilderInterface
         ))->getNode();
     }
 
-    public function getParameters(): iterable
+    public function walkParameters(): iterable
     {
         foreach ($this->parameters as $key => $parameter) {
             yield $this->compileParameter($key, $parameter);

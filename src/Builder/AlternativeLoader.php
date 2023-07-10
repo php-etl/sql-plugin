@@ -198,7 +198,7 @@ final class AlternativeLoader implements StepBuilderInterface
                                 )
                             )
                         ),
-                        ...$this->getParameters(),
+                        ...$this->walkParameters(),
                         new Node\Stmt\Expression(
                             expr: new Node\Expr\MethodCall(
                                 var: new Node\Expr\Variable('statement'),
@@ -219,7 +219,7 @@ final class AlternativeLoader implements StepBuilderInterface
         );
     }
 
-    public function getParameters(): iterable
+    public function walkParameters(): iterable
     {
         foreach ($this->parameters as $key => $parameter) {
             yield $this->compileParameter($key, $parameter);

@@ -241,7 +241,7 @@ final class Loader implements StepBuilderInterface
                                 ),
                             ],
                             'stmts' => [
-                                ...$this->getParameters(),
+                                ...$this->walkParameters(),
                             ],
                         ],
                     ))
@@ -307,7 +307,7 @@ final class Loader implements StepBuilderInterface
         );
     }
 
-    public function getParameters(): iterable
+    public function walkParameters(): iterable
     {
         foreach ($this->parameters as $key => $parameter) {
             yield $this->compileParameter($key, $parameter);
