@@ -12,8 +12,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^8.2",
-        "nikic/php-parser": "^4.10",
+        "php": "^8.4",
+        "nikic/php-parser": "^5.6",
         "symfony/config": "^6.0",
         "symfony/expression-language": "^6.0",
         "php-etl/configurator-contracts": "0.8.*",
@@ -25,12 +25,12 @@
         "ext-pdo": "*",
         "phpunit/phpunit": "^10.0",
         "php-etl/phpunit-extension": "*",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^2.2",
         "php-etl/sql-flow": "*",
         "friendsofphp/php-cs-fixer": "^3.0",
         "mikey179/vfsstream": "^1.6",
         "infection/infection": "^0.26.18",
-        "rector/rector": "^0.15"
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
