@@ -1,5 +1,10 @@
 {
     "name": "php-etl/sql-plugin",
+    "repositories": [
+        {"type": "path", "url": "../fast-map"},
+        {"type": "path", "url": "../../tools/fast-map-config"},
+        {"type": "path", "url": "../../phpunit-extension"}
+    ],
     "description": "This plugin allows you to perform SQL queries in the ETL pipelines",
     "type": "gyroscops-plugin",
     "license": "MIT",
@@ -29,7 +34,7 @@
         "php-etl/sql-flow": "*",
         "friendsofphp/php-cs-fixer": "^3.0",
         "mikey179/vfsstream": "^1.6",
-        "infection/infection": "^0.26.18",
+        "infection/infection": "^0.28",
         "rector/rector": "^2.3"
     },
     "autoload": {
